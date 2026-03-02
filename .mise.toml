@@ -1,5 +1,23 @@
 # Root-level mise tasks for the monorepo
 # These tasks orchestrate running tasks across all apps
+[tools]
+"go:github.com/sethvargo/ratchet" = "latest"
+
+[tasks."ratchet:pin"]
+description = "Pin GitHub Actions to specific commit SHAs"
+run = "ratchet pin .github/workflows/*.y?ml"
+
+[tasks."ratchet:update"]
+description = "Update pinned GitHub Actions to latest versions"
+run = "ratchet update .github/workflows/*.y?ml"
+
+[tasks."ratchet:lint"]
+description = "Check if GitHub Actions are properly pinned"
+run = "ratchet lint .github/workflows/*.y?ml"
+
+[tasks."ratchet:unpin"]
+description = "Unpin GitHub Actions (restore to tags)"
+run = "ratchet unpin .github/workflows/*.y?ml"
 
 [tasks.check]
 description = "Run all checks across all apps"
