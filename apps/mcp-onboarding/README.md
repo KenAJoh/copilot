@@ -154,6 +154,21 @@ Automatic deployment via GitHub Actions on merge to main and pull requests.
 
 Deployed to Nais using the reusable `mise-build-deploy-nais` workflow.
 
+## Metrics
+
+Exposed via `GET /metrics` in Prometheus format.
+
+| Metric                          | Type      | Labels                          | Description                                                                              |
+| ------------------------------- | --------- | ------------------------------- | ---------------------------------------------------------------------------------------- |
+| `http_requests_total`           | Counter   | `method`, `path`, `status_code` | HTTP requests by method, path, and status                                                |
+| `http_request_duration_seconds` | Histogram | `method`, `path`                | HTTP request latency                                                                     |
+| `mcp_tool_calls_total`          | Counter   | `tool`, `status`                | MCP tool invocations                                                                     |
+| `oauth_flows_total`             | Counter   | `stage`, `result`               | OAuth flow outcomes (authorize, callback, token)                                         |
+| `authenticated_users_total`     | Counter   | —                               | Total successful authentications                                                         |
+| `token_store_size`              | Gauge     | `type`                          | Current size of token stores (`active_tokens`, `refresh_tokens`, `client_registrations`) |
+
+A shared Grafana dashboard is available at [`dashboards/copilot-ecosystem.json`](../../dashboards/copilot-ecosystem.json).
+
 ## API Endpoints
 
 | Endpoint                                  | Method | Description                            |

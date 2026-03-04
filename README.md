@@ -196,7 +196,8 @@ These customizations enforce Nav's core principles:
 │   ├── README.prompts.md
 │   ├── README.skills.md
 │   └── README.collections.md
-└── apps/                 # Nav applications (my-copilot, mcp-registry, mcp-onboarding)
+├── apps/                 # Nav applications (my-copilot, mcp-registry, mcp-onboarding)
+└── dashboards/           # Grafana dashboard definitions
 ```
 
 ## 🎯 Why Use Nav Copilot Customizations?
