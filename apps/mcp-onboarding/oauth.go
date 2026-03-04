@@ -208,8 +208,8 @@ func (s *OAuthServer) handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	callbackURL := fmt.Sprintf("%s?code=%s&state=%s",
 		session.RedirectURI,
-		mcpCode,
-		session.ClientState,
+		url.QueryEscape(mcpCode),
+		url.QueryEscape(session.ClientState),
 	)
 
 	http.Redirect(w, r, callbackURL, http.StatusFound)
