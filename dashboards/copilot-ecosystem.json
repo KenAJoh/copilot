@@ -38,7 +38,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -134,7 +134,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -275,7 +275,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -376,7 +376,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -485,7 +485,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -585,7 +585,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -695,7 +695,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -755,7 +755,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -815,7 +815,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -875,7 +875,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -935,7 +935,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -995,7 +995,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1065,7 +1065,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1125,7 +1125,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1220,7 +1220,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1361,7 +1361,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1458,7 +1458,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1584,7 +1584,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1683,7 +1683,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1793,7 +1793,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1890,7 +1890,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1956,7 +1956,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2055,7 +2055,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2165,7 +2165,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2226,7 +2226,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2287,7 +2287,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2348,7 +2348,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2409,7 +2409,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2470,7 +2470,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2531,7 +2531,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2592,7 +2592,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2689,7 +2689,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2822,7 +2822,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2919,7 +2919,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3020,7 +3020,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3116,7 +3116,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3168,7 +3168,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "PA58DA793C7250F1B"
+        "uid": "${DS_METRICS}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3238,7 +3238,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "PD969E40991D5C4A8"
+        "uid": "${DS_LOGS}"
       },
       "fieldConfig": {
         "defaults": {},
@@ -3274,7 +3274,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "PD969E40991D5C4A8"
+        "uid": "${DS_LOGS}"
       },
       "fieldConfig": {
         "defaults": {},
@@ -3323,7 +3323,7 @@
     {
       "datasource": {
         "type": "tempo",
-        "uid": "P8A28344D07741F8D"
+        "uid": "${DS_TRACES}"
       },
       "fieldConfig": {
         "defaults": {},
