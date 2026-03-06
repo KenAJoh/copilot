@@ -6,22 +6,32 @@ Based on the [Agent Skills specification](https://agentskills.io/specification),
 
 Skills differ from other primitives by supporting bundled assets (scripts, code samples, reference data) that agents can utilize when performing specialized tasks.
 
-### How to Use Agent Skills
+### How to Install
 
-**What's Included:**
-- Each skill is a folder containing a `SKILL.md` instruction file
-- Skills may include helper scripts, code templates, or reference data
-- Skills follow the Agent Skills specification for maximum compatibility
+Skills are folders placed in your repo's `.github/skills/` directory.
 
-**When to Use:**
-- Skills are ideal for complex, repeatable workflows that benefit from bundled resources
-- Use skills when you need code templates, helper utilities, or reference data alongside instructions
-- Skills provide progressive disclosure - loaded only when needed for specific tasks
+| Editor          | Install Method                                                                                 |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| **VS Code**     | Copy the skill folder to `.github/skills/` in your repo. Agents discover skills automatically. |
+| **JetBrains**   | Copy the skill folder to `.github/skills/`. Works with Copilot coding agent.                   |
+| **Copilot CLI** | Not supported.                                                                                 |
+| **GitHub.com**  | Works with Copilot coding agent when the folder exists in the repo.                            |
 
-**Usage:**
-- Browse the skills table below to find relevant capabilities
-- Copy the skill folder to your local skills directory (`.github/skills/`)
-- Reference skills in your prompts or let the agent discover them automatically
+> Skills are currently a VS Code feature for Copilot Chat. There is no one-click install — copy the full folder to your repo.
+
+**Manual install:**
+
+```bash
+# From your project root — install a single skill
+mkdir -p .github/skills
+# Clone the repo and copy the skill folder
+git clone --depth 1 --filter=blob:none --sparse https://github.com/navikt/copilot.git /tmp/nav-copilot
+cd /tmp/nav-copilot && git sparse-checkout set .github/skills/<skill-name>
+cp -r .github/skills/<skill-name> /path/to/your/repo/.github/skills/
+rm -rf /tmp/nav-copilot
+```
+
+**When to use skills vs instructions:** Skills are ideal for complex workflows that need bundled resources (templates, scripts, reference data). For simple coding guidelines, use instructions instead.
 
 ## Available Skills
 

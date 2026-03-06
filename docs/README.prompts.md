@@ -2,24 +2,37 @@
 
 Reusable prompt templates for NAV development scenarios and tasks, optimized for Norwegian public sector workflows.
 
-### How to Use Reusable Prompts
+### How to Install
 
-**To Install:**
-- Click the **VS Code** or **VS Code Insiders** install button for the prompt you want to use
-- Download the `*.prompt.md` file and manually add it to your prompt collection
+Prompts are `.prompt.md` files placed in your repo's `.github/prompts/` directory.
 
-**To Run/Execute:**
-- Use `/prompt-name` in VS Code chat after installation
-- Run the `Chat: Run Prompt` command from the Command Palette
-- Hit the run button while you have a prompt file open in VS Code
+| Editor          | Install Method                                                                     |
+| --------------- | ---------------------------------------------------------------------------------- |
+| **VS Code**     | Click the one-click install button below, or copy the file to `.github/prompts/`   |
+| **JetBrains**   | Copy the file to `.github/prompts/` in your repo. Use with `/prompt-name` in chat. |
+| **Copilot CLI** | Not supported.                                                                     |
+| **GitHub.com**  | Not supported.                                                                     |
+
+> Prompt files work in VS Code and JetBrains. See [support matrix](https://docs.github.com/en/copilot/reference/custom-instructions-support) for details.
+
+**Manual install (any editor):**
+
+```bash
+# From your project root
+mkdir -p .github/prompts
+curl -sO --output-dir .github/prompts \
+  https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/<filename>.prompt.md
+```
+
+**To run:** Use `/prompt-name` in Copilot Chat, or run `Chat: Run Prompt` from the Command Palette.
 
 ## Available Prompts
 
-| Prompt                                                                             | Description                                                                                                                                                 | Install                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **#aksel-component**<br/>[View File](../.github/prompts/aksel-component.prompt.md) | Scaffold responsive React components with Aksel Design System. Generates mobile-first layouts with proper spacing tokens and accessible component patterns. | [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Faksel-component.prompt.md)<br/>[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Faksel-component.prompt.md) |
-| **#kafka-topic**<br/>[View File](../.github/prompts/kafka-topic.prompt.md)         | Add Kafka topic to NAIS manifest and create event handlers. Includes Rapids & Rivers pattern and event schema design.                                       | [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md)<br/>[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md)         |
-| **#nais-manifest**<br/>[View File](../.github/prompts/nais-manifest.prompt.md)     | Generate production-ready NAIS application manifest. Supports PostgreSQL, Kafka, Azure AD, and observability configuration.                                 | [![Install in VS Code](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md)<br/>[![Install in VS Code Insiders](https://img.shields.io/badge/VS_Code_Insiders-Install-24bfa5?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md)     |
+| Prompt                                                                             | Description                                                                              | VS Code                                                                                                                                                                                                                                                                                                                                  |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **#aksel-component**<br/>[View File](../.github/prompts/aksel-component.prompt.md) | Scaffold responsive React components with Aksel Design System and mobile-first layouts.  | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Faksel-component.prompt.md) |
+| **#kafka-topic**<br/>[View File](../.github/prompts/kafka-topic.prompt.md)         | Add Kafka topic to NAIS manifest with Rapids & Rivers event handlers.                    | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md)     |
+| **#nais-manifest**<br/>[View File](../.github/prompts/nais-manifest.prompt.md)     | Generate production-ready NAIS manifest with PostgreSQL, Kafka, Azure AD, observability. | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md)   |
 
 ## Creating NAV Prompts
 

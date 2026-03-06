@@ -13,13 +13,15 @@ This repository provides specialized GitHub Copilot customizations for the Nav e
 
 ## 🔧 How to Use
 
-### Quick Install (One-Click)
+### Quick Install
 
-Install customizations directly in VS Code using install badges in the documentation:
+Install customizations directly in VS Code (one-click) or manually for JetBrains/CLI:
 
-- **[View all Agents →](docs/README.agents.md)** - Click to install individual agents
-- **[View all Instructions →](docs/README.instructions.md)** - Click to install coding standards
-- **[View all Prompts →](docs/README.prompts.md)** - Click to install scaffolding templates
+- **[Agents →](docs/README.agents.md)** - Specialized AI assistants (VS Code one-click, JetBrains via coding agent)
+- **[Instructions →](docs/README.instructions.md)** - Coding standards (all editors)
+- **[Prompts →](docs/README.prompts.md)** - Scaffolding templates (VS Code, JetBrains)
+- **[Skills →](docs/README.skills.md)** - Bundled domain knowledge (VS Code)
+- **[MCP Servers →](docs/README.mcp.md)** - External tool integrations (all editors)
 
 ### Discover & Search with MCP
 
@@ -66,6 +68,16 @@ Production patterns extracted from real Nav repositories with bundled templates 
 **Available skills:** TokenX Auth, Observability Setup, Aksel Spacing, Kotlin App Config, Flyway Migration
 
 👉 **[View full skills documentation →](docs/README.skills.md)**
+
+---
+
+## 🔌 MCP Servers
+
+NAV-approved MCP servers that extend Copilot with external tools — GitHub, Figma, and internal NAV services.
+
+**Available servers:** GitHub MCP, Nav Copilot Discovery, Figma MCP
+
+👉 **[View full MCP documentation →](docs/README.mcp.md)**
 
 ---
 
@@ -193,6 +205,7 @@ These customizations enforce Nav's core principles:
 ├── docs/                 # Detailed documentation for each customization type
 │   ├── README.agents.md
 │   ├── README.instructions.md
+│   ├── README.mcp.md
 │   ├── README.prompts.md
 │   ├── README.skills.md
 │   └── README.collections.md
