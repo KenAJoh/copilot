@@ -1,6 +1,6 @@
 ---
 on:
-  schedule: weekly
+  schedule: "0 9 * * 1,3,5"
   workflow_dispatch:
 
 engine:
