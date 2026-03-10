@@ -1,19 +1,17 @@
-name: my-copilot build-deploy
+name: copilot-metrics build-deploy
 
 on:
   push:
     branches: [main]
     paths:
-      - 'apps/my-copilot/**'
-      - 'docs/news/**'
-      - '.github/workflows/my-copilot.yaml'
+      - 'apps/copilot-metrics/**'
+      - '.github/workflows/copilot-metrics.yaml'
       - '.github/workflows/mise-build-deploy-nais.yaml'
   pull_request:
     branches: [main]
     paths:
-      - 'apps/my-copilot/**'
-      - 'docs/news/**'
-      - '.github/workflows/my-copilot.yaml'
+      - 'apps/copilot-metrics/**'
+      - '.github/workflows/copilot-metrics.yaml'
       - '.github/workflows/mise-build-deploy-nais.yaml'
   workflow_dispatch:
 
@@ -29,11 +27,11 @@ jobs:
   build:
     uses: ./.github/workflows/mise-build-deploy-nais.yaml
     with:
-      working-directory: apps/my-copilot
-      docker-context: '../..'
+      working-directory: apps/copilot-metrics
       mise-setup-tasks: '["install"]'
       mise-tasks: '["lint", "check"]'
       deploys-to-nais: true
       deploy-pr-to-dev: true
+      nais-resource: '.nais/naisjob.yaml'
       nais-team: copilot
       nais-clusters: '["dev-gcp", "prod-gcp"]'
