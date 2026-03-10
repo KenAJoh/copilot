@@ -11,6 +11,7 @@ import (
 )
 
 var serverNameRegex = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9.-]*/[a-zA-Z0-9][a-zA-Z0-9._-]*$`)
+var tagRegex = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
 
 func validateAllowListFile() error {
 	data, err := os.ReadFile("allowlist.json")
@@ -81,6 +82,30 @@ func validateServerEntry(server *StaticServerData, index int, existingNames map[
 	if server.PublishedAt != "" {
 		if _, err := time.Parse(time.RFC3339, server.PublishedAt); err != nil {
 			return fmt.Errorf("server[%d]: invalid publishedAt format, must be RFC3339: %v", index, err)
+		}
+	}
+
+	if server.WebsiteURL != "" {
+		if err := validateHTTPSURL(server.WebsiteURL); err != nil {
+			return fmt.Errorf("server[%d]: invalid websiteUrl: %v", index, err)
+		}
+	}
+
+	if server.Repository != nil {
+		if err := validateRepository(server.Repository, index); err != nil {
+			return err
+		}
+	}
+
+	for j, tool := range server.Tools {
+		if strings.TrimSpace(tool) == "" {
+			return fmt.Errorf("server[%d].tools[%d]: tool name cannot be empty", index, j)
+		}
+	}
+
+	for j, tag := range server.Tags {
+		if !tagRegex.MatchString(tag) {
+			return fmt.Errorf("server[%d].tags[%d]: tag '%s' must be lowercase kebab-case (e.g., 'browser-automation')", index, j, tag)
 		}
 	}
 
@@ -207,5 +232,62 @@ func validatePackage(pkg *Package, serverIndex, pkgIndex int) error {
 			serverIndex, pkgIndex, TransportTypeStdio, TransportTypeStreamableHTTP, TransportTypeSSE)
 	}
 
+	for j, arg := range pkg.PackageArguments {
+		if err := validateArgument(&arg, serverIndex, pkgIndex, j, "packageArguments"); err != nil {
+			return err
+		}
+	}
+
+	for j, arg := range pkg.RuntimeArguments {
+		if err := validateArgument(&arg, serverIndex, pkgIndex, j, "runtimeArguments"); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func validateArgument(arg *Argument, serverIndex, pkgIndex, argIndex int, field string) error {
+	switch arg.Type {
+	case "named", "positional":
+	default:
+		return fmt.Errorf("server[%d].packages[%d].%s[%d]: 'type' must be 'named' or 'positional'",
+			serverIndex, pkgIndex, field, argIndex)
+	}
+
+	if arg.Type == "named" && strings.TrimSpace(arg.Name) == "" {
+		return fmt.Errorf("server[%d].packages[%d].%s[%d]: 'name' is required for named arguments",
+			serverIndex, pkgIndex, field, argIndex)
+	}
+
+	if arg.Type == "positional" && strings.TrimSpace(arg.Value) == "" && strings.TrimSpace(arg.ValueHint) == "" {
+		return fmt.Errorf("server[%d].packages[%d].%s[%d]: 'value' or 'valueHint' is required for positional arguments",
+			serverIndex, pkgIndex, field, argIndex)
+	}
+
+	return nil
+}
+
+func validateHTTPSURL(rawURL string) error {
+	parsed, err := url.Parse(rawURL)
+	if err != nil {
+		return fmt.Errorf("invalid URL: %v", err)
+	}
+	if parsed.Scheme != "https" {
+		return fmt.Errorf("URL must use https scheme, got '%s'", parsed.Scheme)
+	}
+	if parsed.Host == "" {
+		return fmt.Errorf("URL must have a host")
+	}
+	return nil
+}
+
+func validateRepository(repo *Repository, index int) error {
+	if err := validateHTTPSURL(repo.URL); err != nil {
+		return fmt.Errorf("server[%d]: invalid repository.url: %v", index, err)
+	}
+	if strings.TrimSpace(repo.Source) == "" {
+		return fmt.Errorf("server[%d]: repository.source is required", index)
+	}
 	return nil
 }

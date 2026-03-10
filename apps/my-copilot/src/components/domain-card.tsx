@@ -3,7 +3,16 @@
 import { Box, BodyShort, Heading, VStack } from "@navikt/ds-react";
 import type { Domain, DomainConfig } from "@/lib/customization-types";
 import { DOMAIN_CONFIGS } from "@/lib/customization-types";
-import { CloudIcon, PaletteIcon, CogIcon, ShieldLockIcon, LineGraphIcon, BulletListIcon } from "@navikt/aksel-icons";
+import {
+  CloudIcon,
+  PaletteIcon,
+  CogIcon,
+  ShieldLockIcon,
+  LineGraphIcon,
+  BulletListIcon,
+  TasklistIcon,
+  PencilIcon,
+} from "@navikt/aksel-icons";
 import type { ReactElement } from "react";
 
 const DOMAIN_ICONS: Record<Domain, ReactElement> = {
@@ -13,6 +22,8 @@ const DOMAIN_ICONS: Record<Domain, ReactElement> = {
   auth: <ShieldLockIcon fontSize="2rem" aria-hidden />,
   observability: <LineGraphIcon fontSize="2rem" aria-hidden />,
   general: <BulletListIcon fontSize="2rem" aria-hidden />,
+  testing: <TasklistIcon fontSize="2rem" aria-hidden />,
+  design: <PencilIcon fontSize="2rem" aria-hidden />,
 };
 
 interface DomainCardProps {
