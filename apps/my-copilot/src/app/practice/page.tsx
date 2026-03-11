@@ -529,10 +529,8 @@ export default async function BestPractices() {
                     <BodyShort className="text-gray-600 text-xs mt-3">
                       Nav har også en{" "}
                       <a
-                        href="https://github.com/navikt/copilot/tree/main/apps/mcp-onboarding"
+                        href="/customizations?item=mcp-io.github.navikt%2Fmcp-onboarding"
                         className="text-blue-600 hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
                       >
                         MCP onboarding-server
                       </a>{" "}
@@ -682,10 +680,8 @@ export default async function BestPractices() {
                     <BodyShort className="text-gray-600 text-xs mt-3">
                       Bruk{" "}
                       <a
-                        href="https://github.com/navikt/copilot/tree/main/apps/mcp-onboarding"
+                        href="/customizations?item=mcp-io.github.navikt%2Fmcp-onboarding"
                         className="text-blue-600 hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
                       >
                         MCP onboarding-serveren
                       </a>{" "}
@@ -3059,10 +3055,8 @@ description: Skriver tester for dette prosjektet
                         <li className="flex gap-2">
                           <span className="text-blue-600">▪</span>
                           <a
-                            href="https://github.com/navikt/copilot/tree/main/apps/mcp-onboarding"
+                            href="/customizations?item=mcp-io.github.navikt%2Fmcp-onboarding"
                             className="text-blue-600 hover:underline text-sm"
-                            target="_blank"
-                            rel="noopener noreferrer"
                           >
                             MCP Onboarding – sjekk agent-beredskap og generer tilpasningsfiler
                           </a>

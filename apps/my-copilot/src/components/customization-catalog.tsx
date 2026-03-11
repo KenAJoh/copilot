@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Box, Search, HStack, VStack, BodyShort, Chips } from "@navikt/ds-react";
 import type { AnyCustomization, CustomizationType, Domain } from "@/lib/customization-types";
@@ -34,6 +34,7 @@ export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
   const initialType = searchParams.get("type");
   const initialDomain = searchParams.get("domain");
   const initialSearch = searchParams.get("q") ?? "";
+  const initialItem = searchParams.get("item");
 
   const [search, setSearch] = useState(initialSearch);
   const [selectedType, setSelectedType] = useState<CustomizationType | null>(
@@ -42,16 +43,27 @@ export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(
     isValidDomain(initialDomain, allDomains) ? initialDomain : null,
   );
-  const [selectedItem, setSelectedItem] = useState<AnyCustomization | null>(null);
+  const [selectedItem, setSelectedItem] = useState<AnyCustomization | null>(() => {
+    if (initialItem) {
+      return items.find((i) => i.id === initialItem) ?? null;
+    }
+    return null;
+  });
 
+  const isInitialRender = useRef(true);
   useEffect(() => {
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
     const params = new URLSearchParams();
     if (selectedType) params.set("type", selectedType);
     if (selectedDomain) params.set("domain", selectedDomain);
     if (search) params.set("q", search);
+    if (selectedItem) params.set("item", selectedItem.id);
     const qs = params.toString();
     router.replace(qs ? `?${qs}` : "/customizations", { scroll: false });
-  }, [selectedType, selectedDomain, search, router]);
+  }, [selectedType, selectedDomain, search, selectedItem, router]);
 
   useEffect(() => {
     const handler = (e: Event) => {
