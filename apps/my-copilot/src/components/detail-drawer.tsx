@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
 import { XMarkIcon, ExternalLinkIcon, DownloadIcon } from "@navikt/aksel-icons";
 import { Alert, Box, BodyShort, Heading, Tag, HStack, VStack, CopyButton, Accordion } from "@navikt/ds-react";
@@ -18,6 +19,25 @@ interface DetailDrawerProps {
   item: AnyCustomization | null;
   open: boolean;
   onClose: () => void;
+}
+
+function ExclusiveAccordion({ children }: { children: React.ReactNode }) {
+  const [openItem, setOpenItem] = useState<string | null>(null);
+
+  const items = React.Children.toArray(children).filter(Boolean);
+
+  return (
+    <Accordion size="small" headingSize="xsmall">
+      {items.map((child, i) => {
+        if (!React.isValidElement(child)) return child;
+        const key = (child.key as string) ?? String(i);
+        return React.cloneElement(child as React.ReactElement<{ open: boolean; onOpenChange: (open: boolean) => void }>, {
+          open: openItem === key,
+          onOpenChange: (isOpen: boolean) => setOpenItem(isOpen ? key : null),
+        });
+      })}
+    </Accordion>
+  );
 }
 
 function McpDetails({ item }: { item: AnyCustomization }) {
@@ -149,7 +169,7 @@ function McpDetails({ item }: { item: AnyCustomization }) {
         <Heading size="xsmall" level="4">
           Installering
         </Heading>
-        <Accordion size="small" headingSize="xsmall">
+        <ExclusiveAccordion>
           <Accordion.Item>
             <Accordion.Header>VS Code</Accordion.Header>
             <Accordion.Content>
@@ -281,7 +301,7 @@ function McpDetails({ item }: { item: AnyCustomization }) {
               </Accordion.Content>
             </Accordion.Item>
           )}
-        </Accordion>
+        </ExclusiveAccordion>
       </VStack>
     </VStack>
   );
@@ -329,7 +349,7 @@ function StaticCustomizationDetails({ item }: { item: AnyCustomization }) {
         <Heading size="xsmall" level="4">
           Installering
         </Heading>
-        <Accordion size="small" headingSize="xsmall">
+        <ExclusiveAccordion>
           <Accordion.Item>
             <Accordion.Header>VS Code</Accordion.Header>
             <Accordion.Content>
@@ -409,7 +429,7 @@ function StaticCustomizationDetails({ item }: { item: AnyCustomization }) {
               </Accordion.Content>
             </Accordion.Item>
           )}
-        </Accordion>
+        </ExclusiveAccordion>
       </VStack>
     </VStack>
   );
