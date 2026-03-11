@@ -5,9 +5,13 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pino", "thread-stream", "@google-cloud/bigquery"],
   async redirects() {
     return [
-      { source: "/best-practices", destination: "/practice", permanent: true },
-      { source: "/usage", destination: "/stats", permanent: true },
-      { source: "/overview", destination: "/cost", permanent: true },
+      { source: "/best-practices", destination: "/praksis", permanent: true },
+      { source: "/practice", destination: "/praksis", permanent: true },
+      { source: "/customizations", destination: "/verktoy", permanent: true },
+      { source: "/usage", destination: "/statistikk", permanent: true },
+      { source: "/stats", destination: "/statistikk", permanent: true },
+      { source: "/overview", destination: "/kostnad", permanent: true },
+      { source: "/cost", destination: "/kostnad", permanent: true },
     ];
   },
   // Enable Cache Components (Partial Prerendering)

@@ -62,7 +62,7 @@ export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
     if (search) params.set("q", search);
     if (selectedItem) params.set("item", selectedItem.id);
     const qs = params.toString();
-    router.replace(qs ? `?${qs}` : "/customizations", { scroll: false });
+    router.replace(qs ? `?${qs}` : "/verktoy", { scroll: false });
   }, [selectedType, selectedDomain, search, selectedItem, router]);
 
   useEffect(() => {

@@ -14,13 +14,13 @@ En kuratert samling Copilot-tilpasninger for Nav-økosystemet:
 - **🎯 [5 Ferdigheter](#-ferdigheter)** — Produksjonsmønstre fra ekte Nav-repoer
 - **🔌 [6 MCP-servere](#-mcp-servere)** — GitHub, Figma, Next.js, Svelte, Playwright og Nav Onboarding
 
-Alle tilpasninger er tilgjengelige fra **[Verktøy-siden](https://min-copilot.ansatt.nav.no/customizations)** med søk, domenefiltrering og installasjonsinstruksjoner.
+Alle tilpasninger er tilgjengelige fra **[Verktøy-siden](https://min-copilot.ansatt.nav.no/verktoy)** med søk, domenefiltrering og installasjonsinstruksjoner.
 
 ## Kom i gang
 
 ### Fra verktøysiden (anbefalt)
 
-Gå til **[min-copilot.ansatt.nav.no/customizations](https://min-copilot.ansatt.nav.no/customizations)**, finn det du trenger, og følg installasjonsinstruksjonene. MCP-servere har ferdig `code --add-mcp`-kommandoer du kan kopiere rett inn i terminalen.
+Gå til **[min-copilot.ansatt.nav.no/verktoy](https://min-copilot.ansatt.nav.no/verktoy)**, finn det du trenger, og følg installasjonsinstruksjonene. MCP-servere har ferdig `code --add-mcp`-kommandoer du kan kopiere rett inn i terminalen.
 
 ### Fra dokumentasjonen
 

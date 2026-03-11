@@ -521,7 +521,7 @@ export default async function BestPractices() {
                         MCP-registry
                       </a>{" "}
                       er allerede konfigurert for alle brukere. Se tilgjengelige MCP-servere på{" "}
-                      <a href="/customizations?type=mcp" className="text-blue-600 hover:underline">
+                      <a href="/verktoy?type=mcp" className="text-blue-600 hover:underline">
                         verktøy-siden
                       </a>
                       .
@@ -529,7 +529,7 @@ export default async function BestPractices() {
                     <BodyShort className="text-gray-600 text-xs mt-3">
                       Nav har også en{" "}
                       <a
-                        href="/customizations?item=mcp-io.github.navikt%2Fmcp-onboarding"
+                        href="/verktoy?item=mcp-io.github.navikt%2Fmcp-onboarding"
                         className="text-blue-600 hover:underline"
                       >
                         MCP onboarding-server
@@ -680,7 +680,7 @@ export default async function BestPractices() {
                     <BodyShort className="text-gray-600 text-xs mt-3">
                       Bruk{" "}
                       <a
-                        href="/customizations?item=mcp-io.github.navikt%2Fmcp-onboarding"
+                        href="/verktoy?item=mcp-io.github.navikt%2Fmcp-onboarding"
                         className="text-blue-600 hover:underline"
                       >
                         MCP onboarding-serveren
@@ -717,7 +717,7 @@ export default async function BestPractices() {
                     <HGrid columns={{ xs: 1, md: 2, lg: 4 }} gap="space-20">
                       <VStack gap="space-8">
                         <Label size="small" className="text-blue-700">
-                          <a href="/customizations?type=prompt" className="hover:underline">
+                          <a href="/verktoy?type=prompt" className="hover:underline">
                             Prompts
                           </a>
                         </Label>
@@ -761,7 +761,7 @@ export default async function BestPractices() {
                       </VStack>
                       <VStack gap="space-8">
                         <Label size="small" className="text-orange-700">
-                          <a href="/customizations?type=agent" className="hover:underline">
+                          <a href="/verktoy?type=agent" className="hover:underline">
                             Agents
                           </a>
                         </Label>
@@ -783,7 +783,7 @@ export default async function BestPractices() {
                       </VStack>
                       <VStack gap="space-8">
                         <Label size="small" className="text-purple-700">
-                          <a href="/customizations?type=skill" className="hover:underline">
+                          <a href="/verktoy?type=skill" className="hover:underline">
                             Skills
                           </a>
                         </Label>
@@ -1653,7 +1653,7 @@ Return extracted data as structured JSON:
                     <HGrid columns={{ xs: 1, md: 3 }} gap="space-16">
                       <Box background="default" padding="space-12" borderRadius="4">
                         <Label size="small" className="text-green-700">
-                          <a href="/customizations?type=instruction" className="hover:underline">
+                          <a href="/verktoy?type=instruction" className="hover:underline">
                             Instructions
                           </a>
                         </Label>
@@ -1664,7 +1664,7 @@ Return extracted data as structured JSON:
                       </Box>
                       <Box background="default" padding="space-12" borderRadius="4">
                         <Label size="small" className="text-blue-700">
-                          <a href="/customizations?type=agent" className="hover:underline">
+                          <a href="/verktoy?type=agent" className="hover:underline">
                             Agents
                           </a>
                         </Label>
@@ -1675,7 +1675,7 @@ Return extracted data as structured JSON:
                       </Box>
                       <Box background="default" padding="space-12" borderRadius="4">
                         <Label size="small" className="text-purple-700">
-                          <a href="/customizations?type=skill" className="hover:underline">
+                          <a href="/verktoy?type=skill" className="hover:underline">
                             Skills
                           </a>
                         </Label>
@@ -3055,7 +3055,7 @@ description: Skriver tester for dette prosjektet
                         <li className="flex gap-2">
                           <span className="text-blue-600">▪</span>
                           <a
-                            href="/customizations?item=mcp-io.github.navikt%2Fmcp-onboarding"
+                            href="/verktoy?item=mcp-io.github.navikt%2Fmcp-onboarding"
                             className="text-blue-600 hover:underline text-sm"
                           >
                             MCP Onboarding – sjekk agent-beredskap og generer tilpasningsfiler
