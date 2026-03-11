@@ -46,7 +46,7 @@ export default function Home() {
         >
           <VStack gap={{ xs: "space-32", md: "space-40" }}>
             <Box className="reveal-section">
-              <Heading size="medium" level="2" className="mb-4">
+              <Heading size="small" level="2" className="mb-4">
                 Siste nytt
               </Heading>
               <VStack gap="space-12">
@@ -62,7 +62,7 @@ export default function Home() {
             </Box>
 
             <Box className="reveal-section">
-              <Heading size="medium" level="2" className="mb-4">
+              <Heading size="small" level="2" className="mb-4">
                 Ressurser
               </Heading>
               <HGrid columns={{ xs: 1, sm: 2 }} gap="space-12">

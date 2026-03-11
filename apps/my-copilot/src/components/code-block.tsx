@@ -43,12 +43,12 @@ export function CodeBlock({ filename, children, maxHeight }: CodeBlockProps) {
             style={
               hasMaxHeight
                 ? ({
-                    maxHeight: maxHeight,
-                  } as React.CSSProperties)
+                  maxHeight: maxHeight,
+                } as React.CSSProperties)
                 : undefined
             }
           >
-            <pre className="text-[#d4d4d4] text-xs font-mono whitespace-pre-wrap leading-relaxed">{children}</pre>
+            <pre className="text-[#d4d4d4] text-xs font-mono whitespace-pre-wrap">{children}</pre>
           </Box>
           {hasMaxHeight && (
             <>
@@ -56,7 +56,7 @@ export function CodeBlock({ filename, children, maxHeight }: CodeBlockProps) {
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="absolute left-1/2 -translate-x-1/2 text-xs text-white font-medium hover:bg-blue-600 bg-blue-500 rounded-md transition-all shadow-lg"
-                style={{ bottom: "8px", padding: "8px 16px" }}
+                style={{ bottom: "10px", padding: "6px 14px" }}
               >
                 Vis hele filen →
               </button>

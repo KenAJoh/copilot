@@ -37,7 +37,7 @@ export default async function BestPractices() {
         title="God praksis"
         description="Lær å bruke GitHub Copilot effektivt og trygt — fra kodeforslag til autonome agenter."
       />
-      <div className="max-w-360 mx-auto">
+      <div className="max-w-7xl mx-auto">
         <Box
           paddingBlock={{ xs: "space-16", sm: "space-20", md: "space-24" }}
           paddingInline={{ xs: "space-16", sm: "space-20", md: "space-32", lg: "space-40" }}
@@ -63,17 +63,17 @@ export default async function BestPractices() {
               </div>
             </aside>
             <div className="min-w-0 flex-1">
-              <VStack gap={{ xs: "space-24", md: "space-32" }}>
+              <VStack gap={{ xs: "space-32", md: "space-40" }}>
                 {/* 1. Styrker, Begrensninger og Farer */}
                 <Box
                   background="neutral-soft"
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Styrker, Begrensninger og Farer
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Copilot er kraftig, men ikke magisk. Forstå hva det gjør best, hvor det svikter, og hvilke farer du
                     må være oppmerksom på.
                   </BodyShort>
@@ -82,7 +82,7 @@ export default async function BestPractices() {
                     <VStack gap="space-16" className="md:min-w-100">
                       <div className="flex items-center gap-2">
                         <CheckmarkCircleIcon className="text-green-700" aria-hidden />
-                        <Heading size="medium" level="3" className="text-green-700">
+                        <Heading size="small" level="3" className="text-green-700">
                           Hva Copilot gjør best
                         </Heading>
                       </div>
@@ -130,7 +130,7 @@ export default async function BestPractices() {
                     <VStack gap="space-16" className="md:min-w-100">
                       <div className="flex items-center gap-2">
                         <XMarkOctagonIcon className="text-orange-700" aria-hidden />
-                        <Heading size="medium" level="3" className="text-orange-700">
+                        <Heading size="small" level="3" className="text-orange-700">
                           Begrensninger
                         </Heading>
                       </div>
@@ -182,9 +182,9 @@ export default async function BestPractices() {
                     borderRadius="8"
                     className="mb-6"
                   >
-                    <div className="flex items-center gap-2 mb-4">
+                    <div className="flex items-center gap-2 mb-5">
                       <ExclamationmarkTriangleIcon className="text-red-700" aria-hidden />
-                      <Heading size="medium" level="3" className="text-red-700">
+                      <Heading size="small" level="3" className="text-red-700">
                         Utfordringer du må kjenne til
                       </Heading>
                     </div>
@@ -234,13 +234,13 @@ export default async function BestPractices() {
 
                   {/* Security principles */}
                   <Box background="info-soft" padding={{ xs: "space-12", sm: "space-16" }} borderRadius="8">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <ShieldLockIcon className="text-blue-700" aria-hidden />
                       <Heading size="small" level="3" className="text-blue-700">
                         GitHubs sikkerhetsprinsipper for agenter
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-3">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       GitHub har bygget inn disse sikkerhetsprinsippene i Copilot coding agent:
                     </BodyShort>
                     <HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
@@ -302,10 +302,10 @@ export default async function BestPractices() {
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Verktøy og Moduser
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     GitHub Copilot er ikke bare kodeforslag i editoren. Det er et økosystem av verktøy som spenner fra
                     sanntidsforslag til autonome agenter som jobber i bakgrunnen.
                   </BodyShort>
@@ -339,9 +339,9 @@ export default async function BestPractices() {
                       borderRadius="8"
                       className="max-w-lg"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <LaptopIcon className="text-blue-700" aria-hidden />
-                        <Heading size="medium" level="3" className="text-blue-700">
+                        <Heading size="small" level="3" className="text-blue-700">
                           I editoren (IDE)
                         </Heading>
                       </div>
@@ -394,9 +394,9 @@ export default async function BestPractices() {
                       borderRadius="8"
                       className="max-w-lg"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <GlobeIcon className="text-green-700" aria-hidden />
-                        <Heading size="medium" level="3" className="text-green-700">
+                        <Heading size="small" level="3" className="text-green-700">
                           På GitHub.com
                         </Heading>
                       </div>
@@ -459,9 +459,9 @@ export default async function BestPractices() {
                       borderRadius="8"
                       className="max-w-lg"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <TerminalIcon className="text-orange-700" aria-hidden />
-                        <Heading size="medium" level="3" className="text-orange-700">
+                        <Heading size="small" level="3" className="text-orange-700">
                           I terminalen (CLI)
                         </Heading>
                       </div>
@@ -510,8 +510,8 @@ export default async function BestPractices() {
                       Utvid Copilot med eksterne verktøy via MCP-servere. Tilgjengelig i Agent Mode (VS Code), Copilot
                       CLI og Coding Agent på GitHub.com.
                     </BodyShort>
-                    <BodyShort className="text-gray-600 text-sm mb-3">
-                      Nav har en{" "}
+                    <BodyShort className="text-gray-600 text-sm mb-2">
+                      Navs{" "}
                       <a
                         href="https://mcp-registry.nav.no"
                         className="text-blue-600 hover:underline"
@@ -520,19 +520,16 @@ export default async function BestPractices() {
                       >
                         MCP-registry
                       </a>{" "}
-                      med godkjente MCP-servere. Legg til registryet i VS Code for automatisk oppdagelse:
+                      er allerede konfigurert for alle brukere. Se tilgjengelige MCP-servere på{" "}
+                      <a href="/customizations?type=mcp" className="text-blue-600 hover:underline">
+                        verktøy-siden
+                      </a>
+                      .
                     </BodyShort>
-                    <CodeBlock filename="settings.json" maxHeight="120px">{`{
-  "mcp": {
-    "registries": {
-      "nav": "https://mcp-registry.nav.no/v0.1/servers"
-    }
-  }
-}`}</CodeBlock>
                     <BodyShort className="text-gray-600 text-xs mt-3">
                       Nav har også en{" "}
                       <a
-                        href="https://mcp-onboarding.intern.dev.nav.no"
+                        href="https://github.com/navikt/copilot/tree/main/apps/mcp-onboarding"
                         className="text-blue-600 hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -551,7 +548,7 @@ export default async function BestPractices() {
                         Modellvalg og kostnader
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-3">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       Du har <strong>300 premium requests</strong> per måned. <strong>Auto</strong> gir 10 % rabatt og
                       velger beste modell automatisk. Multiplikatoren (1x, 3x, 0.33x) viser hvor mange requests som
                       trekkes per forespørsel.
@@ -609,10 +606,10 @@ export default async function BestPractices() {
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Forbered for Suksess
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Tilpass Copilot til ditt prosjekt med instruksjonsfiler. Jo bedre kontekst du gir, jo bedre
                     resultater får du.
                   </BodyShort>
@@ -648,7 +645,7 @@ export default async function BestPractices() {
                     borderRadius="8"
                     className="mb-6"
                   >
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <RocketIcon className="text-green-700" aria-hidden />
                       <Heading size="small" level="3" className="text-green-700">
                         Start her – to filer som gir mest effekt
@@ -685,7 +682,7 @@ export default async function BestPractices() {
                     <BodyShort className="text-gray-600 text-xs mt-3">
                       Bruk{" "}
                       <a
-                        href="https://mcp-onboarding.intern.dev.nav.no"
+                        href="https://github.com/navikt/copilot/tree/main/apps/mcp-onboarding"
                         className="text-blue-600 hover:underline"
                         target="_blank"
                         rel="noopener noreferrer"
@@ -699,7 +696,7 @@ export default async function BestPractices() {
                   {/* Comparison table: Prompts vs Instructions vs Agents vs Skills */}
                   <Box
                     background="warning-soft"
-                    padding={{ xs: "space-12", sm: "space-16" }}
+                    padding={{ xs: "space-16", sm: "space-20", md: "space-24" }}
                     borderRadius="8"
                     className="mb-6"
                   >
@@ -709,7 +706,7 @@ export default async function BestPractices() {
                         Fire typer tilpasninger
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-xs mb-3">
+                    <BodyShort size="small" className="text-gray-600 mb-6">
                       GitHub Copilot kan tilpasses på fire måter. Se{" "}
                       <a
                         href="https://github.com/github/awesome-copilot"
@@ -721,68 +718,99 @@ export default async function BestPractices() {
                       </a>{" "}
                       for fellesskapets kuraterte eksempler.
                     </BodyShort>
-                    <HGrid columns={{ xs: 1, md: 2, lg: 4 }} gap="space-16">
-                      <div>
+                    <HGrid columns={{ xs: 1, md: 2, lg: 4 }} gap="space-20">
+                      <VStack gap="space-8">
                         <Label size="small" className="text-blue-700">
-                          Prompts
+                          <a href="/customizations?type=prompt" className="hover:underline">
+                            Prompts
+                          </a>
                         </Label>
-                        <BodyShort className="text-gray-600 text-xs mt-1">
-                          <strong>Når:</strong> Engangsoppgaver
-                          <br />
-                          <strong>Aktivering:</strong> /prompt-name i chat
-                          <br />
-                          <strong>Eksempel:</strong> "Lag README for denne modulen"
-                          <br />
-                          <strong>Filformat:</strong> .github/prompts/*.prompt.md
-                        </BodyShort>
-                      </div>
-                      <div>
+                        <VStack gap="space-4">
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Når:</strong> Engangsoppgaver
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Aktivering:</strong> /prompt-name i chat
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Eksempel:</strong> &quot;Lag README for denne modulen&quot;
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Filformat:</strong>{" "}
+                            <code className="text-xs bg-white/50 px-1 py-0.5 rounded">.github/prompts/*.prompt.md</code>
+                          </BodyShort>
+                        </VStack>
+                      </VStack>
+                      <VStack gap="space-8">
                         <Label size="small" className="text-green-700">
                           Instructions
                         </Label>
-                        <BodyShort className="text-gray-600 text-xs mt-1">
-                          <strong>Når:</strong> Alltid aktiv
-                          <br />
-                          <strong>Aktivering:</strong> Automatisk på matchende filer
-                          <br />
-                          <strong>Eksempel:</strong> TypeScript kodestil, navnekonvensjoner
-                          <br />
-                          <strong>Filformat:</strong> .github/copilot-instructions.md eller
-                          .github/instructions/*.instructions.md
-                        </BodyShort>
-                      </div>
-                      <div>
+                        <VStack gap="space-4">
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Når:</strong> Alltid aktiv
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Aktivering:</strong> Automatisk på matchende filer
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Eksempel:</strong> TypeScript kodestil, navnekonvensjoner
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Filformat:</strong>{" "}
+                            <code className="text-xs bg-white/50 px-1 py-0.5 rounded">
+                              .github/instructions/*.instructions.md
+                            </code>
+                          </BodyShort>
+                        </VStack>
+                      </VStack>
+                      <VStack gap="space-8">
                         <Label size="small" className="text-orange-700">
-                          Agents
+                          <a href="/customizations?type=agent" className="hover:underline">
+                            Agents
+                          </a>
                         </Label>
-                        <BodyShort className="text-gray-600 text-xs mt-1">
-                          <strong>Når:</strong> Spesialiserte oppgaver
-                          <br />
-                          <strong>Aktivering:</strong> @agent-name
-                          <br />
-                          <strong>Eksempel:</strong> @nais-agent, @aksel-agent, @kafka-agent
-                          <br />
-                          <strong>Filformat:</strong> .github/agents/*.agent.md
-                        </BodyShort>
-                      </div>
-                      <div>
+                        <VStack gap="space-4">
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Når:</strong> Spesialiserte oppgaver
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Aktivering:</strong> @agent-name
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Eksempel:</strong> @nais-agent, @aksel-agent, @kafka-agent
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Filformat:</strong>{" "}
+                            <code className="text-xs bg-white/50 px-1 py-0.5 rounded">.github/agents/*.agent.md</code>
+                          </BodyShort>
+                        </VStack>
+                      </VStack>
+                      <VStack gap="space-8">
                         <Label size="small" className="text-purple-700">
-                          Skills
+                          <a href="/customizations?type=skill" className="hover:underline">
+                            Skills
+                          </a>
                         </Label>
-                        <BodyShort className="text-gray-600 text-xs mt-1">
-                          <strong>Når:</strong> Automatisk ved behov
-                          <br />
-                          <strong>Aktivering:</strong> Automatisk når relevant
-                          <br />
-                          <strong>Eksempel:</strong> PDF-ekstraksjon, API-testing
-                          <br />
-                          <strong>Filformat:</strong> .github/skills/*/SKILL.md med scripts/
-                        </BodyShort>
-                      </div>
+                        <VStack gap="space-4">
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Når:</strong> Automatisk ved behov
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Aktivering:</strong> Automatisk når relevant
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Eksempel:</strong> PDF-ekstraksjon, API-testing
+                          </BodyShort>
+                          <BodyShort size="small" className="text-gray-600">
+                            <strong>Filformat:</strong>{" "}
+                            <code className="text-xs bg-white/50 px-1 py-0.5 rounded">.github/skills/*/SKILL.md</code>
+                          </BodyShort>
+                        </VStack>
+                      </VStack>
                     </HGrid>
                   </Box>
 
-                  <VStack gap="space-24">
+                  <VStack gap="space-32">
                     {/* Horizontal scrollable instruction files */}
                     <Carousel>
                       <VStack gap="space-16" className="w-100">
@@ -1055,13 +1083,13 @@ Return extracted data as structured JSON:
 
                     {/* Six core areas */}
                     <Box background="info-soft" padding={{ xs: "space-12", sm: "space-16" }} borderRadius="8">
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <BulletListIcon className="text-blue-700" aria-hidden />
                         <Heading size="small" level="3" className="text-blue-700">
                           Seks kjerneområder (fra 2500+ repos)
                         </Heading>
                       </div>
-                      <BodyShort className="text-gray-600 text-sm mb-3">
+                      <BodyShort className="text-gray-600 text-sm mb-5">
                         Analyse av over 2500 agents.md-filer viser at de beste dekker disse områdene:
                       </BodyShort>
                       <HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
@@ -1116,7 +1144,7 @@ Return extracted data as structured JSON:
                     borderRadius="8"
                     className="mt-6"
                   >
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <TasklistIcon className="text-blue-600" aria-hidden />
                       <Heading size="small" level="3">
                         Er repoet ditt agent-klart?
@@ -1233,10 +1261,10 @@ Return extracted data as structured JSON:
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Skriv Effektive Tilpasninger
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Nå som du vet hvilke tilpasningstyper som finnes, her er konkrete råd for å skrive dem godt. Kilde:{" "}
                     <a
                       href="https://code.visualstudio.com/docs/copilot/customization/overview"
@@ -1273,13 +1301,13 @@ Return extracted data as structured JSON:
                     borderRadius="8"
                     className="mb-6"
                   >
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <FileTextIcon className="text-green-700" aria-hidden />
-                      <Heading size="medium" level="3" className="text-green-700">
+                      <Heading size="small" level="3" className="text-green-700">
                         Instructions
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-4">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       Instructions definerer kodestil og regler som alltid gjelder. Tenk på dem som teamets stilguide –
                       korte, konkrete og sjelden i endring. Se{" "}
                       <a
@@ -1376,13 +1404,13 @@ Return extracted data as structured JSON:
                     borderRadius="8"
                     className="mb-6"
                   >
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <CogIcon className="text-blue-700" aria-hidden />
-                      <Heading size="medium" level="3" className="text-blue-700">
+                      <Heading size="small" level="3" className="text-blue-700">
                         Custom Agents
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-4">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       Agenter er spesialiserte roller med eget verktøysett og instruksjoner. Nøkkelen er spesifisitet –
                       en god agent har én jobb, ikke ti. Se{" "}
                       <a
@@ -1473,13 +1501,13 @@ Return extracted data as structured JSON:
                     borderRadius="8"
                     className="mb-6"
                   >
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <PencilWritingIcon className="text-blue-600" aria-hidden />
-                      <Heading size="medium" level="3">
+                      <Heading size="small" level="3">
                         Agent Skills
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-4">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       Skills er gjenbrukbare kapabiliteter med skript og ressurser som Copilot laster automatisk når de
                       er relevante. Åpen standard via{" "}
                       <a
@@ -1501,37 +1529,39 @@ Return extracted data as structured JSON:
                       </a>
                     </BodyShort>
 
-                    <HGrid columns={{ xs: 1, md: 3 }} gap="space-16" className="mb-4">
-                      <Box background="default" padding="space-12" borderRadius="4">
-                        <BodyShort weight="semibold" className="text-sm text-blue-700 mb-2">
-                          Progressive disclosure
-                        </BodyShort>
-                        <BodyShort className="text-gray-600 text-xs">
-                          Copilot laster kun det som trengs i tre nivåer: 1) name + description (alltid synlig), 2)
-                          SKILL.md body (ved match), 3) scripts/resources (ved referanse). Installer mange skills uten å
-                          bruke kontekst.
-                        </BodyShort>
-                      </Box>
+                    <HGrid columns={{ xs: 1, md: 2 }} gap="space-16" className="mb-4">
+                      <VStack gap="space-16">
+                        <Box background="default" padding="space-12" borderRadius="4">
+                          <BodyShort weight="semibold" className="text-sm text-blue-700 mb-2">
+                            Progressive disclosure
+                          </BodyShort>
+                          <BodyShort className="text-gray-600 text-xs">
+                            Copilot laster kun det som trengs i tre nivåer: 1) name + description (alltid synlig), 2)
+                            SKILL.md body (ved match), 3) scripts/resources (ved referanse). Installer mange skills uten
+                            å bruke kontekst.
+                          </BodyShort>
+                        </Box>
+                        <Box background="default" padding="space-12" borderRadius="4">
+                          <BodyShort weight="semibold" className="text-sm text-blue-700 mb-2">
+                            Invokering
+                          </BodyShort>
+                          <BodyShort className="text-gray-600 text-xs">
+                            Skills kan både brukes som /slash-commands og lastes automatisk basert på description-match.
+                            Kontroller med user-invokable og disable-model-invocation i frontmatter.
+                          </BodyShort>
+                        </Box>
+                      </VStack>
                       <Box background="default" padding="space-12" borderRadius="4">
                         <BodyShort weight="semibold" className="text-sm text-blue-700 mb-2">
                           Mappestruktur
                         </BodyShort>
-                        <CodeBlock filename=".github/skills/my-skill/">{`.github/skills/my-skill/
+                        <pre className="text-xs font-mono text-gray-600 leading-relaxed">{`.github/skills/my-skill/
 ├── SKILL.md          # Påkrevd
 ├── scripts/          # Valgfri
 │   └── run-tests.sh
 ├── references/       # Valgfri
 │   └── FORMAT.md
-└── examples/         # Valgfri`}</CodeBlock>
-                      </Box>
-                      <Box background="default" padding="space-12" borderRadius="4">
-                        <BodyShort weight="semibold" className="text-sm text-blue-700 mb-2">
-                          Invokering
-                        </BodyShort>
-                        <BodyShort className="text-gray-600 text-xs">
-                          Skills kan både brukes som /slash-commands og lastes automatisk basert på description-match.
-                          Kontroller med user-invokable og disable-model-invocation i frontmatter.
-                        </BodyShort>
+└── examples/         # Valgfri`}</pre>
                       </Box>
                     </HGrid>
 
@@ -1618,7 +1648,7 @@ Return extracted data as structured JSON:
 
                   {/* Quick reference: when to use what */}
                   <Box background="warning-soft" padding={{ xs: "space-12", sm: "space-16" }} borderRadius="8">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <LightBulbIcon className="text-orange-700" aria-hidden />
                       <Heading size="small" level="3" className="text-orange-700">
                         Når bruker du hva?
@@ -1627,7 +1657,9 @@ Return extracted data as structured JSON:
                     <HGrid columns={{ xs: 1, md: 3 }} gap="space-16">
                       <Box background="default" padding="space-12" borderRadius="4">
                         <Label size="small" className="text-green-700">
-                          Instructions
+                          <a href="/customizations?type=instruction" className="hover:underline">
+                            Instructions
+                          </a>
                         </Label>
                         <BodyShort className="text-gray-600 text-xs mt-1">
                           Kodestil, navnekonvensjoner, sikkerhetsregler. Start med én copilot-instructions.md, utvid med
@@ -1636,7 +1668,9 @@ Return extracted data as structured JSON:
                       </Box>
                       <Box background="default" padding="space-12" borderRadius="4">
                         <Label size="small" className="text-blue-700">
-                          Agents
+                          <a href="/customizations?type=agent" className="hover:underline">
+                            Agents
+                          </a>
                         </Label>
                         <BodyShort className="text-gray-600 text-xs mt-1">
                           Spesialiserte roller som @test-agent, @docs-agent. Når du trenger eget verktøysett og persona.
@@ -1645,7 +1679,9 @@ Return extracted data as structured JSON:
                       </Box>
                       <Box background="default" padding="space-12" borderRadius="4">
                         <Label size="small" className="text-purple-700">
-                          Skills
+                          <a href="/customizations?type=skill" className="hover:underline">
+                            Skills
+                          </a>
                         </Label>
                         <BodyShort className="text-gray-600 text-xs mt-1">
                           Gjenbrukbare kapabiliteter med skript. Når du trenger portabilitet på tvers av VS Code, CLI og
@@ -1662,17 +1698,17 @@ Return extracted data as structured JSON:
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Prompt Engineering
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Hvordan du formulerer forespørselen påvirker kvaliteten på Copilots svar. Spesifisitet er nøkkelen.
                   </BodyShort>
 
                   <div className="space-y-6">
                     {/* Strategy 1: Specific prompts */}
                     <div>
-                      <Heading size="medium" level="3" className="mb-4 flex items-center gap-2">
+                      <Heading size="small" level="3" className="mb-4 flex items-center gap-2">
                         <span className="text-blue-600">1.</span>
                         Vær spesifikk, ikke vag
                       </Heading>
@@ -1715,7 +1751,7 @@ validation logic in middleware/auth.ts`}
 
                     {/* Strategy 2: Examples */}
                     <div>
-                      <Heading size="medium" level="3" className="mb-4 flex items-center gap-2">
+                      <Heading size="small" level="3" className="mb-4 flex items-center gap-2">
                         <span className="text-blue-600">2.</span>
                         Gi eksempler på forventet output
                       </Heading>
@@ -1759,7 +1795,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
 
                     {/* Strategy 3: Break down */}
                     <div>
-                      <Heading size="medium" level="3" className="mb-4 flex items-center gap-2">
+                      <Heading size="small" level="3" className="mb-4 flex items-center gap-2">
                         <span className="text-blue-600">3.</span>
                         Bryt ned komplekse oppgaver
                       </Heading>
@@ -1836,11 +1872,13 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                           GitHubs offisielle verktøy for &quot;Spec-Driven Development&quot;. Skriv spesifikasjoner
                           først, la Copilot implementere. Støtter slash-commands:
                         </BodyShort>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          <code className="text-xs bg-white px-2 py-1 rounded">/speckit.specify</code>
-                          <code className="text-xs bg-white px-2 py-1 rounded">/speckit.plan</code>
-                          <code className="text-xs bg-white px-2 py-1 rounded">/speckit.tasks</code>
-                          <code className="text-xs bg-white px-2 py-1 rounded">/speckit.implement</code>
+                        <div className="flex flex-wrap gap-1.5 mb-2">
+                          <code className="text-xs bg-white/70 px-1.5 py-0.5 rounded font-mono">/speckit.specify</code>
+                          <code className="text-xs bg-white/70 px-1.5 py-0.5 rounded font-mono">/speckit.plan</code>
+                          <code className="text-xs bg-white/70 px-1.5 py-0.5 rounded font-mono">/speckit.tasks</code>
+                          <code className="text-xs bg-white/70 px-1.5 py-0.5 rounded font-mono">
+                            /speckit.implement
+                          </code>
                         </div>
                         <BodyShort className="text-gray-500 text-xs">
                           Installer: <code className="bg-white px-1 rounded">specify init my-project --ai copilot</code>{" "}
@@ -1859,7 +1897,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
 
                     {/* Strategy 4: Context */}
                     <div>
-                      <Heading size="medium" level="3" className="mb-4 flex items-center gap-2">
+                      <Heading size="small" level="3" className="mb-4 flex items-center gap-2">
                         <span className="text-blue-600">4.</span>
                         Gi relevant kontekst
                       </Heading>
@@ -1887,7 +1925,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
 
                     {/* Anti-patterns */}
                     <Box background="danger-soft" padding={{ xs: "space-12", sm: "space-16" }} borderRadius="8">
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <XMarkOctagonIcon className="text-red-700" aria-hidden />
                         <Heading size="small" level="3" className="text-red-700">
                           Anti-mønstre å unngå
@@ -1939,10 +1977,10 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     WRAP-metoden for Coding Agent
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     WRAP er en enkel huskeregel for å få mest mulig ut av Copilot coding agent. Tenk på det som å
                     onboarde en ny kollega.
                   </BodyShort>
@@ -1956,7 +1994,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-green-600 font-bold text-xl">W</span>
-                        <Heading size="medium" level="3">
+                        <Heading size="small" level="3">
                           Write
                         </Heading>
                       </div>
@@ -1984,7 +2022,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-blue-600 font-bold text-xl">R</span>
-                        <Heading size="medium" level="3">
+                        <Heading size="small" level="3">
                           Refine
                         </Heading>
                       </div>
@@ -2015,7 +2053,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-orange-600 font-bold text-xl">A</span>
-                        <Heading size="medium" level="3">
+                        <Heading size="small" level="3">
                           Atomic
                         </Heading>
                       </div>
@@ -2050,7 +2088,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                     >
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-purple-600 font-bold text-xl">P</span>
-                        <Heading size="medium" level="3">
+                        <Heading size="small" level="3">
                           Pair
                         </Heading>
                       </div>
@@ -2076,13 +2114,13 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
 
                   {/* Real-world examples from GitHub */}
                   <Box background="info-soft" padding="space-16" borderRadius="8" className="mt-6">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <BranchingIcon className="text-blue-700" aria-hidden />
                       <Heading size="small" level="3" className="text-blue-700">
                         Hva GitHub bruker Copilot til internt
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-3">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       GitHub bruker Copilot coding agent aktivt på github.com-kodebasen:
                     </BodyShort>
                     <HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
@@ -2142,10 +2180,10 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Orkestrer og Styr Agenter
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Med Copilot coding agent jobber du som en &quot;mission control&quot; – du styrer oppgaver,
                     overvåker fremdrift og griper inn ved behov.
                   </BodyShort>
@@ -2226,13 +2264,13 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
 
                     {/* Reading Signals */}
                     <Box background="info-soft" padding="space-16" borderRadius="8">
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <InformationIcon className="text-blue-700" aria-hidden />
                         <Heading size="small" level="3" className="text-blue-700">
                           Les agentens signaler
                         </Heading>
                       </div>
-                      <BodyShort className="text-gray-600 text-sm mb-3">
+                      <BodyShort className="text-gray-600 text-sm mb-5">
                         Session logs viser agentens tankegang. Se etter disse tegnene:
                       </BodyShort>
                       <HGrid columns={{ xs: 1, sm: 2, lg: 3 }} gap="space-12">
@@ -2274,7 +2312,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
 
                     {/* Steering Techniques */}
                     <Box background="accent-soft" padding="space-16" borderRadius="8">
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <CogIcon className="text-blue-600" aria-hidden />
                         <Heading size="small" level="3">
                           Korrigeringsteknikker
@@ -2336,10 +2374,10 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Gjennomgå Copilots Arbeid
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Copilot coding agent lager PR-er som trenger grundig gjennomgang. Bruk en tre-trinns sjekkliste.
                   </BodyShort>
 
@@ -2360,7 +2398,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                       borderRadius="8"
                       className="border-l-4 border-blue-600"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <span className="text-blue-600 font-bold text-lg">1</span>
                         <Heading size="small" level="3">
                           Session logs
@@ -2388,7 +2426,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                       borderRadius="8"
                       className="border-l-4 border-green-600"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <span className="text-green-600 font-bold text-lg">2</span>
                         <Heading size="small" level="3">
                           Files changed
@@ -2416,7 +2454,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                       borderRadius="8"
                       className="border-l-4 border-orange-600"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <span className="text-orange-600 font-bold text-lg">3</span>
                         <Heading size="small" level="3">
                           Checks
@@ -2487,10 +2525,10 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Verifisering – Nøkkelen til Kvalitet
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     &quot;Gi Copilot en måte å verifisere arbeidet sitt – dette 2-3x kvaliteten.&quot; En god plan er
                     viktig, men verifisering er det som sikrer at resultatet faktisk fungerer.
                   </BodyShort>
@@ -2502,7 +2540,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                       borderRadius="8"
                       className="border-l-4 border-green-600"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <TestFlaskIcon className="text-green-700" aria-hidden />
                         <Heading size="small" level="3" className="text-green-700">
                           Be om tester i prompten
@@ -2512,7 +2550,7 @@ formatNOK(1000000) → "1 000 000,00 kr"`}
                         Inkluder testing som del av oppgaven:
                       </BodyShort>
                       <Box background="default" padding="space-8" borderRadius="4">
-                        <code className="text-xs block whitespace-pre-wrap">
+                        <code className="text-xs block whitespace-pre-wrap font-mono">
                           {`Lag en funksjon som validerer
 norske fødselsnumre.
 
@@ -2528,7 +2566,7 @@ før du anser oppgaven som ferdig.`}
                       borderRadius="8"
                       className="border-l-4 border-blue-600"
                     >
-                      <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-2 mb-5">
                         <MagnifyingGlassIcon className="text-blue-700" aria-hidden />
                         <Heading size="small" level="3" className="text-blue-700">
                           La Copilot reviewe seg selv
@@ -2538,7 +2576,7 @@ før du anser oppgaven som ferdig.`}
                         Etter implementering, be om selvreview:
                       </BodyShort>
                       <Box background="default" padding="space-8" borderRadius="4">
-                        <code className="text-xs block whitespace-pre-wrap">
+                        <code className="text-xs block whitespace-pre-wrap font-mono">
                           {`Review koden du nettopp skrev.
 Sjekk for:
 - Bugs og edge cases
@@ -2556,13 +2594,13 @@ Sjekk for:
                     borderRadius="8"
                     className="mb-6"
                   >
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <CogIcon className="text-orange-700" aria-hidden />
                       <Heading size="small" level="3" className="text-orange-700">
                         Knip – Rydd opp etter Copilot
                       </Heading>
                     </div>
-                    <BodyShort className="text-gray-600 text-sm mb-3">
+                    <BodyShort className="text-gray-600 text-sm mb-5">
                       Copilot kan etterlate ubrukt kode, avhengigheter og exports. Knip finner og fjerner dette
                       automatisk. Brukes av Vercel, Anthropic, Cloudflare og TanStack.
                     </BodyShort>
@@ -2572,7 +2610,7 @@ Sjekk for:
                           Installer og kjør
                         </BodyShort>
                         <Box background="default" padding="space-8" borderRadius="4" className="mt-1">
-                          <code className="text-xs block">npx knip</code>
+                          <code className="text-xs block font-mono">npx knip</code>
                         </Box>
                       </div>
                       <div>
@@ -2601,7 +2639,7 @@ Sjekk for:
 
                   {/* Verification checklist */}
                   <Box background="accent-soft" padding="space-16" borderRadius="8">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <TasklistIcon className="text-blue-600" aria-hidden />
                       <Heading size="small" level="3">
                         Verifiseringssjekkliste
@@ -2642,10 +2680,10 @@ Sjekk for:
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Vanlige mønstre for Agent Mode
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Bygg spesialiserte agenter for repeterende oppgaver. Her er seks anbefalte agenter å starte med.
                   </BodyShort>
 
@@ -2743,7 +2781,7 @@ Sjekk for:
 
                   {/* Example agent file */}
                   <Box background="info-soft" padding="space-16" borderRadius="8" className="mt-4">
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-5">
                       <FileTextIcon className="text-blue-700" aria-hidden />
                       <Heading size="small" level="3" className="text-blue-700">
                         Eksempel: .github/agents/test-agent.agent.md
@@ -2793,10 +2831,10 @@ description: Skriver tester for dette prosjektet
                   padding={{ xs: "space-12", sm: "space-16", md: "space-24" }}
                   borderRadius="12"
                 >
-                  <LinkableHeading size="large" level="2" className="mb-4">
+                  <LinkableHeading size="medium" level="2" className="mb-3">
                     Ressurser
                   </LinkableHeading>
-                  <BodyShort className="text-gray-600 mb-6">
+                  <BodyShort size="small" className="text-gray-600 mb-6">
                     Offisielle kilder, fellesskapsressurser og Nav-spesifikk dokumentasjon.
                   </BodyShort>
 
@@ -3021,7 +3059,7 @@ description: Skriver tester for dette prosjektet
                         <li className="flex gap-2">
                           <span className="text-blue-600">▪</span>
                           <a
-                            href="https://mcp-onboarding.intern.dev.nav.no"
+                            href="https://github.com/navikt/copilot/tree/main/apps/mcp-onboarding"
                             className="text-blue-600 hover:underline text-sm"
                             target="_blank"
                             rel="noopener noreferrer"

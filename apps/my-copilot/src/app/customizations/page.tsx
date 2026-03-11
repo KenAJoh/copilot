@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Heading, Box, VStack } from "@navikt/ds-react";
 import { getAllCustomizations, getCountsByDomain } from "@/lib/customizations";
 import type { Domain } from "@/lib/customization-types";
@@ -29,7 +30,7 @@ export default async function CustomizationsPage() {
         >
           <VStack gap={{ xs: "space-24", md: "space-32" }}>
             <Box>
-              <Heading size="medium" level="2" className="mb-4">
+              <Heading size="small" level="2" className="mb-4">
                 Utforsk etter domene
               </Heading>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
@@ -42,10 +43,12 @@ export default async function CustomizationsPage() {
             </Box>
 
             <Box id="catalog">
-              <Heading size="medium" level="2" className="mb-4">
+              <Heading size="small" level="2" className="mb-4">
                 Alle tilpasninger
               </Heading>
-              <CustomizationCatalog items={items} />
+              <Suspense>
+                <CustomizationCatalog items={items} />
+              </Suspense>
             </Box>
           </VStack>
         </Box>

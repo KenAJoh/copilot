@@ -126,7 +126,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
   const overviewContent = (
     <VStack gap="space-24">
       {/* 1. Key Metrics Cards */}
-      <Heading size="medium">Nøkkeltall</Heading>
+      <Heading size="small">Nøkkeltall</Heading>
       <HGrid columns={{ xs: 1, sm: 2, md: 4 }} gap="space-16">
         <MetricCard
           value={formatNumber(aggregatedMetrics.dailyActiveUsers)}
@@ -162,7 +162,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
       <Box background="neutral-soft" padding="space-24" borderRadius="12">
         <VStack gap="space-16">
           <div className="flex items-center gap-2">
-            <Heading size="medium" level="3">
+            <Heading size="small" level="3">
               Adopsjon
             </Heading>
             <HelpText title="Adopsjon" placement="top">
@@ -229,7 +229,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
       <Box background="neutral-soft" padding="space-24" borderRadius="12">
         <VStack gap="space-16">
           <div className="flex items-center gap-2">
-            <Heading size="medium" level="3">
+            <Heading size="small" level="3">
               Kodeforslag
             </Heading>
             <HelpText title="Kodeforslag" placement="top">
@@ -289,7 +289,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
     <VStack gap="space-24">
       {/* Programming Languages Table */}
       <VStack gap="space-16">
-        <Heading size="medium" level="3">
+        <Heading size="small" level="3">
           Statistikk for programmeringsspråk
         </Heading>
         <div className="overflow-hidden">
@@ -372,7 +372,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
 
       {/* Languages Chart */}
       <VStack gap="space-16">
-        <Heading size="medium" level="3">
+        <Heading size="small" level="3">
           Språkutvikling over tid
         </Heading>
         <LanguagesChart data={languageChartData} />
@@ -387,7 +387,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
     <VStack gap="space-24">
       {/* Editor Statistics Table */}
       <VStack gap="space-16">
-        <Heading size="medium" level="3">
+        <Heading size="small" level="3">
           Statistikk for utviklingsverktøy
         </Heading>
         <div className="overflow-hidden">
@@ -474,7 +474,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
 
       {/* Editors Chart */}
       <VStack gap="space-16">
-        <Heading size="medium" level="3">
+        <Heading size="small" level="3">
           Aktivitet per verktøy over tid
         </Heading>
         <EditorsChart data={editorChartData} />
@@ -488,7 +488,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
       <Box background="neutral-soft" padding="space-24" borderRadius="12">
         <VStack gap="space-16">
           <div className="flex items-center gap-2">
-            <Heading size="medium" level="3">
+            <Heading size="small" level="3">
               Kodelinjer
             </Heading>
             <HelpText title="Kodelinjer" placement="top">
@@ -576,7 +576,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
         <Box background="neutral-soft" padding="space-24" borderRadius="12">
           <VStack gap="space-16">
             <div className="flex items-center gap-2">
-              <Heading size="medium" level="3">
+              <Heading size="small" level="3">
                 Funksjonsbruk
               </Heading>
               <HelpText title="Funksjonsbruk" placement="top">
@@ -616,7 +616,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
         <Box background="neutral-soft" padding="space-24" borderRadius="12">
           <VStack gap="space-16">
             <div className="flex items-center gap-2">
-              <Heading size="medium" level="3">
+              <Heading size="small" level="3">
                 Pull requests
               </Heading>
               <HelpText title="Pull requests" placement="top">
@@ -791,7 +791,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
         <Box background="neutral-soft" padding="space-24" borderRadius="12">
           <VStack gap="space-16">
             <div className="flex items-center gap-2">
-              <Heading size="medium" level="3">
+              <Heading size="small" level="3">
                 Copilot CLI
               </Heading>
               <HelpText title="Copilot CLI" placement="top">
@@ -907,7 +907,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
         <Box background="neutral-soft" padding="space-24" borderRadius="12">
           <VStack gap="space-16">
             <div className="flex items-center gap-2">
-              <Heading size="medium" level="3">
+              <Heading size="small" level="3">
                 AI-modeller i bruk
               </Heading>
               <HelpText title="AI-modeller" placement="top">

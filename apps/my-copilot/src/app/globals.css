@@ -261,165 +261,97 @@
   margin-bottom: 1rem;
 }
 
-/* Fix: Nav resets margin on typography. Override with higher specificity to allow Tailwind utilities */
-.navds-heading.mb-1 {
-  margin-bottom: calc(var(--spacing) * 1) !important;
-}
-.navds-heading.mb-2 {
-  margin-bottom: calc(var(--spacing) * 2) !important;
-}
-.navds-heading.mb-3 {
-  margin-bottom: calc(var(--spacing) * 3) !important;
-}
-.navds-heading.mb-4 {
-  margin-bottom: calc(var(--spacing) * 4) !important;
-}
-.navds-heading.mb-5 {
-  margin-bottom: calc(var(--spacing) * 5) !important;
-}
-.navds-heading.mb-6 {
-  margin-bottom: calc(var(--spacing) * 6) !important;
-}
-.navds-heading.mb-8 {
-  margin-bottom: calc(var(--spacing) * 8) !important;
-}
-.navds-heading.mt-2 {
-  margin-top: calc(var(--spacing) * 2) !important;
-}
-.navds-heading.mt-3 {
-  margin-top: calc(var(--spacing) * 3) !important;
-}
-.navds-heading.mt-4 {
-  margin-top: calc(var(--spacing) * 4) !important;
-}
-.navds-heading.mt-6 {
-  margin-top: calc(var(--spacing) * 6) !important;
-}
-.navds-heading.mt-8 {
-  margin-top: calc(var(--spacing) * 8) !important;
+/* Fix: Aksel DS resets styles on typography components, overriding Tailwind utilities.
+   Use higher specificity with !important to let Tailwind margin, color, and font-size work. */
+:is(.aksel-heading, .aksel-body-short, .aksel-body-long, .aksel-label) {
+  &.mb-1 {
+    margin-bottom: calc(var(--spacing) * 1) !important;
+  }
+  &.mb-2 {
+    margin-bottom: calc(var(--spacing) * 2) !important;
+  }
+  &.mb-3 {
+    margin-bottom: calc(var(--spacing) * 3) !important;
+  }
+  &.mb-4 {
+    margin-bottom: calc(var(--spacing) * 4) !important;
+  }
+  &.mb-5 {
+    margin-bottom: calc(var(--spacing) * 5) !important;
+  }
+  &.mb-6 {
+    margin-bottom: calc(var(--spacing) * 6) !important;
+  }
+  &.mb-8 {
+    margin-bottom: calc(var(--spacing) * 8) !important;
+  }
+  &.mb-10 {
+    margin-bottom: calc(var(--spacing) * 10) !important;
+  }
+  &.mb-12 {
+    margin-bottom: calc(var(--spacing) * 12) !important;
+  }
+  &.mt-1 {
+    margin-top: calc(var(--spacing) * 1) !important;
+  }
+  &.mt-2 {
+    margin-top: calc(var(--spacing) * 2) !important;
+  }
+  &.mt-3 {
+    margin-top: calc(var(--spacing) * 3) !important;
+  }
+  &.mt-4 {
+    margin-top: calc(var(--spacing) * 4) !important;
+  }
+  &.mt-6 {
+    margin-top: calc(var(--spacing) * 6) !important;
+  }
+  &.mt-8 {
+    margin-top: calc(var(--spacing) * 8) !important;
+  }
+
+  &[class*="text-"] {
+    color: inherit !important;
+  }
+
+  &.text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+  &.text-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
 }
 
-.navds-body-short.mb-2 {
-  margin-bottom: calc(var(--spacing) * 2) !important;
-}
-.navds-body-short.mb-3 {
-  margin-bottom: calc(var(--spacing) * 3) !important;
-}
-.navds-body-short.mb-4 {
-  margin-bottom: calc(var(--spacing) * 4) !important;
-}
-.navds-body-short.mb-6 {
-  margin-bottom: calc(var(--spacing) * 6) !important;
-}
-.navds-body-short.mt-1 {
-  margin-top: calc(var(--spacing) * 1) !important;
-}
-.navds-body-short.mt-2 {
-  margin-top: calc(var(--spacing) * 2) !important;
-}
-.navds-body-short.mt-3 {
-  margin-top: calc(var(--spacing) * 3) !important;
-}
-.navds-body-short.mt-4 {
-  margin-top: calc(var(--spacing) * 4) !important;
-}
-
-/* Label overrides */
-.navds-label.mb-2 {
-  margin-bottom: calc(var(--spacing) * 2) !important;
-}
-.navds-label.mb-3 {
-  margin-bottom: calc(var(--spacing) * 3) !important;
-}
-.navds-label.mb-4 {
-  margin-bottom: calc(var(--spacing) * 4) !important;
-}
-.navds-label.mt-2 {
-  margin-top: calc(var(--spacing) * 2) !important;
-}
-.navds-label.mt-4 {
-  margin-top: calc(var(--spacing) * 4) !important;
-}
-
-/* Text color overrides - Nav sets specific colors that need !important to override */
-.navds-heading[class*="text-"] {
-  color: inherit !important;
-}
-.navds-body-short[class*="text-"] {
-  color: inherit !important;
-}
-.navds-label[class*="text-"] {
-  color: inherit !important;
-}
-
-/* Font size overrides - Nav sets specific font sizes that need !important to override */
-.navds-body-short.text-xs {
+/* Fix: Aksel Box inherits font-size to child code/pre elements, overriding Tailwind text-xs/text-sm */
+code.text-xs,
+pre.text-xs {
   font-size: 0.75rem !important;
-  line-height: 1rem !important;
-}
-.navds-body-short.text-sm {
-  font-size: 0.875rem !important;
   line-height: 1.25rem !important;
 }
-.navds-heading.text-xs {
-  font-size: 0.75rem !important;
-  line-height: 1rem !important;
-}
-.navds-heading.text-sm {
+
+code.text-sm,
+pre.text-sm {
   font-size: 0.875rem !important;
   line-height: 1.25rem !important;
 }
 
-/* Display overrides - Nav components need !important to respect Tailwind display utilities */
-.hidden {
-  display: none !important;
-}
-.block {
-  display: block !important;
-}
-.flex {
-  display: flex !important;
-}
-.inline-flex {
-  display: inline-flex !important;
-}
-.grid {
-  display: grid !important;
-}
-
-/* Responsive display utilities */
-@media (min-width: 640px) {
-  .sm\:hidden {
+/* Display overrides - Aksel DS sets display on components, override to respect Tailwind utilities */
+:is(.aksel-heading, .aksel-body-short, .aksel-body-long, .aksel-label) {
+  &.hidden {
     display: none !important;
   }
-  .sm\:block {
+  &.block {
     display: block !important;
   }
-  .sm\:flex {
+  &.flex {
     display: flex !important;
   }
-}
-
-@media (min-width: 768px) {
-  .md\:hidden {
-    display: none !important;
+  &.inline-flex {
+    display: inline-flex !important;
   }
-  .md\:block {
-    display: block !important;
-  }
-  .md\:flex {
-    display: flex !important;
-  }
-}
-
-@media (min-width: 1024px) {
-  .lg\:hidden {
-    display: none !important;
-  }
-  .lg\:block {
-    display: block !important;
-  }
-  .lg\:flex {
-    display: flex !important;
+  &.grid {
+    display: grid !important;
   }
 }

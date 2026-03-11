@@ -40,7 +40,7 @@ async function BillingOverview() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <Box background="neutral-soft" padding="space-24" borderRadius="12">
-        <Heading size="medium" level="2" className="mb-4">
+        <Heading size="small" level="2" className="mb-4">
           Lisensfordeling
         </Heading>
         <table className="min-w-full divide-y divide-gray-200">
@@ -92,7 +92,7 @@ async function BillingOverview() {
       </Box>
 
       <Box background="neutral-soft" padding="space-24" borderRadius="12">
-        <Heading size="medium" level="2" className="mb-4">
+        <Heading size="small" level="2" className="mb-4">
           Organisasjonsinnstillinger
         </Heading>
         <table className="min-w-full divide-y divide-gray-200">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Box, Search, HStack, VStack, BodyShort, Chips } from "@navikt/ds-react";
 import type { AnyCustomization, CustomizationType, Domain } from "@/lib/customization-types";
 import { DOMAIN_CONFIGS, TYPE_LABELS } from "@/lib/customization-types";
@@ -9,15 +10,48 @@ import { DetailDrawer } from "./detail-drawer";
 
 const TYPES: CustomizationType[] = ["agent", "instruction", "prompt", "skill", "mcp"];
 
+function isValidType(value: string | null): value is CustomizationType {
+  return value !== null && TYPES.includes(value as CustomizationType);
+}
+
+function isValidDomain(value: string | null, domains: Domain[]): value is Domain {
+  return value !== null && domains.includes(value as Domain);
+}
+
 interface CustomizationCatalogProps {
   items: AnyCustomization[];
 }
 
 export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
-  const [search, setSearch] = useState("");
-  const [selectedType, setSelectedType] = useState<CustomizationType | null>(null);
-  const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const allDomains = useMemo(() => {
+    const domains = new Set(items.map((i) => i.domain));
+    return Array.from(domains) as Domain[];
+  }, [items]);
+
+  const initialType = searchParams.get("type");
+  const initialDomain = searchParams.get("domain");
+  const initialSearch = searchParams.get("q") ?? "";
+
+  const [search, setSearch] = useState(initialSearch);
+  const [selectedType, setSelectedType] = useState<CustomizationType | null>(
+    isValidType(initialType) ? initialType : null,
+  );
+  const [selectedDomain, setSelectedDomain] = useState<Domain | null>(
+    isValidDomain(initialDomain, allDomains) ? initialDomain : null,
+  );
   const [selectedItem, setSelectedItem] = useState<AnyCustomization | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedType) params.set("type", selectedType);
+    if (selectedDomain) params.set("domain", selectedDomain);
+    if (search) params.set("q", search);
+    const qs = params.toString();
+    router.replace(qs ? `?${qs}` : "/customizations", { scroll: false });
+  }, [selectedType, selectedDomain, search, router]);
 
   useEffect(() => {
     const handler = (e: Event) => {
@@ -43,11 +77,6 @@ export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
       return true;
     });
   }, [items, search, selectedType, selectedDomain]);
-
-  const activeDomains = useMemo(() => {
-    const domains = new Set(items.map((i) => i.domain));
-    return Array.from(domains) as Domain[];
-  }, [items]);
 
   return (
     <VStack gap="space-16">
@@ -85,7 +114,7 @@ export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
           <Chips.Toggle selected={selectedDomain === null} onClick={() => setSelectedDomain(null)}>
             Alle domener
           </Chips.Toggle>
-          {activeDomains.map((domain) => (
+          {allDomains.map((domain) => (
             <Chips.Toggle
               key={domain}
               selected={selectedDomain === domain}
