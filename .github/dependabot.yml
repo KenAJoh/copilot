@@ -40,6 +40,9 @@ updates:
           - "react"
           - "react-dom"
           - "@navikt/*"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [">=10"]
     open-pull-requests-limit: 5
 
   # copilot-metrics (Go)
