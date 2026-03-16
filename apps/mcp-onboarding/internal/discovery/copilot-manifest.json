@@ -373,6 +373,15 @@
       "filePath": ".github/skills/tokenx-auth",
       "installUrl": "",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/tokenx-auth"
+    },
+    {
+      "type": "skill",
+      "name": "web-design-reviewer",
+      "displayName": "web-design-reviewer",
+      "description": "This skill enables visual inspection and validation of website design quality, identifying and fixing issues at the source code level.",
+      "filePath": ".github/skills/web-design-reviewer",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/web-design-reviewer"
     }
   ]
 }

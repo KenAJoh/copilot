@@ -1,0 +1,14 @@
+{
+  "domain": "frontend",
+  "tags": ["design-review", "responsive", "accessibility", "layout", "visual-inspection"],
+  "examples": [
+    {
+      "prompt": "Sjekk designet på localhost:3000 og finn layout-problemer",
+      "scenario": "Visuell inspeksjon av lokal utviklingsserver"
+    },
+    {
+      "prompt": "Review the UI on our staging site and fix any responsive issues",
+      "scenario": "Responsive design review and fix"
+    }
+  ]
+}

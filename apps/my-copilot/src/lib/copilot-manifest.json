@@ -610,6 +610,28 @@
           "scenario": "TokenX mellom tjenester"
         }
       ]
+    },
+    {
+      "id": "web-design-reviewer",
+      "name": "web-design-reviewer",
+      "description": "",
+      "type": "skill",
+      "domain": "frontend",
+      "filePath": ".github/skills/web-design-reviewer/SKILL.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/web-design-reviewer/SKILL.md",
+      "installUrl": null,
+      "insidersInstallUrl": null,
+      "tags": ["design-review", "responsive", "accessibility", "layout", "visual-inspection"],
+      "examples": [
+        {
+          "prompt": "Sjekk designet på localhost:3000 og finn layout-problemer",
+          "scenario": "Visuell inspeksjon av lokal utviklingsserver"
+        },
+        {
+          "prompt": "Review the UI on our staging site and fix any responsive issues",
+          "scenario": "Responsive design review and fix"
+        }
+      ]
     }
   ]
 }
