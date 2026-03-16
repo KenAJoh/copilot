@@ -2,7 +2,7 @@
 title: "16 nye Copilot-tilpasninger for Nav-utviklere"
 date: 2026-03-16
 category: nav
-excerpt: "Tre instruksjoner, fem ferdigheter, en tilgjengelighetsagent og to prompts som dekker Spring Boot, Playwright, PostgreSQL, Docker med Chainguard og WCAG-tilgjengelighet."
+excerpt: "Tre instruksjoner, fem skills, en tilgjengelighetsagent og to prompts som dekker Spring Boot, Playwright, PostgreSQL, Docker med Chainguard og WCAG-tilgjengelighet."
 tags:
   - customizations
   - instructions
@@ -28,7 +28,7 @@ Instruksjoner aktiveres automatisk når du redigerer filer som matcher mønstere
 | [**github-actions**](/verktoy?item=github-actions) | `.github/workflows/*.{yml,yaml}` | SHA-pinning av actions, minimale permissions, Nais deploy, caching, reusable workflows    |
 | [**docker**](/verktoy?item=docker)                 | `**/Dockerfile`                  | Chainguard base images, multi-stage builds for JVM/Go/Node/Python/nginx, CI-autentisering |
 
-## Fem nye ferdigheter
+## Fem nye skills
 
 Ferdigheter lastes på forespørsel — agenten henter SKILL.md når oppgaven matcher.
 

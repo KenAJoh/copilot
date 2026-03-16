@@ -10,7 +10,7 @@ tags:
   - nav-internal
 ---
 
-Verktøysiden på my-copilot har fått en ny seksjon: **MCP-servere**. Serverne hentes dynamisk fra [Navs MCP-register](https://github.com/navikt/copilot/tree/main/apps/mcp-registry) og vises sammen med agenter, instruksjoner og ferdigheter.
+Verktøysiden på my-copilot har fått en ny seksjon: **MCP-servere**. Serverne hentes dynamisk fra [Navs MCP-register](https://github.com/navikt/copilot/tree/main/apps/mcp-registry) og vises sammen med agenter, instruksjoner og skills.
 
 ## Seks servere i registeret
 

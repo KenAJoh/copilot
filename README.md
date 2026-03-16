@@ -2,7 +2,7 @@
 
 ![Nav Copilot tools page](docs/assets/my-copilot-hero.png)
 
-Agenter, instruksjoner, ferdigheter og MCP-servere som gjør GitHub Copilot smartere for Navs stack. Alt samlet i én verktøyskatalog.
+Agenter, instruksjoner, skills og MCP-servere som gjør GitHub Copilot smartere for Navs stack. Alt samlet i én verktøyskatalog.
 
 ## Hva er dette?
 
@@ -11,7 +11,7 @@ En kuratert samling Copilot-tilpasninger for Nav-økosystemet:
 - **🤖 [6 Agenter](#-agenter)** — Spesialiserte AI-assistenter for Nais, Aksel, Kafka, Auth, Observability og Sikkerhet
 - **📋 [4 Instruksjoner](#-instruksjoner)** — Kodestandarder som aktiveres automatisk basert på filmønster
 - **⚡ [3 Prompts](#-prompts)** — Scaffolding-maler for vanlige Nav-mønstre
-- **🎯 [5 Ferdigheter](#-ferdigheter)** — Produksjonsmønstre fra ekte Nav-repoer
+- **🎯 [5 Ferdigheter](#-skills)** — Produksjonsmønstre fra ekte Nav-repoer
 - **🔌 [6 MCP-servere](#-mcp-servere)** — GitHub, Figma, Next.js, Svelte, Playwright og Nav Onboarding
 
 Alle tilpasninger er tilgjengelige fra **[Verktøy-siden](https://min-copilot.ansatt.nav.no/verktoy)** med søk, domenefiltrering og installasjonsinstruksjoner.

@@ -24,7 +24,7 @@ export default async function CustomizationsPage() {
     <main>
       <PageHero
         title="Verktøy"
-        description="Agenter, instruksjoner, ferdigheter og MCP-servere som gjør Copilot smartere for Navs stack."
+        description="Agenter, instruksjoner, skills og MCP-servere som gjør Copilot smartere for Navs stack."
       />
       <div className="max-w-7xl mx-auto">
         <Box
