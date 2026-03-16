@@ -1,6 +1,6 @@
 # 📋 Custom Instructions
 
-Team and project-specific instructions to enhance GitHub Copilot's behavior for NAV technologies and coding practices.
+Team and project-specific instructions to enhance GitHub Copilot's behavior for Nav technologies and coding practices.
 
 ### How to Install
 
@@ -58,11 +58,11 @@ curl -sO --output-dir .github/instructions \
 
 ## Creating Custom Instructions
 
-When creating instructions for NAV projects:
+When creating instructions for Nav projects:
 
-1. **Technology-Specific**: Focus on specific technologies used in NAV (Kotlin, Next.js, PostgreSQL, Kafka)
-2. **NAV Patterns**: Include NAV-specific patterns (Rapids & Rivers, ApplicationBuilder, etc.)
-3. **Security Standards**: Always reference NAV security requirements
+1. **Technology-Specific**: Focus on specific technologies used in Nav (Kotlin, Next.js, PostgreSQL, Kafka)
+2. **Nav Patterns**: Include Nav-specific patterns (Rapids & Rivers, ApplicationBuilder, etc.)
+3. **Security Standards**: Always reference Nav security requirements
 4. **Code Quality**: Enforce strict type checking and quality standards
 5. **Norwegian Support**: Include Norwegian language/number formatting requirements
 6. **NAIS Integration**: Consider NAIS platform requirements and constraints
@@ -112,8 +112,8 @@ When creating instructions for NAV projects:
 ## Best Practices
 
 - Keep instructions focused and technology-specific
-- Reference official NAV documentation
-- Include code examples following NAV patterns
+- Reference official Nav documentation
+- Include code examples following Nav patterns
 - Consider both local development and NAIS deployment
 - Support team autonomy and decision-making
-- Maintain consistency across NAV projects
+- Maintain consistency across Nav projects

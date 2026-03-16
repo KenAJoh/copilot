@@ -1,8 +1,8 @@
 # 🔌 MCP Servers
 
-NAV-approved Model Context Protocol (MCP) servers available through the [NAV MCP Registry](https://mcp-registry.nav.no).
+Nav-approved Model Context Protocol (MCP) servers available through the [Nav MCP Registry](https://mcp-registry.nav.no).
 
-MCP servers extend GitHub Copilot with tools that connect to external services — GitHub APIs, design tools, and internal NAV systems.
+MCP servers extend GitHub Copilot with tools that connect to external services — GitHub APIs, design tools, and internal Nav systems.
 
 ## How to Install
 
@@ -79,7 +79,7 @@ The official GitHub MCP server — available to all Copilot users. No additional
 
 ### Nav Copilot Discovery (mcp-onboarding)
 
-Internal NAV MCP server for discovering customizations and generating AGENTS.md files. Requires GitHub OAuth through your `@navikt` organization membership.
+Internal Nav MCP server for discovering customizations and generating AGENTS.md files. Requires GitHub OAuth through your `@navikt` organization membership.
 
 ```json
 {
@@ -111,7 +111,7 @@ Bring Figma designs into your coding workflow. Requires a Figma account.
 
 ## MCP Registry API
 
-The NAV MCP Registry is available at `https://mcp-registry.nav.no` and implements the [MCP Registry v0.1 specification](https://modelcontextprotocol.io).
+The Nav MCP Registry is available at `https://mcp-registry.nav.no` and implements the [MCP Registry v0.1 specification](https://modelcontextprotocol.io).
 
 | Endpoint                                   | Description                             |
 | ------------------------------------------ | --------------------------------------- |

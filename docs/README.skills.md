@@ -1,6 +1,6 @@
 # 🎯 Agent Skills
 
-Agent Skills are self-contained folders with instructions and bundled resources that enhance AI capabilities for specialized NAV development tasks.
+Agent Skills are self-contained folders with instructions and bundled resources that enhance AI capabilities for specialized Nav development tasks.
 
 Based on the [Agent Skills specification](https://agentskills.io/specification), each skill contains a `SKILL.md` file with detailed instructions that agents load on-demand.
 
@@ -37,20 +37,22 @@ rm -rf /tmp/nav-copilot
 
 | Name                    | Description                                                                                      | Location                                                                                |
 | ----------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| **ai-news-research**    | Research and write monthly AI coding news summaries in Norwegian with working source links       | [`.github/skills/ai-news-research/`](../.github/skills/ai-news-research/SKILL.md)       |
 | **aksel-spacing**       | Responsive layout patterns using Aksel spacing tokens with Box, VStack, HStack, and HGrid        | [`.github/skills/aksel-spacing/`](../.github/skills/aksel-spacing/SKILL.md)             |
 | **flyway-migration**    | Database migration patterns using Flyway with versioned SQL scripts                              | [`.github/skills/flyway-migration/`](../.github/skills/flyway-migration/SKILL.md)       |
 | **kotlin-app-config**   | Sealed class configuration pattern for Kotlin applications with environment-specific settings    | [`.github/skills/kotlin-app-config/`](../.github/skills/kotlin-app-config/SKILL.md)     |
 | **observability-setup** | Setting up Prometheus metrics, OpenTelemetry tracing, and health endpoints for Nais applications | [`.github/skills/observability-setup/`](../.github/skills/observability-setup/SKILL.md) |
 | **security-review**     | Pre-commit/PR security checks — use when about to commit, push, or open a pull request           | [`.github/skills/security-review/`](../.github/skills/security-review/SKILL.md)         |
 | **tokenx-auth**         | Service-to-service authentication using TokenX token exchange in Nais                            | [`.github/skills/tokenx-auth/`](../.github/skills/tokenx-auth/SKILL.md)                 |
+| **web-design-reviewer** | Visual inspection of websites to identify and fix responsive, accessibility, and layout issues   | [`.github/skills/web-design-reviewer/`](../.github/skills/web-design-reviewer/SKILL.md) |
 
-## Creating NAV Skills
+## Creating Nav Skills
 
-When creating agent skills for NAV projects:
+When creating agent skills for Nav projects:
 
 1. **Follow Specification**: Adhere to the [Agent Skills specification](https://agentskills.io/specification)
 2. **Bundle Resources**: Include templates, scripts, and reference data
-3. **NAV Context**: Include NAV-specific patterns and configurations
+3. **Nav Context**: Include Nav-specific patterns and configurations
 4. **Self-Contained**: Skills should be independent and reusable
 5. **Progressive Disclosure**: Load only when needed for specific tasks
 
@@ -69,8 +71,8 @@ When creating agent skills for NAV projects:
 ## Best Practices
 
 - Keep skills focused on specific domains
-- Include practical examples from NAV projects
+- Include practical examples from Nav projects
 - Provide clear usage instructions
 - Bundle only necessary resources
-- Test skills in various NAV contexts
+- Test skills in various Nav contexts
 - Document dependencies and requirements

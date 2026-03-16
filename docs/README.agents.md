@@ -1,6 +1,6 @@
 # 🤖 Custom Agents
 
-Custom agents for NAV's GitHub Copilot ecosystem, specialized for Norwegian public sector development patterns.
+Custom agents for Nav's GitHub Copilot ecosystem, specialized for Norwegian public sector development patterns.
 
 ### How to Install
 
@@ -35,17 +35,17 @@ curl -sO --output-dir .github/agents \
 | **Kafka Agent**<br/>[`@kafka-agent`](../.github/agents/kafka.agent.md)                                     | Rapids & Rivers event handling, Kafka consumers, event schemas, TestRapid.                         | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fkafka.agent.md)             |
 | **Aksel Agent**<br/>[`@aksel-agent`](../.github/agents/aksel.agent.md)                                     | Aksel Design System, Tailwind-to-Aksel conversion, responsive layouts, mobile-first.               | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Faksel.agent.md)             |
 | **Observability Agent**<br/>[`@observability-agent`](../.github/agents/observability.agent.md)             | Prometheus metrics, Grafana Loki, Tempo tracing, health endpoints, DORA metrics.                   | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fobservability.agent.md)     |
-| **Security Champion Agent**<br/>[`@security-champion-agent`](../.github/agents/security-champion.agent.md) | NAV security standards, network policies, secrets management, GDPR compliance.                     | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fsecurity-champion.agent.md) |
+| **Security Champion Agent**<br/>[`@security-champion-agent`](../.github/agents/security-champion.agent.md) | Nav security standards, network policies, secrets management, GDPR compliance.                     | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fsecurity-champion.agent.md) |
 | **Research Agent**<br/>[`@research-agent`](../.github/agents/research.agent.md)                            | Codebase research, issue investigation, pattern analysis, dependency tracing.                      | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fresearch.agent.md)          |
-| **Forfatter**<br/>[`@forfatter`](../.github/agents/forfatter.agent.md)                                    | Norsk teknisk redaktør: klarspråk, AI-markører, anglismer, fagtermer, mikrotekst.                | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fforfatter.agent.md)         |
+| **Forfatter**<br/>[`@forfatter`](../.github/agents/forfatter.agent.md)                                     | Norsk teknisk redaktør: klarspråk, AI-markører, anglismer, fagtermer, mikrotekst.                  | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fforfatter.agent.md)         |
 
 ## Creating Custom Agents
 
-When creating new agents for NAV projects:
+When creating new agents for Nav projects:
 
-1. **Follow NAV Standards**: Align with NAV development principles (Team First, Essential Complexity, DORA Metrics)
-2. **Include Context**: Reference NAV tech stack (Kotlin/Ktor, Next.js, NAIS)
-3. **Security First**: Always consider security implications and NAV security policies
+1. **Follow Nav Standards**: Align with Nav development principles (Team First, Essential Complexity, DORA Metrics)
+2. **Include Context**: Reference Nav tech stack (Kotlin/Ktor, Next.js, NAIS)
+3. **Security First**: Always consider security implications and Nav security policies
 4. **Norwegian Language**: Support Norwegian text and number formatting where applicable
 5. **Platform Integration**: Ensure compatibility with NAIS deployment patterns
 
@@ -53,6 +53,6 @@ When creating new agents for NAV projects:
 
 - Agents should be self-contained and focused on specific domains
 - Include clear examples and common use cases
-- Reference relevant NAV documentation and standards
+- Reference relevant Nav documentation and standards
 - Support both local development and NAIS-deployed scenarios
 - Consider mobile-first design for frontend-related agents

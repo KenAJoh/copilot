@@ -1,6 +1,6 @@
 # Nav MCP Onboarding
 
-A reference MCP (Model Context Protocol) server demonstrating GitHub OAuth authentication and NAV Copilot customization discovery for use with GitHub Copilot in VS Code.
+A reference MCP (Model Context Protocol) server demonstrating GitHub OAuth authentication and Nav Copilot customization discovery for use with GitHub Copilot in VS Code.
 
 ## Overview
 
@@ -11,7 +11,7 @@ This server implements:
 - **GitHub OAuth proxy** - Acts as OAuth authorization server, proxying to GitHub
 - **Organization access control** - Validates user membership in allowed GitHub organizations
 - **MCP JSON-RPC** - Full protocol implementation with streamable HTTP transport
-- **Customization Discovery** - Browse and install NAV Copilot agents, instructions, prompts, and skills
+- **Customization Discovery** - Browse and install Nav Copilot agents, instructions, prompts, and skills
 - **Agent Readiness Assessment** - Check and score a repo's readiness for AI agents
 - **Content Generation** - Generate tailored AGENTS.md and copilot-setup-steps.yml from repo analysis
 
@@ -55,11 +55,11 @@ For installation and usage instructions, see the [main README](../../README.md#m
 
 | Tool                     | Description                                         | Parameters                             |
 | ------------------------ | --------------------------------------------------- | -------------------------------------- |
-| `search_customizations`  | Search NAV Copilot customizations                   | `query`, `type`, `tags` (all optional) |
-| `list_agents`            | List all NAV Copilot agents                         | `category` (optional)                  |
-| `list_instructions`      | List all NAV Copilot instructions                   | None                                   |
-| `list_prompts`           | List all NAV Copilot prompts                        | None                                   |
-| `list_skills`            | List all NAV Copilot skills                         | None                                   |
+| `search_customizations`  | Search Nav Copilot customizations                   | `query`, `type`, `tags` (all optional) |
+| `list_agents`            | List all Nav Copilot agents                         | `category` (optional)                  |
+| `list_instructions`      | List all Nav Copilot instructions                   | None                                   |
+| `list_prompts`           | List all Nav Copilot prompts                        | None                                   |
+| `list_skills`            | List all Nav Copilot skills                         | None                                   |
 | `get_installation_guide` | Get installation guide for a specific customization | `type` (required), `name` (required)   |
 
 ### Agent Readiness Tools
@@ -67,7 +67,7 @@ For installation and usage instructions, see the [main README](../../README.md#m
 | Tool                     | Description                                                    | Parameters                                          |
 | ------------------------ | -------------------------------------------------------------- | --------------------------------------------------- |
 | `check_agent_readiness`  | Assess a repo's agent readiness: customizations + verification | `owner`, `repo` (both required)                     |
-| `suggest_customizations` | Suggest NAV Copilot customizations based on repo's tech stack  | `owner`, `repo` (both required)                     |
+| `suggest_customizations` | Suggest Nav Copilot customizations based on repo's tech stack  | `owner`, `repo` (both required)                     |
 | `team_readiness`         | Scan a team's repos and produce an agent readiness summary     | `org` (required), `team` or `prefix` (one required) |
 
 ### Content Generation Tools
@@ -189,7 +189,7 @@ This server is registered in Nav's MCP registry:
 
 - **Server Name**: `io.github.navikt/mcp-onboarding`
 - **Version**: 2.0.0
-- **Capabilities**: OAuth 2.1, Hello World tools, NAV Copilot customization discovery
+- **Capabilities**: OAuth 2.1, Hello World tools, Nav Copilot customization discovery
 
 ## Client Compatibility
 

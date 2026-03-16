@@ -16,7 +16,7 @@ My Copilot is a self-service tool for managing your GitHub Copilot subscription.
   - All API requests include `X-GitHub-Api-Version: 2022-11-28` header for stability
 - **Azure AD**: Uses Azure AD for authentication and authorization, ensuring that only authorized users can access the application.
 - **Next.js**: Built with Next.js 16 for server-side rendering and optimized performance.
-- **Aksel Design System**: Uses NAV's design system (`@navikt/ds-react`) with Tailwind CSS for styling.
+- **Aksel Design System**: Uses Nav's design system (`@navikt/ds-react`) with Tailwind CSS for styling.
 
 ## Development
 

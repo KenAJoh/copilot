@@ -1,6 +1,6 @@
 # 🎯 Reusable Prompts
 
-Reusable prompt templates for NAV development scenarios and tasks, optimized for Norwegian public sector workflows.
+Reusable prompt templates for Nav development scenarios and tasks, optimized for Norwegian public sector workflows.
 
 ### How to Install
 
@@ -34,9 +34,9 @@ curl -sO --output-dir .github/prompts \
 | **#kafka-topic**<br/>[View File](../.github/prompts/kafka-topic.prompt.md)         | Add Kafka topic to NAIS manifest with Rapids & Rivers event handlers.                    | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md)     |
 | **#nais-manifest**<br/>[View File](../.github/prompts/nais-manifest.prompt.md)     | Generate production-ready NAIS manifest with PostgreSQL, Kafka, Azure AD, observability. | [![Install](https://img.shields.io/badge/VS_Code-Install-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://min-copilot.ansatt.nav.no/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md)   |
 
-## Creating NAV Prompts
+## Creating Nav Prompts
 
-When creating reusable prompts for NAV projects:
+When creating reusable prompts for Nav projects:
 
 1. **Norwegian Context**: Support Norwegian language and formatting requirements
 2. **NAIS Platform**: Include NAIS deployment and configuration patterns
@@ -80,7 +80,7 @@ When creating reusable prompts for NAV projects:
 ## Best Practices
 
 - Keep prompts focused on single, well-defined tasks
-- Include practical examples from NAV projects
-- Reference official NAV documentation
+- Include practical examples from Nav projects
+- Reference official Nav documentation
 - Consider both dev and prod environments
 - Support automated testing and validation

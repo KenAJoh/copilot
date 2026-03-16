@@ -2,12 +2,12 @@
 
 ## Repository Overview
 
-Monorepo containing NAV's GitHub Copilot ecosystem tools:
+Monorepo containing Nav's GitHub Copilot ecosystem tools:
 
 - **my-copilot** - Self-service portal for managing Copilot subscriptions (Next.js 16)
 - **copilot-metrics** - Naisjob that populates BigQuery with daily Copilot usage metrics (Go)
 - **mcp-onboarding** - Reference MCP server with GitHub OAuth (Go)
-- **mcp-registry** - Public registry for NAV-approved MCP servers (Go)
+- **mcp-registry** - Public registry for Nav-approved MCP servers (Go)
 
 All applications deployed on NAIS platform with environment-specific configurations.
 
@@ -283,7 +283,7 @@ VS Code (MCP Client) ←→ mcp-onboarding (OAuth + MCP Server) ←→ GitHub OA
 
 ## apps/mcp-registry (Go + Public API)
 
-Public registry service for NAV-approved MCP servers, implementing MCP Registry v0.1 specification.
+Public registry service for Nav-approved MCP servers, implementing MCP Registry v0.1 specification.
 
 ### Commands
 

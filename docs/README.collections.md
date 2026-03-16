@@ -1,8 +1,8 @@
 # 📦 Copilot Collections
 
-Collections are curated sets of agents, prompts, instructions, and skills organized around specific NAV development domains or workflows.
+Collections are curated sets of agents, prompts, instructions, and skills organized around specific Nav development domains or workflows.
 
-Collections provide a convenient way to install related Copilot customizations as a complete package, ensuring consistent tooling and practices across NAV teams.
+Collections provide a convenient way to install related Copilot customizations as a complete package, ensuring consistent tooling and practices across Nav teams.
 
 ### How to Use Collections
 
@@ -21,9 +21,9 @@ Collections provide a convenient way to install related Copilot customizations a
 
 | Name        | Description                        | Components | Location               |
 | ----------- | ---------------------------------- | ---------- | ---------------------- |
-| Coming Soon | NAV collections will be added here |            | `.github/collections/` |
+| Coming Soon | Nav collections will be added here |            | `.github/collections/` |
 
-## Potential NAV Collections
+## Potential Nav Collections
 
 ### NAIS Platform Collection
 Complete set of tools for NAIS platform development:
@@ -32,15 +32,15 @@ Complete set of tools for NAIS platform development:
 - **Instructions**: NAIS best practices, security patterns
 - **Skills**: Deployment templates, monitoring setup
 
-### Full-Stack NAV Application Collection
-Everything needed for a complete NAV application:
+### Full-Stack Nav Application Collection
+Everything needed for a complete Nav application:
 - **Agents**: Frontend (Aksel/Next.js), Backend (Kotlin/Ktor), Database
 - **Prompts**: Component creation, API design, database migrations
 - **Instructions**: Coding standards for all layers
 - **Skills**: Application templates, testing patterns
 
 ### Auth & Security Collection
-Authentication and security patterns for NAV:
+Authentication and security patterns for Nav:
 - **Agents**: Azure AD setup, TokenX configuration
 - **Prompts**: Security validation, access control
 - **Instructions**: Security best practices
@@ -67,14 +67,14 @@ Complete observability stack setup:
 
 ## Creating Collections
 
-When creating collections for NAV:
+When creating collections for Nav:
 
 1. **Cohesive Theme**: Focus on specific domain or workflow
 2. **Complete Package**: Include all necessary components
-3. **NAV Alignment**: Follow NAV development principles
+3. **Nav Alignment**: Follow Nav development principles
 4. **Documentation**: Provide clear setup and usage guides
 5. **Dependencies**: Document required MCP servers or tools
-6. **Team Input**: Gather feedback from NAV teams
+6. **Team Input**: Gather feedback from Nav teams
 
 ## Installation
 
@@ -94,7 +94,7 @@ Or use the provided installation tasks in VS Code.
 
 - Use collections for comprehensive domain coverage
 - Keep collections focused and maintainable
-- Update collections based on NAV team feedback
+- Update collections based on Nav team feedback
 - Version collections for stability
 - Document collection dependencies
 - Provide examples and getting started guides
