@@ -50,10 +50,13 @@
       "type": "agent",
       "name": "forfatter",
       "displayName": "@forfatter",
-      "description": "Redigerer norsk teknisk tekst: fjerner AI-markører, forenkler språk, bruker etablerte engelske fagtermer.",
+      "description": "Norsk teknisk redaktør: klarspråk, AI-markører, anglismer, fagtermer, mikrotekst.",
       "filePath": ".github/agents/forfatter.agent.md",
       "useCases": [
-        "Creating .nais/app.yaml manifests"
+        "Creating .nais/app.yaml manifests",
+        "Adding PostgreSQL/Kafka",
+        "Creating Kafka event consumers",
+        "Designing event schemas"
       ],
       "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md"

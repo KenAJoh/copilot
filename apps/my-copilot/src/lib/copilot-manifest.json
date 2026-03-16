@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-16T11:02:20.989Z",
+  "generatedAt": "2026-03-16T11:23:04.854Z",
   "items": [
     {
       "id": "aksel-agent",
@@ -93,7 +93,7 @@
     {
       "id": "forfatter",
       "name": "forfatter",
-      "description": "Du er en norsk teknisk redaktør. Du redigerer tekst skrevet på norsk bokmål for et teknisk publikum (utviklere, driftere, arkitekter).",
+      "description": "Du er en norsk teknisk redaktør. Du redigerer tekst på norsk bokmål for utviklere, driftere og arkitekter i Nav.",
       "type": "agent",
       "domain": "general",
       "filePath": ".github/agents/forfatter.agent.md",
@@ -111,15 +111,27 @@
         "io.github.navikt/github-mcp/get_file_contents",
         "io.github.navikt/github-mcp/search_code"
       ],
-      "tags": ["norsk", "teknisk-skriving", "redigering", "språk"],
+      "tags": ["norsk", "teknisk-skriving", "redigering", "språk", "klarspråk", "ai-markører"],
       "examples": [
         {
           "prompt": "@forfatter Gå gjennom denne ADR-en og fjern AI-språk",
-          "scenario": "Redigere teknisk dokument"
+          "scenario": "Redigere Architecture Decision Record"
         },
         {
           "prompt": "@forfatter Rett opp anglismer og feiloversatte fagtermer i README-en",
           "scenario": "Språkvask av dokumentasjon"
+        },
+        {
+          "prompt": "@forfatter Fjern substantivsyke og gjør teksten mer direkte",
+          "scenario": "Klarspråk-redigering"
+        },
+        {
+          "prompt": "@forfatter Sjekk UI-tekstene i denne komponenten for klarspråk og konsistens",
+          "scenario": "Mikrotekst og brukergrensesnitt"
+        },
+        {
+          "prompt": "@forfatter Gjør denne bloggposten mindre AI-aktig og mer kollegial",
+          "scenario": "Redigere blogginnlegg"
         }
       ]
     },

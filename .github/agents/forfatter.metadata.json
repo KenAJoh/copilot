@@ -1,14 +1,26 @@
 {
   "domain": "general",
-  "tags": ["norsk", "teknisk-skriving", "redigering", "språk"],
+  "tags": ["norsk", "teknisk-skriving", "redigering", "språk", "klarspråk", "ai-markører"],
   "examples": [
     {
       "prompt": "@forfatter Gå gjennom denne ADR-en og fjern AI-språk",
-      "scenario": "Redigere teknisk dokument"
+      "scenario": "Redigere Architecture Decision Record"
     },
     {
       "prompt": "@forfatter Rett opp anglismer og feiloversatte fagtermer i README-en",
       "scenario": "Språkvask av dokumentasjon"
+    },
+    {
+      "prompt": "@forfatter Fjern substantivsyke og gjør teksten mer direkte",
+      "scenario": "Klarspråk-redigering"
+    },
+    {
+      "prompt": "@forfatter Sjekk UI-tekstene i denne komponenten for klarspråk og konsistens",
+      "scenario": "Mikrotekst og brukergrensesnitt"
+    },
+    {
+      "prompt": "@forfatter Gjør denne bloggposten mindre AI-aktig og mer kollegial",
+      "scenario": "Redigere blogginnlegg"
     }
   ]
 }
