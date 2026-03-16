@@ -22,13 +22,12 @@
 # For more information: https://github.github.com/gh-aw/introduction/overview/
 #
 #
-# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"8a620a56625077bb34b72adb78310c87a806e851e0b48fd7a8125fdfc373bed0","compiler_version":"v0.56.2","strict":true}
+# gh-aw-metadata: {"schema_version":"v2","frontmatter_hash":"b1869963c9b9ee431eb04b6114bc9497f7e49d94dc878299137b823a38aef2bd","compiler_version":"v0.56.2","strict":true}
 
 name: "AI Coding News Excerpts"
 "on":
   schedule:
-  - cron: "12 3 * * 5"
-    # Friendly format: weekly (scattered)
+  - cron: "0 9 * * 1,3,5"
   workflow_dispatch:
 
 permissions: {}
