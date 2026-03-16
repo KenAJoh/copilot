@@ -316,6 +316,44 @@ Følg Designsystemets tverretatlige retningslinjer for tekst i digitale tjeneste
    Kafka og plukkes opp av konsumentene.
 ```
 
+### UI-tekst → klarspråk
+
+```
+❌ Operasjonen kunne ikke gjennomføres grunnet manglende
+   obligatoriske feltverdier i skjemaet.
+
+✅ Du må fylle ut alle påkrevde felt før du kan sende inn.
+```
+
+```
+❌ <Button>Klikk her for å navigere til oversikten</Button>
+
+✅ <Button>Gå til oversikten</Button>
+```
+
+### README → rett på sak
+
+```
+❌ Dette prosjektet representerer et innovativt verktøy som
+   muliggjør effektiv håndtering av søknader. Det er utviklet
+   med tanke på å sette brukeren i sentrum.
+
+✅ Behandler søknader om foreldrepenger. Bygget med Kotlin/Ktor,
+   deployes til Nais.
+```
+
+### PR-beskrivelse → konkret
+
+```
+❌ Denne PR-en adresserer behovet for å implementere en mer
+   robust og helhetlig løsning for autentisering som
+   tilrettelegger for en sømløs brukeropplevelse.
+
+✅ Bytter fra manuell token-validering til @navikt/oasis.
+   Forenkler auth-flyten og fikser bug der utløpte tokens
+   ikke ble refreshet.
+```
+
 ### Unødvendig oppsummering → kutt
 
 ```
