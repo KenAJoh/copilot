@@ -2,9 +2,6 @@
   "domain": "platform",
   "tags": ["nais", "kubernetes", "deployment", "infrastructure"],
   "examples": [
-    {
-      "prompt": "#nais-manifest Generer et manifest for dp-soknad i prod-gcp",
-      "scenario": "Generer Nais-manifest"
-    }
+    "#nais-manifest Generer et manifest for dp-soknad i prod-gcp"
   ]
 }

@@ -2,9 +2,6 @@
   "domain": "frontend",
   "tags": ["accessibility", "wcag", "a11y", "universell-utforming"],
   "examples": [
-    {
-      "prompt": "Legg til riktige ARIA-attributter på dette skjemaet",
-      "scenario": "Tilgjengelighet i skjema"
-    }
+    "Legg til riktige ARIA-attributter på dette skjemaet"
   ]
 }

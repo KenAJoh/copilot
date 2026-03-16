@@ -4,6 +4,8 @@ applyTo: "**/Dockerfile"
 
 # Dockerfile Standards
 
+Standarder for Dockerfile i Nav: Chainguard base images, multi-stage builds og sikkerhetspraksis.
+
 Reference: [Chainguard base images — sikkerhet.nav.no](https://sikkerhet.nav.no/docs/verktoy/chainguard-dockerimages)
 
 ## Base Images — Chainguard

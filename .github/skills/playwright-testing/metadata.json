@@ -2,10 +2,25 @@
   "domain": "testing",
   "tags": ["playwright", "e2e", "testing", "accessibility", "responsive"],
   "examples": [
-    "Generate Playwright test for login page",
-    "Create E2E tests for the søknad form",
-    "Set up Playwright with auth fixtures",
-    "Add accessibility tests for all pages",
-    "Test responsive layout with Playwright"
+    {
+      "scenario": "Innlogging",
+      "prompt": "Lag en Playwright-test for innloggingssida"
+    },
+    {
+      "scenario": "Søknadsskjema",
+      "prompt": "Lag E2E-tester for søknadsskjemaet"
+    },
+    {
+      "scenario": "Auth-oppsett",
+      "prompt": "Sett opp Playwright med auth fixtures"
+    },
+    {
+      "scenario": "Tilgjengelighet",
+      "prompt": "Legg til tilgjengelighetstester for alle sider"
+    },
+    {
+      "scenario": "Responsiv layout",
+      "prompt": "Test responsiv layout med Playwright"
+    }
   ]
 }

@@ -4,6 +4,8 @@ applyTo: "**/db/migration/**/*.sql"
 
 # Database Migration Standards (Flyway)
 
+Standarder for databasemigrasjoner med Flyway: navnekonvensjoner, sikre endringer og idempotente skript.
+
 ## Migration File Naming
 
 Follow Flyway naming convention: `V{version}__{description}.sql`

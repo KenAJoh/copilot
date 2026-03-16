@@ -2,11 +2,10 @@
   "domain": "frontend",
   "tags": ["wcag", "a11y", "universell-utforming", "aksel", "aria"],
   "examples": [
-    "Check this component for accessibility issues",
-    "Review WCAG compliance for this page",
-    "Add ARIA attributes to this form",
-    "Set up axe-core testing",
-    "Fix heading hierarchy",
-    "Make this modal accessible"
+    "Sjekk denne komponenten for tilgjengelighetsfeil",
+    "Gå gjennom WCAG-krav for denne sida",
+    "Legg til ARIA-attributter på dette skjemaet",
+    "Sett opp axe-core-testing",
+    "Fiks overskriftshierarkiet"
   ]
 }

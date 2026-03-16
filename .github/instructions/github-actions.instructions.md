@@ -4,6 +4,8 @@ applyTo: ".github/workflows/*.{yml,yaml}"
 
 # GitHub Actions CI/CD Standards
 
+Standarder for CI/CD-workflows med GitHub Actions på Nais: SHA-pinning, Nais deploy og caching.
+
 ## Action Pinning
 
 Pin all actions to full commit SHA, never just a major tag:

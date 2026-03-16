@@ -4,6 +4,8 @@ applyTo: "src/**/*.{tsx,ts}"
 
 # Next.js med Aksel Design System
 
+Standarder for Next.js-apper med Aksel: spacing-tokens, responsive props og komponentmønstre.
+
 ## Spacing-regler
 
 **VIKTIG**: Bruk alltid Nav DS spacing-tokens, aldri Tailwind padding/margin.

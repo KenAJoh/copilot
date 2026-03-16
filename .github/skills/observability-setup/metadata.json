@@ -2,9 +2,6 @@
   "domain": "observability",
   "tags": ["prometheus", "opentelemetry", "health", "metrics"],
   "examples": [
-    {
-      "prompt": "Sett opp Prometheus-metrikker og helseendepunkter for dp-soknad",
-      "scenario": "Observability-oppsett"
-    }
+    "Sett opp Prometheus-metrikker og helseendepunkter for dp-soknad"
   ]
 }

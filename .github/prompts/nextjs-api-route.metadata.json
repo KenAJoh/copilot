@@ -2,9 +2,6 @@
   "domain": "frontend",
   "tags": ["nextjs", "api-route", "app-router", "scaffold"],
   "examples": [
-    {
-      "prompt": "#api-route Lag en API-route for å hente brukerdata fra BigQuery",
-      "scenario": "Scaffold API-route"
-    }
+    "#api-route Lag en API-route for å hente brukerdata fra BigQuery"
   ]
 }

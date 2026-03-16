@@ -2,9 +2,21 @@
   "domain": "backend",
   "tags": ["spring-boot", "kotlin", "scaffold", "nais", "project-setup"],
   "examples": [
-    "Create a new Spring Boot Kotlin project",
-    "Scaffold a Nais-ready Spring Boot app",
-    "Set up a Spring Boot API with database",
-    "Generate project structure for new backend service"
+    {
+      "scenario": "Nytt prosjekt",
+      "prompt": "Opprett et nytt Spring Boot Kotlin-prosjekt"
+    },
+    {
+      "scenario": "Nais-klar app",
+      "prompt": "Scaffold en Nais-klar Spring Boot-app"
+    },
+    {
+      "scenario": "API med database",
+      "prompt": "Sett opp et Spring Boot API med database"
+    },
+    {
+      "scenario": "Prosjektstruktur",
+      "prompt": "Generer prosjektstruktur for ny backend-tjeneste"
+    }
   ]
 }

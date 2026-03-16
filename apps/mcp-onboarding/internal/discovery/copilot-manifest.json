@@ -228,7 +228,7 @@
       "type": "instruction",
       "name": "database",
       "displayName": "Database Development",
-      "description": "Follow Flyway naming convention: `V{version}__{description}.sql`",
+      "description": "Standarder for databasemigrasjoner med Flyway: navnekonvensjoner, sikre endringer og idempotente skript.",
       "filePath": ".github/instructions/database.instructions.md",
       "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/database.instructions.md",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/database.instructions.md"
@@ -237,7 +237,7 @@
       "type": "instruction",
       "name": "docker",
       "displayName": "Docker Development",
-      "description": "Reference: [Chainguard base images — sikkerhet.nav.no](https://sikkerhet.nav.no/docs/verktoy/chainguard-dockerimages)",
+      "description": "Standarder for Dockerfile i Nav: Chainguard base images, multi-stage builds og sikkerhetspraksis.",
       "filePath": ".github/instructions/docker.instructions.md",
       "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/docker.instructions.md",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/docker.instructions.md"
@@ -246,7 +246,13 @@
       "type": "instruction",
       "name": "github-actions",
       "displayName": "Github/Actions Development",
-      "description": "Pin all actions to full commit SHA, never just a major tag:",
+      "description": "Standarder for CI/CD-workflows med GitHub Actions på Nais: SHA-pinning, Nais deploy og caching.",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
       "filePath": ".github/instructions/github-actions.instructions.md",
       "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/github-actions.instructions.md",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/github-actions.instructions.md"
@@ -283,7 +289,7 @@
       "type": "instruction",
       "name": "nextjs-aksel",
       "displayName": "Nextjs/Aksel Development",
-      "description": "**VIKTIG**: Bruk alltid Nav DS spacing-tokens, aldri Tailwind padding/margin.",
+      "description": "Standarder for Next.js-apper med Aksel: spacing-tokens, responsive props og komponentmønstre.",
       "tags": [
         "aksel",
         "design-system",
@@ -299,7 +305,7 @@
       "type": "instruction",
       "name": "testing",
       "displayName": "Testing Development",
-      "description": "```kotlin",
+      "description": "Teststandarder for Nav: Kotest-matchers i Kotlin, Jest i TypeScript og felles testprinsipper.",
       "tags": [
         "kotlin",
         "ktor",

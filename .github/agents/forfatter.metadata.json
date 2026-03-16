@@ -19,10 +19,6 @@
       "scenario": "Norsk tallformat og knappetekst i Next.js"
     },
     {
-      "prompt": "@forfatter Fjern substantivsyke og anglismer fra PR-beskrivelsen",
-      "scenario": "Pull request-beskrivelse"
-    },
-    {
       "prompt": "@forfatter Gå gjennom feilmeldingene i denne Spring-kontrolleren — bruk klart språk, si hva brukeren kan gjøre",
       "scenario": "Feilmeldinger i backend-API"
     }

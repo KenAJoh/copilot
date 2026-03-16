@@ -2,9 +2,6 @@
   "domain": "platform",
   "tags": ["github-actions", "ci-cd", "workflow", "deployment"],
   "examples": [
-    {
-      "prompt": "Lag en GitHub Actions workflow som bygger og deployer til Nais",
-      "scenario": "CI/CD-oppsett"
-    }
+    "Lag en GitHub Actions workflow som bygger og deployer til Nais"
   ]
 }

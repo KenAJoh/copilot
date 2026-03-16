@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { Domain, UsageExample } from "../src/lib/manifest-types.ts";
+import type { Domain, ExampleItem } from "../src/lib/manifest-types.ts";
 import { VALID_DOMAINS } from "../src/lib/manifest-types.ts";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "../../..");
@@ -12,7 +12,7 @@ interface Metadata {
   domain?: Domain;
   tags?: string[];
   excluded?: boolean;
-  examples?: UsageExample[];
+  examples?: ExampleItem[];
 }
 
 function loadMetadata(metadataPath: string): Metadata {
@@ -90,7 +90,7 @@ interface ManifestItem {
   applyTo?: string;
   invocation?: string;
   tags?: string[];
-  examples?: { prompt: string; scenario: string }[];
+  examples?: ExampleItem[];
 }
 
 function getAgents(): ManifestItem[] {

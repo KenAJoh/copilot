@@ -4,6 +4,8 @@ applyTo: "**/*.test.{ts,tsx,kt,kts}"
 
 # Testing Standards
 
+Teststandarder for Nav: Kotest-matchers i Kotlin, Jest i TypeScript og felles testprinsipper.
+
 ## Kotlin Testing (Kotest)
 
 ### Test Structure

@@ -1,8 +1,8 @@
 export type CustomizationType = "agent" | "instruction" | "prompt" | "skill" | "mcp";
 
 export type { Domain } from "./manifest-types";
+import type { ExampleItem } from "./manifest-types";
 import type { Domain } from "./manifest-types";
-import type { UsageExample } from "./manifest-types";
 
 interface BaseCustomization {
   id: string;
@@ -15,7 +15,7 @@ interface BaseCustomization {
   installUrl: string | null;
   insidersInstallUrl: string | null;
   tags?: string[];
-  examples?: UsageExample[];
+  examples?: ExampleItem[];
 }
 
 export interface Agent extends BaseCustomization {

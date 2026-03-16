@@ -2,9 +2,6 @@
   "domain": "backend",
   "tags": ["kotlin", "spring", "backend"],
   "examples": [
-    {
-      "prompt": "Lag en REST-controller i kursportalen-backend med Spring Boot og validering",
-      "scenario": "Spring Boot API-utvikling"
-    }
+    "Lag en REST-controller i kursportalen-backend med Spring Boot og validering"
   ]
 }

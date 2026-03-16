@@ -2,9 +2,6 @@
   "domain": "general",
   "tags": ["testing", "jest", "kotest", "quality"],
   "examples": [
-    {
-      "prompt": "Skriv en test for validateSøknad() med grensetilfeller",
-      "scenario": "Enhetstesting"
-    }
+    "Skriv en test for validateSøknad() med grensetilfeller"
   ]
 }

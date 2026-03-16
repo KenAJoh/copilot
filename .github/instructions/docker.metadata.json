@@ -2,9 +2,6 @@
   "domain": "platform",
   "tags": ["docker", "dockerfile", "container", "multi-stage"],
   "examples": [
-    {
-      "prompt": "Lag en multi-stage Dockerfile for en Spring Boot-applikasjon",
-      "scenario": "Dockerfile for JVM-app"
-    }
+    "Lag en multi-stage Dockerfile for en Spring Boot-applikasjon"
   ]
 }

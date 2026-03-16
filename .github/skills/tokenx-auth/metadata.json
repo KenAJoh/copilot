@@ -2,9 +2,6 @@
   "domain": "auth",
   "tags": ["tokenx", "auth", "service-to-service", "nais"],
   "examples": [
-    {
-      "prompt": "Sett opp TokenX-utveksling mellom dp-soknad og dp-inntekt",
-      "scenario": "TokenX mellom tjenester"
-    }
+    "Sett opp TokenX-utveksling mellom dp-soknad og dp-inntekt"
   ]
 }

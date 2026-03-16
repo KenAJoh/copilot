@@ -2,9 +2,6 @@
   "domain": "backend",
   "tags": ["kotlin", "configuration", "sealed-class", "environment"],
   "examples": [
-    {
-      "prompt": "Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local",
-      "scenario": "Kotlin-oppsett"
-    }
+    "Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local"
   ]
 }

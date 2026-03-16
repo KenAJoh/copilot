@@ -2,6 +2,8 @@
 applyTo: "**/*.kt"
 ---
 
+Spring Boot-mønstre for Nav-backends: controller, service, repository, validering og feilhåndtering.
+
 > Spring Boot patterns for Nav backends. Apply when the file uses Spring (`@RestController`, `@Service`, Spring Data etc.) — for Ktor/Rapids & Rivers apps, see `kotlin-ktor.instructions.md` instead.
 
 # Spring Boot Framework Patterns

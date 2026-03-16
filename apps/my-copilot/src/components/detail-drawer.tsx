@@ -6,6 +6,7 @@ import { XMarkIcon, ExternalLinkIcon, DownloadIcon } from "@navikt/aksel-icons";
 import { Alert, Box, BodyShort, Button, Heading, Tag, HStack, VStack, CopyButton, Accordion } from "@navikt/ds-react";
 import type { EnrichedCustomization } from "@/lib/enrich-customizations";
 import { DOMAIN_CONFIGS, TYPE_LABELS } from "@/lib/customization-types";
+import { normalizeExample } from "@/lib/manifest-types";
 
 const TOOLS_PREVIEW_COUNT = 5;
 
@@ -146,21 +147,26 @@ function McpDetails({ item }: { item: EnrichedCustomization }) {
             Eksempler
           </Heading>
           <VStack gap="space-8">
-            {item.examples.map((example, index) => (
-              <Box key={`${example.scenario}-${index}`} background="neutral-soft" borderRadius="8" padding="space-12">
-                <VStack gap="space-4">
-                  <BodyShort size="small" weight="semibold">
-                    {example.scenario}
-                  </BodyShort>
-                  <div className="relative">
-                    <code className="text-xs block pr-8 break-all">{example.prompt}</code>
-                    <div className="absolute top-0 right-0">
-                      <CopyButton size="xsmall" copyText={example.prompt} />
+            {item.examples.map((raw, index) => {
+              const example = normalizeExample(raw);
+              return (
+                <Box key={`${example.prompt}-${index}`} background="neutral-soft" borderRadius="8" padding="space-12">
+                  <VStack gap="space-4">
+                    {example.scenario && (
+                      <BodyShort size="small" weight="semibold">
+                        {example.scenario}
+                      </BodyShort>
+                    )}
+                    <div className="relative">
+                      <code className="text-xs block pr-8 break-all">{example.prompt}</code>
+                      <div className="absolute top-0 right-0">
+                        <CopyButton size="xsmall" copyText={example.prompt} />
+                      </div>
                     </div>
-                  </div>
-                </VStack>
-              </Box>
-            ))}
+                  </VStack>
+                </Box>
+              );
+            })}
           </VStack>
         </VStack>
       )}
@@ -381,21 +387,26 @@ function StaticCustomizationDetails({ item }: { item: EnrichedCustomization }) {
             Eksempler
           </Heading>
           <VStack gap="space-8">
-            {item.examples.map((example, index) => (
-              <Box key={`${example.scenario}-${index}`} background="neutral-soft" borderRadius="8" padding="space-12">
-                <VStack gap="space-4">
-                  <BodyShort size="small" weight="semibold">
-                    {example.scenario}
-                  </BodyShort>
-                  <div className="relative">
-                    <code className="text-xs block pr-8 break-all">{example.prompt}</code>
-                    <div className="absolute top-0 right-0">
-                      <CopyButton size="xsmall" copyText={example.prompt} />
+            {item.examples.map((raw, index) => {
+              const example = normalizeExample(raw);
+              return (
+                <Box key={`${example.prompt}-${index}`} background="neutral-soft" borderRadius="8" padding="space-12">
+                  <VStack gap="space-4">
+                    {example.scenario && (
+                      <BodyShort size="small" weight="semibold">
+                        {example.scenario}
+                      </BodyShort>
+                    )}
+                    <div className="relative">
+                      <code className="text-xs block pr-8 break-all">{example.prompt}</code>
+                      <div className="absolute top-0 right-0">
+                        <CopyButton size="xsmall" copyText={example.prompt} />
+                      </div>
                     </div>
-                  </div>
-                </VStack>
-              </Box>
-            ))}
+                  </VStack>
+                </Box>
+              );
+            })}
           </VStack>
         </VStack>
       )}

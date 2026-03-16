@@ -2,9 +2,6 @@
   "domain": "frontend",
   "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
   "examples": [
-    {
-      "prompt": "Lag en responsiv søknadsoversikt med Aksel Box og VStack",
-      "scenario": "Aksel-oppsett i Next.js"
-    }
+    "Lag en responsiv søknadsoversikt med Aksel Box og VStack"
   ]
 }

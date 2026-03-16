@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-16T20:26:05.826Z",
+  "generatedAt": "2026-03-16T20:59:09.292Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -26,12 +26,11 @@
       ],
       "tags": ["wcag", "a11y", "universell-utforming", "aksel", "aria"],
       "examples": [
-        "Check this component for accessibility issues",
-        "Review WCAG compliance for this page",
-        "Add ARIA attributes to this form",
-        "Set up axe-core testing",
-        "Fix heading hierarchy",
-        "Make this modal accessible"
+        "Sjekk denne komponenten for tilgjengelighetsfeil",
+        "Gå gjennom WCAG-krav for denne sida",
+        "Legg til ARIA-attributter på dette skjemaet",
+        "Sett opp axe-core-testing",
+        "Fiks overskriftshierarkiet"
       ]
     },
     {
@@ -160,10 +159,6 @@
         {
           "prompt": "@forfatter Rett opp UI-tekstene i denne Next.js-sida — norsk tallformat og konsistente knappetekster",
           "scenario": "Norsk tallformat og knappetekst i Next.js"
-        },
-        {
-          "prompt": "@forfatter Fjern substantivsyke og anglismer fra PR-beskrivelsen",
-          "scenario": "Pull request-beskrivelse"
         },
         {
           "prompt": "@forfatter Gå gjennom feilmeldingene i denne Spring-kontrolleren — bruk klart språk, si hva brukeren kan gjøre",
@@ -395,17 +390,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Faccessibility.instructions.md",
       "applyTo": "src/**/*.{tsx,jsx}",
       "tags": ["accessibility", "wcag", "a11y", "universell-utforming"],
-      "examples": [
-        {
-          "prompt": "Legg til riktige ARIA-attributter på dette skjemaet",
-          "scenario": "Tilgjengelighet i skjema"
-        }
-      ]
+      "examples": ["Legg til riktige ARIA-attributter på dette skjemaet"]
     },
     {
       "id": "database",
       "name": "Database Migration Standards (Flyway)",
-      "description": "Follow Flyway naming convention: `V{version}__{description}.sql`",
+      "description": "Standarder for databasemigrasjoner med Flyway: navnekonvensjoner, sikre endringer og idempotente skript.",
       "type": "instruction",
       "domain": "backend",
       "filePath": ".github/instructions/database.instructions.md",
@@ -414,17 +404,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "applyTo": "**/db/migration/**/*.sql",
       "tags": ["database", "flyway", "sql", "migration"],
-      "examples": [
-        {
-          "prompt": "Lag en Flyway-migrasjon som legger til en status-kolonne i vedtak-tabellen i dp-inntekt",
-          "scenario": "Database-migrasjon"
-        }
-      ]
+      "examples": ["Lag en Flyway-migrasjon som legger til en status-kolonne i vedtak-tabellen i dp-inntekt"]
     },
     {
       "id": "docker",
       "name": "Dockerfile Standards",
-      "description": "Reference: [Chainguard base images — sikkerhet.nav.no](https://sikkerhet.nav.no/docs/verktoy/chainguard-dockerimages)",
+      "description": "Standarder for Dockerfile i Nav: Chainguard base images, multi-stage builds og sikkerhetspraksis.",
       "type": "instruction",
       "domain": "platform",
       "filePath": ".github/instructions/docker.instructions.md",
@@ -433,17 +418,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdocker.instructions.md",
       "applyTo": "**/Dockerfile",
       "tags": ["docker", "dockerfile", "container", "multi-stage"],
-      "examples": [
-        {
-          "prompt": "Lag en multi-stage Dockerfile for en Spring Boot-applikasjon",
-          "scenario": "Dockerfile for JVM-app"
-        }
-      ]
+      "examples": ["Lag en multi-stage Dockerfile for en Spring Boot-applikasjon"]
     },
     {
       "id": "github-actions",
       "name": "GitHub Actions CI/CD Standards",
-      "description": "Pin all actions to full commit SHA, never just a major tag:",
+      "description": "Standarder for CI/CD-workflows med GitHub Actions på Nais: SHA-pinning, Nais deploy og caching.",
       "type": "instruction",
       "domain": "platform",
       "filePath": ".github/instructions/github-actions.instructions.md",
@@ -452,17 +432,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fgithub-actions.instructions.md",
       "applyTo": ".github/workflows/*.{yml,yaml}",
       "tags": ["github-actions", "ci-cd", "workflow", "deployment"],
-      "examples": [
-        {
-          "prompt": "Lag en GitHub Actions workflow som bygger og deployer til Nais",
-          "scenario": "CI/CD-oppsett"
-        }
-      ]
+      "examples": ["Lag en GitHub Actions workflow som bygger og deployer til Nais"]
     },
     {
       "id": "kotlin-ktor",
       "name": "Kotlin/Ktor Development Standards",
-      "description": "> Ktor/Rapids & Rivers patterns for Nav backends. Apply when the file uses Ktor (`RapidApplication`, `routing`, `River`) — for Spring Boot apps, see `kotlin-spring.instructions.md` instead.",
+      "description": "Ktor- og Rapids & Rivers-mønstre for Nav-backends: ApplicationBuilder, sealed config, Kotliquery og feilhåndtering.",
       "type": "instruction",
       "domain": "backend",
       "filePath": ".github/instructions/kotlin-ktor.instructions.md",
@@ -471,17 +446,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "applyTo": "**/*.kt",
       "tags": ["kotlin", "ktor", "backend"],
-      "examples": [
-        {
-          "prompt": "Lag et nytt endepunkt i fp-sak med Azure AD-autentisering og feilhåndtering",
-          "scenario": "Ktor API-utvikling"
-        }
-      ]
+      "examples": ["Lag et nytt endepunkt i fp-sak med Azure AD-autentisering og feilhåndtering"]
     },
     {
       "id": "kotlin-spring",
       "name": "Spring Boot Framework Patterns",
-      "description": "> Spring Boot patterns for Nav backends. Apply when the file uses Spring (`@RestController`, `@Service`, Spring Data etc.) — for Ktor/Rapids & Rivers apps, see `kotlin-ktor.instructions.md` instead.",
+      "description": "Spring Boot-mønstre for Nav-backends: controller, service, repository, validering og feilhåndtering.",
       "type": "instruction",
       "domain": "backend",
       "filePath": ".github/instructions/kotlin-spring.instructions.md",
@@ -490,17 +460,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-spring.instructions.md",
       "applyTo": "**/*.kt",
       "tags": ["kotlin", "spring", "backend"],
-      "examples": [
-        {
-          "prompt": "Lag en REST-controller i kursportalen-backend med Spring Boot og validering",
-          "scenario": "Spring Boot API-utvikling"
-        }
-      ]
+      "examples": ["Lag en REST-controller i kursportalen-backend med Spring Boot og validering"]
     },
     {
       "id": "nextjs-aksel",
       "name": "Next.js med Aksel Design System",
-      "description": "**VIKTIG**: Bruk alltid Nav DS spacing-tokens, aldri Tailwind padding/margin.",
+      "description": "Standarder for Next.js-apper med Aksel: spacing-tokens, responsive props og komponentmønstre.",
       "type": "instruction",
       "domain": "frontend",
       "filePath": ".github/instructions/nextjs-aksel.instructions.md",
@@ -509,17 +474,12 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fnextjs-aksel.instructions.md",
       "applyTo": "src/**/*.{tsx,ts}",
       "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
-      "examples": [
-        {
-          "prompt": "Lag en responsiv søknadsoversikt med Aksel Box og VStack",
-          "scenario": "Aksel-oppsett i Next.js"
-        }
-      ]
+      "examples": ["Lag en responsiv søknadsoversikt med Aksel Box og VStack"]
     },
     {
       "id": "testing",
       "name": "Testing Standards",
-      "description": "```kotlin\nimport io.kotest.matchers.shouldBe\nimport io.kotest.matchers.shouldNotBe\nimport org.junit.jupiter.api.Test\nimport org.junit.jupiter.api.BeforeAll",
+      "description": "Teststandarder for Nav: Kotest-matchers i Kotlin, Jest i TypeScript og felles testprinsipper.",
       "type": "instruction",
       "domain": "general",
       "filePath": ".github/instructions/testing.instructions.md",
@@ -528,12 +488,7 @@
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting.instructions.md",
       "applyTo": "**/*.test.{ts,tsx,kt,kts}",
       "tags": ["testing", "jest", "kotest", "quality"],
-      "examples": [
-        {
-          "prompt": "Skriv en test for validateSøknad() med grensetilfeller",
-          "scenario": "Enhetstesting"
-        }
-      ]
+      "examples": ["Skriv en test for validateSøknad() med grensetilfeller"]
     },
     {
       "id": "aksel-component",
@@ -547,12 +502,7 @@
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Faksel-component.prompt.md",
       "invocation": "#aksel-component",
       "tags": ["aksel", "design-system", "react", "component"],
-      "examples": [
-        {
-          "prompt": "#aksel-component Lag en varslingsbanner med ikon og lukkeknapp",
-          "scenario": "Lag Aksel-komponent"
-        }
-      ]
+      "examples": ["#aksel-component Lag en varslingsbanner med ikon og lukkeknapp"]
     },
     {
       "id": "kafka-topic",
@@ -566,12 +516,7 @@
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md",
       "invocation": "#kafka-topic",
       "tags": ["nais", "kafka", "rapids-rivers", "infrastructure"],
-      "examples": [
-        {
-          "prompt": "#kafka-topic Legg til et topic for sykmeldingshendelser",
-          "scenario": "Konfigurer Kafka-topic"
-        }
-      ]
+      "examples": ["#kafka-topic Legg til et topic for sykmeldingshendelser"]
     },
     {
       "id": "nais-manifest",
@@ -585,12 +530,7 @@
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md",
       "invocation": "#nais-manifest",
       "tags": ["nais", "kubernetes", "deployment", "infrastructure"],
-      "examples": [
-        {
-          "prompt": "#nais-manifest Generer et manifest for dp-soknad i prod-gcp",
-          "scenario": "Generer Nais-manifest"
-        }
-      ]
+      "examples": ["#nais-manifest Generer et manifest for dp-soknad i prod-gcp"]
     },
     {
       "id": "nextjs-api-route",
@@ -604,12 +544,7 @@
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnextjs-api-route.prompt.md",
       "invocation": "#nextjs-api-route",
       "tags": ["nextjs", "api-route", "app-router", "scaffold"],
-      "examples": [
-        {
-          "prompt": "#api-route Lag en API-route for å hente brukerdata fra BigQuery",
-          "scenario": "Scaffold API-route"
-        }
-      ]
+      "examples": ["#api-route Lag en API-route for å hente brukerdata fra BigQuery"]
     },
     {
       "id": "spring-boot-endpoint",
@@ -623,12 +558,7 @@
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fspring-boot-endpoint.prompt.md",
       "invocation": "#spring-boot-endpoint",
       "tags": ["spring-boot", "kotlin", "rest", "endpoint", "scaffold"],
-      "examples": [
-        {
-          "prompt": "#spring-boot-endpoint Lag et CRUD-endepunkt for vedtak med PostgreSQL",
-          "scenario": "Scaffold REST-endepunkt"
-        }
-      ]
+      "examples": ["#spring-boot-endpoint Lag et CRUD-endepunkt for vedtak med PostgreSQL"]
     },
     {
       "id": "aksel-spacing",
@@ -641,12 +571,7 @@
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": ["aksel", "design-system", "spacing", "responsive"],
-      "examples": [
-        {
-          "prompt": "Lag en responsiv to-kolonne layout med Aksel-spacing",
-          "scenario": "Responsivt oppsett med Aksel"
-        }
-      ]
+      "examples": ["Lag en responsiv to-kolonne layout med Aksel-spacing"]
     },
     {
       "id": "api-design",
@@ -660,11 +585,26 @@
       "insidersInstallUrl": null,
       "tags": ["api", "rest", "design", "openapi", "error-handling"],
       "examples": [
-        "Design REST API endpoints for vedtak",
-        "Add error handling with ProblemDetail",
-        "Set up pagination for list endpoints",
-        "Review API design for best practices",
-        "Create OpenAPI annotations for endpoints"
+        {
+          "scenario": "REST API-design",
+          "prompt": "Design REST API-endepunkter for vedtak"
+        },
+        {
+          "scenario": "Feilhåndtering",
+          "prompt": "Legg til feilhåndtering med ProblemDetail"
+        },
+        {
+          "scenario": "Paginering",
+          "prompt": "Sett opp paginering for listeendepunkter"
+        },
+        {
+          "scenario": "API-gjennomgang",
+          "prompt": "Gå gjennom API-designet for beste praksis"
+        },
+        {
+          "scenario": "OpenAPI-dokumentasjon",
+          "prompt": "Lag OpenAPI-annotasjoner for endepunktene"
+        }
       ]
     },
     {
@@ -679,10 +619,22 @@
       "insidersInstallUrl": null,
       "tags": ["git", "commit", "conventional-commits", "changelog"],
       "examples": [
-        "Generate a commit message for my staged changes",
-        "Write a conventional commit for this fix",
-        "Create a breaking change commit message",
-        "What type of commit is this change?"
+        {
+          "scenario": "Commit-melding",
+          "prompt": "Lag en commit-melding for endringene mine"
+        },
+        {
+          "scenario": "Bugfix-commit",
+          "prompt": "Skriv en conventional commit for denne fiksen"
+        },
+        {
+          "scenario": "Breaking change",
+          "prompt": "Lag en breaking change commit-melding"
+        },
+        {
+          "scenario": "Klassifisering",
+          "prompt": "Hva slags type commit er denne endringen?"
+        }
       ]
     },
     {
@@ -696,12 +648,7 @@
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": ["database", "flyway", "sql", "migration"],
-      "examples": [
-        {
-          "prompt": "Lag en Flyway-migrasjon som legger til en indeks på fødselsnummer",
-          "scenario": "Database-migrasjon med Flyway"
-        }
-      ]
+      "examples": ["Lag en Flyway-migrasjon som legger til en indeks på fødselsnummer"]
     },
     {
       "id": "kotlin-app-config",
@@ -714,12 +661,7 @@
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": ["kotlin", "configuration", "sealed-class", "environment"],
-      "examples": [
-        {
-          "prompt": "Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local",
-          "scenario": "Kotlin-oppsett"
-        }
-      ]
+      "examples": ["Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local"]
     },
     {
       "id": "observability-setup",
@@ -732,12 +674,7 @@
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": ["prometheus", "opentelemetry", "health", "metrics"],
-      "examples": [
-        {
-          "prompt": "Sett opp Prometheus-metrikker og helseendepunkter for dp-soknad",
-          "scenario": "Observability-oppsett"
-        }
-      ]
+      "examples": ["Sett opp Prometheus-metrikker og helseendepunkter for dp-soknad"]
     },
     {
       "id": "playwright-testing",
@@ -751,11 +688,26 @@
       "insidersInstallUrl": null,
       "tags": ["playwright", "e2e", "testing", "accessibility", "responsive"],
       "examples": [
-        "Generate Playwright test for login page",
-        "Create E2E tests for the søknad form",
-        "Set up Playwright with auth fixtures",
-        "Add accessibility tests for all pages",
-        "Test responsive layout with Playwright"
+        {
+          "scenario": "Innlogging",
+          "prompt": "Lag en Playwright-test for innloggingssida"
+        },
+        {
+          "scenario": "Søknadsskjema",
+          "prompt": "Lag E2E-tester for søknadsskjemaet"
+        },
+        {
+          "scenario": "Auth-oppsett",
+          "prompt": "Sett opp Playwright med auth fixtures"
+        },
+        {
+          "scenario": "Tilgjengelighet",
+          "prompt": "Legg til tilgjengelighetstester for alle sider"
+        },
+        {
+          "scenario": "Responsiv layout",
+          "prompt": "Test responsiv layout med Playwright"
+        }
       ]
     },
     {
@@ -770,11 +722,26 @@
       "insidersInstallUrl": null,
       "tags": ["postgresql", "sql", "optimization", "review", "indexing"],
       "examples": [
-        "Review this SQL query for performance",
-        "Optimize a slow PostgreSQL query",
-        "Suggest indexes for this table",
-        "Check for N+1 query problems",
-        "Review JSONB usage patterns"
+        {
+          "scenario": "Ytelsesgjennomgang",
+          "prompt": "Gå gjennom denne SQL-spørringa for ytelse"
+        },
+        {
+          "scenario": "Optimalisering",
+          "prompt": "Optimaliser en treg PostgreSQL-spørring"
+        },
+        {
+          "scenario": "Indeksering",
+          "prompt": "Foreslå indekser for denne tabellen"
+        },
+        {
+          "scenario": "N+1-problem",
+          "prompt": "Sjekk for N+1-spørringsproblemer"
+        },
+        {
+          "scenario": "JSONB-mønstre",
+          "prompt": "Gå gjennom bruk av JSONB"
+        }
       ]
     },
     {
@@ -811,10 +778,22 @@
       "insidersInstallUrl": null,
       "tags": ["spring-boot", "kotlin", "scaffold", "nais", "project-setup"],
       "examples": [
-        "Create a new Spring Boot Kotlin project",
-        "Scaffold a Nais-ready Spring Boot app",
-        "Set up a Spring Boot API with database",
-        "Generate project structure for new backend service"
+        {
+          "scenario": "Nytt prosjekt",
+          "prompt": "Opprett et nytt Spring Boot Kotlin-prosjekt"
+        },
+        {
+          "scenario": "Nais-klar app",
+          "prompt": "Scaffold en Nais-klar Spring Boot-app"
+        },
+        {
+          "scenario": "API med database",
+          "prompt": "Sett opp et Spring Boot API med database"
+        },
+        {
+          "scenario": "Prosjektstruktur",
+          "prompt": "Generer prosjektstruktur for ny backend-tjeneste"
+        }
       ]
     },
     {
@@ -828,12 +807,7 @@
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": ["tokenx", "auth", "service-to-service", "nais"],
-      "examples": [
-        {
-          "prompt": "Sett opp TokenX-utveksling mellom dp-soknad og dp-inntekt",
-          "scenario": "TokenX mellom tjenester"
-        }
-      ]
+      "examples": ["Sett opp TokenX-utveksling mellom dp-soknad og dp-inntekt"]
     },
     {
       "id": "web-design-reviewer",

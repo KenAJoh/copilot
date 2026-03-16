@@ -2,10 +2,25 @@
   "domain": "backend",
   "tags": ["postgresql", "sql", "optimization", "review", "indexing"],
   "examples": [
-    "Review this SQL query for performance",
-    "Optimize a slow PostgreSQL query",
-    "Suggest indexes for this table",
-    "Check for N+1 query problems",
-    "Review JSONB usage patterns"
+    {
+      "scenario": "Ytelsesgjennomgang",
+      "prompt": "Gå gjennom denne SQL-spørringa for ytelse"
+    },
+    {
+      "scenario": "Optimalisering",
+      "prompt": "Optimaliser en treg PostgreSQL-spørring"
+    },
+    {
+      "scenario": "Indeksering",
+      "prompt": "Foreslå indekser for denne tabellen"
+    },
+    {
+      "scenario": "N+1-problem",
+      "prompt": "Sjekk for N+1-spørringsproblemer"
+    },
+    {
+      "scenario": "JSONB-mønstre",
+      "prompt": "Gå gjennom bruk av JSONB"
+    }
   ]
 }

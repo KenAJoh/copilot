@@ -2,9 +2,6 @@
   "domain": "backend",
   "tags": ["nais", "kafka", "rapids-rivers", "infrastructure"],
   "examples": [
-    {
-      "prompt": "#kafka-topic Legg til et topic for sykmeldingshendelser",
-      "scenario": "Konfigurer Kafka-topic"
-    }
+    "#kafka-topic Legg til et topic for sykmeldingshendelser"
   ]
 }
