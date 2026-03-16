@@ -5,11 +5,16 @@ SELECT
   JSON_VALUE(team, '$.name') AS team_name,
   COUNT(*) AS team_repos,
   COUNTIF(NOT is_archived) AS active_repos,
+  COUNTIF(NOT is_archived AND default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY)) AS recently_active_repos,
   COUNTIF(has_any_customization AND NOT is_archived) AS repos_with_customizations,
   SAFE_DIVIDE(
     COUNTIF(has_any_customization AND NOT is_archived),
     COUNTIF(NOT is_archived)
   ) AS adoption_rate,
+  SAFE_DIVIDE(
+    COUNTIF(has_any_customization AND NOT is_archived AND default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY)),
+    COUNTIF(NOT is_archived AND default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY))
+  ) AS adoption_rate_active_only,
   COUNTIF(JSON_VALUE(customizations, '$.copilot_instructions.exists') = 'true' AND NOT is_archived) AS with_copilot_instructions,
   COUNTIF(JSON_VALUE(customizations, '$.agents_md.exists') = 'true' AND NOT is_archived) AS with_agents_md,
   COUNTIF(JSON_VALUE(customizations, '$.agents.exists') = 'true' AND NOT is_archived) AS with_agents,

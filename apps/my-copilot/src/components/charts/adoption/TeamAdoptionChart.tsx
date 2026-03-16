@@ -8,6 +8,7 @@ import { Box, Heading, HStack, VStack, ToggleGroup } from "@navikt/ds-react";
 import { TooltipItem } from "chart.js";
 
 type ViewMode = "absolute" | "percentage";
+type Scope = "all" | "active";
 
 interface TeamAdoptionChartProps {
   data: TeamAdoption[];
@@ -16,18 +17,23 @@ interface TeamAdoptionChartProps {
 
 const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 15 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>("percentage");
+  const [scope, setScope] = useState<Scope>("active");
 
   const topTeams = useMemo(() => {
     if (!data || data.length === 0) return [];
     const filtered = data.filter((t) => t.repos_with_customizations > 0);
     if (viewMode === "percentage") {
       return filtered
-        .filter((t) => t.active_repos > 0)
-        .sort((a, b) => b.adoption_rate - a.adoption_rate)
+        .filter((t) => (scope === "active" ? t.recently_active_repos > 0 : t.active_repos > 0))
+        .sort((a, b) =>
+          scope === "active"
+            ? b.adoption_rate_active_only - a.adoption_rate_active_only
+            : b.adoption_rate - a.adoption_rate
+        )
         .slice(0, maxTeams);
     }
     return filtered.sort((a, b) => b.repos_with_customizations - a.repos_with_customizations).slice(0, maxTeams);
-  }, [data, viewMode, maxTeams]);
+  }, [data, viewMode, scope, maxTeams]);
 
   if (!data || data.length === 0) {
     return (
@@ -52,9 +58,13 @@ const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 
     labels: topTeams.map((t) => t.team_name || t.team_slug),
     datasets: [
       {
-        data: topTeams.map((t) =>
-          viewMode === "percentage" ? Math.round(t.adoption_rate * 100) : t.repos_with_customizations
-        ),
+        data: topTeams.map((t) => {
+          if (viewMode === "percentage") {
+            const rate = scope === "active" ? t.adoption_rate_active_only : t.adoption_rate;
+            return Math.round(rate * 100);
+          }
+          return t.repos_with_customizations;
+        }),
         backgroundColor: chartColors[1], // green
         borderRadius: 4,
         barThickness: 16,
@@ -82,10 +92,13 @@ const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 
         callbacks: {
           label: (context: TooltipItem<"bar">) => {
             const team = topTeams[context.dataIndex];
-            const rate = Math.round(team.adoption_rate * 100);
+            const repoCount = scope === "active" ? team.recently_active_repos : team.active_repos;
+            const rate = scope === "active" ? team.adoption_rate_active_only : team.adoption_rate;
+            const ratePercent = Math.round(rate * 100);
+            const repoLabel = scope === "active" ? "aktive repo (siste 90 dager)" : "aktive repo";
             return viewMode === "percentage"
-              ? `${rate}% (${team.repos_with_customizations} av ${team.active_repos} aktive repo)`
-              : `${context.raw} repo med tilpasninger (${rate}% av ${team.active_repos} aktive)`;
+              ? `${ratePercent}% (${team.repos_with_customizations} av ${repoCount} ${repoLabel})`
+              : `${context.raw} repo med tilpasninger (${ratePercent}% av ${repoCount} ${repoLabel})`;
           },
         },
       },
@@ -95,14 +108,20 @@ const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 
   return (
     <Box padding="space-16" borderRadius="8" className="bg-white border border-gray-200">
       <VStack gap="space-16">
-        <HStack justify="space-between" align="center" gap="space-8">
+        <HStack justify="space-between" align="center" gap="space-8" wrap>
           <Heading size="small" level="4">
             {viewMode === "percentage" ? "Team med høyest adopsjonsrate" : "Team med flest tilpasninger"}
           </Heading>
-          <ToggleGroup size="small" value={viewMode} onChange={(val) => setViewMode(val as ViewMode)}>
-            <ToggleGroup.Item value="absolute">Antall</ToggleGroup.Item>
-            <ToggleGroup.Item value="percentage">Prosent</ToggleGroup.Item>
-          </ToggleGroup>
+          <HStack gap="space-8">
+            <ToggleGroup size="small" value={scope} onChange={(val) => setScope(val as Scope)}>
+              <ToggleGroup.Item value="active">Aktive repoer</ToggleGroup.Item>
+              <ToggleGroup.Item value="all">Alle repoer</ToggleGroup.Item>
+            </ToggleGroup>
+            <ToggleGroup size="small" value={viewMode} onChange={(val) => setViewMode(val as ViewMode)}>
+              <ToggleGroup.Item value="absolute">Antall</ToggleGroup.Item>
+              <ToggleGroup.Item value="percentage">Prosent</ToggleGroup.Item>
+            </ToggleGroup>
+          </HStack>
         </HStack>
         <div style={{ height: Math.max(300, topTeams.length * 28) }}>
           <Bar data={chartData} options={options} />

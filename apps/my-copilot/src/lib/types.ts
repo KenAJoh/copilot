@@ -271,8 +271,10 @@ export interface TeamAdoption {
   team_name: string;
   team_repos: number;
   active_repos: number;
+  recently_active_repos: number;
   repos_with_customizations: number;
   adoption_rate: number;
+  adoption_rate_active_only: number;
   with_copilot_instructions: number;
   with_agents_md: number;
   with_agents: number;
@@ -286,8 +288,10 @@ export interface LanguageAdoption {
   scan_date: string;
   language: string;
   total_repos: number;
+  recently_active_repos: number;
   repos_with_customizations: number;
   adoption_rate: number;
+  adoption_rate_active_only: number;
   with_copilot_instructions: number;
   with_agents: number;
   with_instructions: number;
