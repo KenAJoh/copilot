@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-03-12T15:23:30.948Z",
+  "generatedAt": "2026-03-16T10:50:23.407Z",
   "items": [
     {
       "id": "aksel-agent",
@@ -78,6 +78,38 @@
         {
           "prompt": "@auth-agent Hvordan validerer jeg et ID-porten-token i dp-soknad?",
           "scenario": "ID-porten-validering"
+        }
+      ]
+    },
+    {
+      "id": "forfatter",
+      "name": "forfatter",
+      "description": "Du er en norsk teknisk redaktør. Du redigerer tekst skrevet på norsk bokmål for et teknisk publikum (utviklere, driftere, arkitekter).",
+      "type": "agent",
+      "domain": "general",
+      "filePath": ".github/agents/forfatter.agent.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md",
+      "installUrl": "/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fforfatter.agent.md",
+      "insidersInstallUrl": "/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fforfatter.agent.md",
+      "tools": [
+        "read",
+        "edit",
+        "search",
+        "vscode",
+        "agent",
+        "todo",
+        "com.figma/figma-mcp/*",
+        "io.github.navikt/github-mcp/*"
+      ],
+      "tags": ["norsk", "teknisk-skriving", "redigering", "språk"],
+      "examples": [
+        {
+          "prompt": "@forfatter Gå gjennom denne ADR-en og fjern AI-språk",
+          "scenario": "Redigere teknisk dokument"
+        },
+        {
+          "prompt": "@forfatter Rett opp anglismer og feiloversatte fagtermer i README-en",
+          "scenario": "Språkvask av dokumentasjon"
         }
       ]
     },

@@ -1,0 +1,14 @@
+{
+  "domain": "general",
+  "tags": ["norsk", "teknisk-skriving", "redigering", "språk"],
+  "examples": [
+    {
+      "prompt": "@forfatter Gå gjennom denne ADR-en og fjern AI-språk",
+      "scenario": "Redigere teknisk dokument"
+    },
+    {
+      "prompt": "@forfatter Rett opp anglismer og feiloversatte fagtermer i README-en",
+      "scenario": "Språkvask av dokumentasjon"
+    }
+  ]
+}

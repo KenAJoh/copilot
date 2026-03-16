@@ -48,6 +48,18 @@
     },
     {
       "type": "agent",
+      "name": "forfatter",
+      "displayName": "@forfatter",
+      "description": "Redigerer norsk teknisk tekst: fjerner AI-markører, forenkler språk, bruker etablerte engelske fagtermer.",
+      "filePath": ".github/agents/forfatter.agent.md",
+      "useCases": [
+        "Creating .nais/app.yaml manifests"
+      ],
+      "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md"
+    },
+    {
+      "type": "agent",
       "name": "kafka-agent",
       "displayName": "@kafka-agent",
       "description": "Expert on Rapids \u0026 Rivers event-driven architecture, Kafka patterns, and event schema design",
