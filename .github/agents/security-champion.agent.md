@@ -1,6 +1,6 @@
 ---
 name: security-champion-agent
-description: Expert on Nav security architecture, threat modeling, compliance, and holistic security practices
+description: Ekspert på Navs sikkerhetsarkitektur, trusselmodellering, compliance og helhetlig sikkerhetspraksis
 tools:
   - execute
   - read

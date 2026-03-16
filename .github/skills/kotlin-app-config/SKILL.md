@@ -1,6 +1,6 @@
 ---
 name: kotlin-app-config
-description: Sealed class configuration pattern for Kotlin applications with environment-specific settings
+description: Sealed class-konfigurasjon for Kotlin-applikasjoner med miljøspesifikke innstillinger
 ---
 
 # Kotlin Application Configuration Skill

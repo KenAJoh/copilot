@@ -1,5 +1,5 @@
 {
-  "domain": "auth",
+  "domain": "general",
   "tags": ["security", "pre-commit", "vulnerability-scanning", "code-review"],
   "examples": [
     {

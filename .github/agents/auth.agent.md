@@ -1,6 +1,6 @@
 ---
 name: auth-agent
-description: Expert on Azure AD, TokenX, ID-porten, Maskinporten, and JWT validation for Nav applications
+description: Ekspert på Azure AD, TokenX, ID-porten, Maskinporten og JWT-validering for Nav-applikasjoner
 tools:
   - execute
   - read

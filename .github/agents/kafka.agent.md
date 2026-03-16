@@ -1,6 +1,6 @@
 ---
 name: kafka-agent
-description: Expert on Rapids & Rivers event-driven architecture, Kafka patterns, and event schema design
+description: Ekspert på Rapids & Rivers eventdrevet arkitektur, Kafka-mønstre og event schema-design
 tools:
   - execute
   - read

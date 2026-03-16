@@ -1,6 +1,6 @@
 ---
 name: nais-agent
-description: Expert on Nais deployment, GCP resources, Kafka topics, and platform troubleshooting
+description: Ekspert på Nais-deployment, GCP-ressurser, Kafka-topics og plattform-feilsøking
 tools:
   - execute
   - read

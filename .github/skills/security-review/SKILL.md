@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Use when about to commit, push, or open a pull request and want to check if code is safe to merge
+description: Bruk før commit, push eller pull request for å sjekke at koden er trygg å merge
 ---
 
 # Security Review Skill
@@ -87,6 +87,131 @@ spec:
       external:
         - host: api.external-service.no  # only if strictly necessary
 ```
+
+## OWASP Top 10 Checks
+
+### A01: Broken Access Control
+
+```kotlin
+// ✅ Korrekt — sjekk at bruker har tilgang til ressursen
+@GetMapping("/api/vedtak/{id}")
+fun getVedtak(@PathVariable id: UUID): ResponseEntity<VedtakDTO> {
+    val bruker = hentInnloggetBruker()
+    val vedtak = vedtakService.findById(id)
+    if (vedtak.brukerId != bruker.id) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+    }
+    return ResponseEntity.ok(vedtak.toDTO())
+}
+
+// ❌ Feil — ingen tilgangskontroll (IDOR)
+@GetMapping("/api/vedtak/{id}")
+fun getVedtak(@PathVariable id: UUID) = vedtakService.findById(id)
+```
+
+### A03: Injection
+
+```kotlin
+// ✅ Korrekt — parameterisert spørring
+jdbcTemplate.query("SELECT * FROM bruker WHERE fnr = ?", mapper, fnr)
+
+// ❌ Feil — strengkonkatenering
+jdbcTemplate.query("SELECT * FROM bruker WHERE fnr = '$fnr'", mapper)
+```
+
+### A05: Security Misconfiguration
+
+```kotlin
+// ✅ Korrekt — CORS kun for kjente domener
+@Bean
+fun corsFilter() = CorsFilter(CorsConfiguration().apply {
+    allowedOrigins = listOf("https://my-app.intern.nav.no")
+    allowedMethods = listOf("GET", "POST")
+    allowedHeaders = listOf("Authorization", "Content-Type")
+})
+
+// ❌ Feil — åpen CORS
+allowedOrigins = listOf("*")
+```
+
+### A07: Cross-Site Scripting (XSS)
+
+```tsx
+// ✅ Korrekt — React escaper automatisk
+<BodyShort>{bruker.navn}</BodyShort>
+
+// ❌ Feil — rå HTML-injeksjon
+<div dangerouslySetInnerHTML={{ __html: userInput }} />
+```
+
+### A08: Insecure Deserialization
+
+```kotlin
+// ✅ Korrekt — valider input etter deserialisering
+@PostMapping("/api/vedtak")
+fun create(@RequestBody @Valid request: CreateVedtakRequest): ResponseEntity<VedtakDTO>
+
+// ✅ Begrens Jackson til kjente typer
+objectMapper.apply {
+    activateDefaultTyping(
+        polymorphicTypeValidator,
+        ObjectMapper.DefaultTyping.NON_FINAL
+    )
+}
+```
+
+### A09: Logging & Monitoring
+
+```kotlin
+// ✅ Korrekt — strukturert logging med korrelerings-ID, ingen PII
+log.info("Vedtak opprettet", kv("vedtakId", vedtak.id), kv("sakId", sak.id))
+
+// ❌ Feil — PII i logger
+log.info("Vedtak for bruker ${bruker.fnr} opprettet")
+```
+
+## File Upload Security
+
+```kotlin
+// ✅ Korrekt — valider filtype, størrelse, og magic bytes
+fun validateUpload(file: MultipartFile) {
+    require(file.size <= 10 * 1024 * 1024) { "Filen er for stor (maks 10 MB)" }
+    require(file.contentType in ALLOWED_TYPES) { "Ugyldig filtype" }
+
+    val bytes = file.bytes.take(8).toByteArray()
+    require(verifyMagicBytes(bytes, file.contentType!!)) { "Filinnhold matcher ikke type" }
+}
+
+private val ALLOWED_TYPES = setOf("application/pdf", "image/png", "image/jpeg")
+```
+
+## Dependency Management
+
+```kotlin
+// build.gradle.kts — pin versjoner, bruk BOM
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
+    }
+}
+
+// Sjekk sårbare avhengigheter
+// ./gradlew dependencyCheckAnalyze
+// trivy repo .
+```
+
+## Expanded Checklist
+
+- [ ] SQL-spørringer er parameteriserte (ingen strengkonkatenering)
+- [ ] Ingen PII i logger (fnr, navn, adresse)
+- [ ] Hemmeligheter kun fra environment/secrets
+- [ ] Nais accessPolicy er eksplisitt (ingen åpen inbound)
+- [ ] CORS er begrenset til kjente domener
+- [ ] Input er validert og sanitert
+- [ ] Tilgangskontroll sjekker eierskap (ikke bare auth)
+- [ ] Filopplasting validerer type, størrelse, og innhold
+- [ ] Avhengigheter er oppdaterte og sårbarhetsskannet
+- [ ] Ingen `dangerouslySetInnerHTML` uten sanitering
 
 ## Dependency Management
 

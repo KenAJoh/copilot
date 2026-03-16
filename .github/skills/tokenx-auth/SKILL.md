@@ -1,6 +1,6 @@
 ---
 name: tokenx-auth
-description: Service-to-service authentication using TokenX token exchange in Nais
+description: Tjeneste-til-tjeneste-autentisering med TokenX token exchange i Nais
 ---
 
 # TokenX Authentication Skill

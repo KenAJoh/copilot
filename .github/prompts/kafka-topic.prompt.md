@@ -1,6 +1,6 @@
 ---
 name: kafka-topic
-description: Add Kafka topic configuration to Nais manifest and create Rapids & Rivers event handler
+description: Legg til Kafka-topic-konfigurasjon i Nais-manifest og lag Rapids & Rivers event handler
 ---
 
 You are helping configure Kafka integration for a Nav application using the Rapids & Rivers pattern.

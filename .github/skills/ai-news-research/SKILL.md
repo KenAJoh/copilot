@@ -1,6 +1,6 @@
 ---
 name: ai-news-research
-description: Research and write monthly AI coding news summaries in Norwegian with working source links. Use when asked to write news, summarize AI coding trends, create a monthly update, or research what's new in GitHub Copilot, coding agents, AGENTS.md, skills, memory, agentic workflows, or developer experience.
+description: Skriv månedlige oppsummeringer av AI-nyheter for utviklere på norsk med fungerende kildelenker. Bruk for å skrive nyheter, oppsummere AI-trender, lage månedlig oppdatering, eller undersøke hva som er nytt i GitHub Copilot, coding agents, AGENTS.md, skills, memory, agentic workflows eller developer experience.
 ---
 
 # AI News Research

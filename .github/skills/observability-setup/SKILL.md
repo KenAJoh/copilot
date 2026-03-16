@@ -1,6 +1,6 @@
 ---
 name: observability-setup
-description: Setting up Prometheus metrics, OpenTelemetry tracing, and health endpoints for Nais applications
+description: Sett opp Prometheus-metrikker, OpenTelemetry-tracing og health check-endepunkter for Nais-applikasjoner
 ---
 
 # Observability Setup Skill
