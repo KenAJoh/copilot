@@ -10,6 +10,10 @@ description = "Generate version string"
 run = "pnpm install --frozen-lockfile"
 description = "Install dependencies"
 
+[tasks.update]
+run = "pnpm update"
+description = "Update all pnpm dependencies"
+
 [tasks.lint]
 run = "pnpm lint"
 description = "Run ESLint"

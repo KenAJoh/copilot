@@ -46,3 +46,4 @@ kubeconfig.yaml
 .DS_Store
 Thumbs.db
 apps/copilot-adoption/copilot-adoption
+apps/copilot-adoption/bin/copilot-adoption

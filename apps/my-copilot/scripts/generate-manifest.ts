@@ -104,7 +104,7 @@ function getAgents(): ManifestItem[] {
     .filter((f) => f.endsWith(".agent.md"))
     .map((file) => {
       const content = fs.readFileSync(path.join(dir, file), "utf-8");
-      const { data, body } = parseFrontmatter(content);
+      const { data } = parseFrontmatter(content);
       const name = (data.name as string) || file.replace(".agent.md", "");
       const rawUrl = `${RAW_BASE}/agents/${file}`;
       const description = (data.description as string) || "";
@@ -137,7 +137,7 @@ function getInstructions(): ManifestItem[] {
     .filter((f) => f.endsWith(".instructions.md"))
     .map((file) => {
       const content = fs.readFileSync(path.join(dir, file), "utf-8");
-      const { data, body } = parseFrontmatter(content);
+      const { data } = parseFrontmatter(content);
       const id = file.replace(".instructions.md", "");
       const applyTo = (data.applyTo as string) || "";
       const meta = loadMetadata(path.join(dir, file.replace(".instructions.md", ".metadata.json")));

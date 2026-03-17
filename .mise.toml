@@ -1,7 +1,104 @@
 # Root-level mise tasks for the monorepo
-# These tasks orchestrate running tasks across all apps
+#
+# Orchestrates running tasks across all applications.
+# Each app defines its own tasks in apps/<name>/.mise.toml.
+#
+# Standard tasks (delegated to each app):
+#   check, test, build, update
+#
+# Selective tasks (only apps that need them):
+#   generate — mcp-onboarding, my-copilot
+#
+# Root-only tasks:
+#   docs:*    — documentation generation and checking
+#   ratchet:* — GitHub Actions SHA pinning
+#   all       — full pipeline: generate → check → test → build
+
 [tools]
 "go:github.com/sethvargo/ratchet" = "latest"
+
+[env]
+APPS = "copilot-adoption copilot-metrics mcp-onboarding mcp-registry my-copilot"
+APPS_WITH_GENERATE = "mcp-onboarding my-copilot"
+
+# ─── Pipeline ────────────────────────────────────────────────────────────────
+
+[tasks.all]
+description = "Full pipeline: generate, check, test, build"
+run = '''
+#!/usr/bin/env bash
+set -e
+mise run generate
+mise run check
+mise run test
+mise run build
+'''
+
+# ─── Standard tasks (delegated to all apps) ──────────────────────────────────
+
+[tasks.check]
+description = "Run all checks across all apps"
+run = '''
+#!/usr/bin/env bash
+set -e
+for app in $APPS; do
+  echo "📦 $app:" && (cd "apps/$app" && mise run check) && echo ""
+done
+echo "📄 docs:" && mise run docs:check && echo ""
+echo "✅ All checks passed"
+'''
+
+[tasks.test]
+description = "Run tests across all apps"
+run = '''
+#!/usr/bin/env bash
+set -e
+for app in $APPS; do
+  echo "📦 $app:" && (cd "apps/$app" && mise run test) && echo ""
+done
+echo "✅ All tests passed"
+'''
+
+[tasks.build]
+description = "Build all apps"
+run = '''
+#!/usr/bin/env bash
+set -e
+for app in $APPS; do
+  echo "📦 $app:" && (cd "apps/$app" && mise run build) && echo ""
+done
+echo "✅ All apps built successfully"
+'''
+
+[tasks.update]
+description = "Update dependencies across all apps"
+run = '''
+#!/usr/bin/env bash
+set -e
+for app in $APPS; do
+  echo "📦 $app:" && (cd "apps/$app" && mise run update) && echo ""
+done
+echo "📦 scripts/generate-docs:"
+(cd scripts/generate-docs && go get -u ./... && go mod tidy)
+echo ""
+echo "✅ All dependencies updated"
+'''
+
+# ─── Generate (only apps that have generate tasks) ───────────────────────────
+
+[tasks.generate]
+description = "Generate all generated files"
+run = '''
+#!/usr/bin/env bash
+set -e
+for app in $APPS_WITH_GENERATE; do
+  echo "📦 $app:" && (cd "apps/$app" && mise run generate) && echo ""
+done
+echo "📄 docs:" && mise run docs:generate && echo ""
+echo "✅ All files generated"
+'''
+
+# ─── Docs ────────────────────────────────────────────────────────────────────
 
 [tasks."docs:generate"]
 description = "Generate docs from customization files"
@@ -10,6 +107,8 @@ run = "(cd scripts/generate-docs && go run .)"
 [tasks."docs:check"]
 description = "Check if docs are in sync with customization files"
 run = "(cd scripts/generate-docs && go run . --check)"
+
+# ─── Ratchet (GitHub Actions pinning) ────────────────────────────────────────
 
 [tasks."ratchet:pin"]
 description = "Pin GitHub Actions to specific commit SHAs"
@@ -26,126 +125,3 @@ run = "ratchet lint .github/workflows/*.y?ml"
 [tasks."ratchet:unpin"]
 description = "Unpin GitHub Actions (restore to tags)"
 run = "ratchet unpin .github/workflows/*.y?ml"
-
-[tasks.check]
-description = "Run all checks across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "🔍 Running checks across all apps..."
-echo ""
-
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise check)
-echo ""
-
-echo "📦 mcp-registry:"
-(cd apps/mcp-registry && mise check)
-echo ""
-
-echo "📦 copilot-metrics:"
-(cd apps/copilot-metrics && mise check)
-echo ""
-
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise check)
-echo ""
-
-echo "📄 docs:"
-mise run docs:check
-echo ""
-
-echo "✅ All checks passed"
-'''
-
-[tasks.test]
-description = "Run tests across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "🧪 Running tests across all apps..."
-echo ""
-
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise test)
-echo ""
-
-echo "📦 mcp-registry:"
-(cd apps/mcp-registry && mise test)
-echo ""
-
-echo "📦 copilot-metrics:"
-(cd apps/copilot-metrics && mise test)
-echo ""
-
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise test)
-echo ""
-
-echo "✅ All tests passed"
-'''
-
-[tasks.build]
-description = "Build all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "🔨 Building all apps..."
-echo ""
-
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise build)
-echo ""
-
-echo "📦 mcp-registry:"
-(cd apps/mcp-registry && mise build)
-echo ""
-
-echo "📦 copilot-metrics:"
-(cd apps/copilot-metrics && mise build)
-echo ""
-
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise build)
-echo ""
-
-echo "✅ All apps built successfully"
-'''
-
-[tasks.generate]
-description = "Generate all generated files across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "🔄 Generating files across all apps..."
-echo ""
-
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise run generate)
-echo ""
-
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise run generate)
-echo ""
-
-echo "📄 docs:"
-mise run docs:generate
-echo ""
-
-echo "✅ All files generated"
-'''
-
-[tasks.all]
-description = "Run all checks, tests, and builds across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-mise run generate
-mise run check
-mise run test
-mise run build
-'''

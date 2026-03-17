@@ -11,6 +11,10 @@ run = "echo $(date +%Y.%m.%d)-$(date +%H.%M)-$(git rev-parse --short HEAD)"
 description = "Download dependencies"
 run = "go mod download"
 
+[tasks.update]
+description = "Update all Go dependencies"
+run = ["go get -u ./...", "go mod tidy"]
+
 [tasks.build]
 description = "Build the Go application"
 run = "go build -o bin/copilot-adoption ."
