@@ -11,8 +11,16 @@ import {
   calculateLanguageStats,
   formatAdoptionRate,
   formatScanDate,
+  getTeamAdoptionRate,
+  getTeamRepoCount,
+  getLanguageAdoptionRate,
+  getLanguageRepoCount,
+  getCustomizationRepoCount,
+  getTopTeamsForChart,
+  getTopLanguagesForChart,
+  sortCustomizationsByScope,
 } from "./adoption-utils";
-import type { AdoptionSummary, LanguageAdoption, TeamAdoption } from "./types";
+import type { AdoptionSummary, LanguageAdoption, TeamAdoption, CustomizationDetail } from "./types";
 
 // Test fixtures
 const mockSummary: AdoptionSummary = {
@@ -53,8 +61,10 @@ const mockTeams: TeamAdoption[] = [
     team_name: "Team Alpha",
     team_repos: 15,
     active_repos: 12,
+    recently_active_repos: 10,
     repos_with_customizations: 5,
     adoption_rate: 0.417,
+    adoption_rate_active_only: 0.5,
     with_copilot_instructions: 4,
     with_agents_md: 2,
     with_agents: 1,
@@ -69,8 +79,10 @@ const mockTeams: TeamAdoption[] = [
     team_name: "Team Beta",
     team_repos: 8,
     active_repos: 0, // Inactive team
+    recently_active_repos: 0,
     repos_with_customizations: 0,
     adoption_rate: 0,
+    adoption_rate_active_only: 0,
     with_copilot_instructions: 0,
     with_agents_md: 0,
     with_agents: 0,
@@ -85,8 +97,10 @@ const mockTeams: TeamAdoption[] = [
     team_name: "Team Gamma",
     team_repos: 20,
     active_repos: 18,
+    recently_active_repos: 15,
     repos_with_customizations: 8,
     adoption_rate: 0.444,
+    adoption_rate_active_only: 0.533,
     with_copilot_instructions: 6,
     with_agents_md: 3,
     with_agents: 2,
@@ -101,8 +115,10 @@ const mockTeams: TeamAdoption[] = [
     team_name: "Team Delta",
     team_repos: 5,
     active_repos: 5,
+    recently_active_repos: 3,
     repos_with_customizations: 0,
     adoption_rate: 0,
+    adoption_rate_active_only: 0,
     with_copilot_instructions: 0,
     with_agents_md: 0,
     with_agents: 0,
@@ -118,8 +134,10 @@ const mockLanguages: LanguageAdoption[] = [
     scan_date: "2026-03-13",
     language: "TypeScript",
     total_repos: 500,
+    recently_active_repos: 350,
     repos_with_customizations: 45,
     adoption_rate: 0.09,
+    adoption_rate_active_only: 0.129,
     with_copilot_instructions: 40,
     with_agents: 5,
     with_instructions: 3,
@@ -129,8 +147,10 @@ const mockLanguages: LanguageAdoption[] = [
     scan_date: "2026-03-13",
     language: "Kotlin",
     total_repos: 300,
+    recently_active_repos: 200,
     repos_with_customizations: 30,
     adoption_rate: 0.1,
+    adoption_rate_active_only: 0.15,
     with_copilot_instructions: 25,
     with_agents: 8,
     with_instructions: 5,
@@ -140,8 +160,10 @@ const mockLanguages: LanguageAdoption[] = [
     scan_date: "2026-03-13",
     language: "Go",
     total_repos: 50,
+    recently_active_repos: 40,
     repos_with_customizations: 10,
     adoption_rate: 0.2,
+    adoption_rate_active_only: 0.25,
     with_copilot_instructions: 8,
     with_agents: 3,
     with_instructions: 2,
@@ -151,8 +173,10 @@ const mockLanguages: LanguageAdoption[] = [
     scan_date: "2026-03-13",
     language: "Java",
     total_repos: 200,
+    recently_active_repos: 100,
     repos_with_customizations: 0,
     adoption_rate: 0,
+    adoption_rate_active_only: 0,
     with_copilot_instructions: 0,
     with_agents: 0,
     with_instructions: 0,
@@ -320,6 +344,8 @@ describe("calculateLanguageStats", () => {
 
     expect(result.totalLanguages).toBe(4);
     expect(result.topLanguage?.language).toBe("Go");
+    expect(result.topActiveLanguage?.language).toBe("Go");
+    expect(result.topActiveLanguage?.adoption_rate_active_only).toBe(0.25);
     expect(result.totalReposWithCustomizations).toBe(85); // 45 + 30 + 10 + 0
   });
 });
@@ -343,5 +369,157 @@ describe("formatScanDate", () => {
     expect(result).toContain("13");
     expect(result).toContain("mars");
     expect(result).toContain("2026");
+  });
+});
+
+// --- Scope-aware helper tests ---
+
+const mockCustomizationDetails: CustomizationDetail[] = [
+  { category: "agents", file_name: "nais.agent.md", repo_count: 20, active_repo_count: 15 },
+  { category: "agents", file_name: "auth.agent.md", repo_count: 10, active_repo_count: 8 },
+  { category: "instructions", file_name: "kotlin.instructions.md", repo_count: 25, active_repo_count: 5 },
+  { category: "instructions", file_name: "testing.instructions.md", repo_count: 15, active_repo_count: 12 },
+];
+
+describe("getTeamAdoptionRate", () => {
+  const team = mockTeams[0]; // Team Alpha
+
+  it("should return adoption_rate_active_only for active scope", () => {
+    expect(getTeamAdoptionRate(team, "active")).toBe(0.5);
+  });
+
+  it("should return adoption_rate for all scope", () => {
+    expect(getTeamAdoptionRate(team, "all")).toBe(0.417);
+  });
+});
+
+describe("getTeamRepoCount", () => {
+  const team = mockTeams[0];
+
+  it("should return recently_active_repos for active scope", () => {
+    expect(getTeamRepoCount(team, "active")).toBe(10);
+  });
+
+  it("should return active_repos for all scope", () => {
+    expect(getTeamRepoCount(team, "all")).toBe(12);
+  });
+});
+
+describe("getLanguageAdoptionRate", () => {
+  const lang = mockLanguages[1]; // Kotlin
+
+  it("should return adoption_rate_active_only for active scope", () => {
+    expect(getLanguageAdoptionRate(lang, "active")).toBe(0.15);
+  });
+
+  it("should return adoption_rate for all scope", () => {
+    expect(getLanguageAdoptionRate(lang, "all")).toBe(0.1);
+  });
+});
+
+describe("getLanguageRepoCount", () => {
+  const lang = mockLanguages[0]; // TypeScript
+
+  it("should return recently_active_repos for active scope", () => {
+    expect(getLanguageRepoCount(lang, "active")).toBe(350);
+  });
+
+  it("should return total_repos for all scope", () => {
+    expect(getLanguageRepoCount(lang, "all")).toBe(500);
+  });
+});
+
+describe("getCustomizationRepoCount", () => {
+  const detail = mockCustomizationDetails[0];
+
+  it("should return active_repo_count for active scope", () => {
+    expect(getCustomizationRepoCount(detail, "active")).toBe(15);
+  });
+
+  it("should return repo_count for all scope", () => {
+    expect(getCustomizationRepoCount(detail, "all")).toBe(20);
+  });
+});
+
+describe("getTopTeamsForChart", () => {
+  it("should sort by adoption_rate_active_only in percentage mode with active scope", () => {
+    const result = getTopTeamsForChart(mockTeams, "active", "percentage", 10);
+
+    expect(result.length).toBe(2); // Only alpha and gamma have customizations + active repos
+    expect(result[0].team_slug).toBe("team-gamma"); // 0.533 > 0.5
+    expect(result[1].team_slug).toBe("team-alpha");
+  });
+
+  it("should sort by adoption_rate in percentage mode with all scope", () => {
+    const result = getTopTeamsForChart(mockTeams, "all", "percentage", 10);
+
+    expect(result[0].team_slug).toBe("team-gamma"); // 0.444 > 0.417
+  });
+
+  it("should sort by repos_with_customizations in absolute mode", () => {
+    const result = getTopTeamsForChart(mockTeams, "active", "absolute", 10);
+
+    expect(result[0].team_slug).toBe("team-gamma"); // 8 > 5
+    expect(result[1].team_slug).toBe("team-alpha");
+  });
+
+  it("should exclude teams with zero repos in scope for percentage mode", () => {
+    const result = getTopTeamsForChart(mockTeams, "active", "percentage", 10);
+
+    expect(result.find((t) => t.team_slug === "team-beta")).toBeUndefined();
+  });
+
+  it("should handle empty input", () => {
+    expect(getTopTeamsForChart([], "active", "percentage", 10)).toEqual([]);
+  });
+});
+
+describe("getTopLanguagesForChart", () => {
+  it("should sort by adoption_rate_active_only with active scope", () => {
+    const result = getTopLanguagesForChart(mockLanguages, "active", 10);
+
+    expect(result[0].language).toBe("Go"); // 0.25
+    expect(result[1].language).toBe("Kotlin"); // 0.15
+    expect(result[2].language).toBe("TypeScript"); // 0.129
+  });
+
+  it("should sort by adoption_rate with all scope", () => {
+    const result = getTopLanguagesForChart(mockLanguages, "all", 10);
+
+    expect(result[0].language).toBe("Go"); // 0.2
+    expect(result[1].language).toBe("Kotlin"); // 0.1
+  });
+
+  it("should exclude languages with zero customizations", () => {
+    const result = getTopLanguagesForChart(mockLanguages, "active", 10);
+
+    expect(result.find((l) => l.language === "Java")).toBeUndefined();
+  });
+
+  it("should handle empty input", () => {
+    expect(getTopLanguagesForChart([], "active", 10)).toEqual([]);
+  });
+});
+
+describe("sortCustomizationsByScope", () => {
+  it("should sort by active_repo_count with active scope", () => {
+    const result = sortCustomizationsByScope(mockCustomizationDetails, "active");
+
+    expect(result[0].file_name).toBe("nais.agent.md"); // 15
+    expect(result[1].file_name).toBe("testing.instructions.md"); // 12
+  });
+
+  it("should sort by repo_count with all scope", () => {
+    const result = sortCustomizationsByScope(mockCustomizationDetails, "all");
+
+    expect(result[0].file_name).toBe("kotlin.instructions.md"); // 25
+    expect(result[1].file_name).toBe("nais.agent.md"); // 20
+  });
+
+  it("should not mutate original array", () => {
+    const original = [...mockCustomizationDetails];
+    sortCustomizationsByScope(mockCustomizationDetails, "active");
+
+    expect(mockCustomizationDetails).toEqual(original);
   });
 });

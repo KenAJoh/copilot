@@ -5,7 +5,7 @@
  * All functions are side-effect free and easily testable.
  */
 
-import type { AdoptionSummary, LanguageAdoption, TeamAdoption } from "./types";
+import type { AdoptionSummary, LanguageAdoption, TeamAdoption, CustomizationDetail, AdoptionScope } from "./types";
 
 /**
  * Customization type with label and count.
@@ -139,13 +139,23 @@ export function calculateTeamStats(teams: TeamAdoption[]): TeamAdoptionStats {
 export interface LanguageAdoptionStats {
   totalLanguages: number;
   topLanguage: LanguageAdoption | null;
+  topActiveLanguage: LanguageAdoption | null;
   totalReposWithCustomizations: number;
 }
 
 export function calculateLanguageStats(languages: LanguageAdoption[]): LanguageAdoptionStats {
+  const activeLanguages = languages.filter((l) => l.recently_active_repos > 0 && l.repos_with_customizations > 0);
+  const topActiveLanguage =
+    activeLanguages.length > 0
+      ? activeLanguages.reduce((best, lang) =>
+          lang.adoption_rate_active_only > best.adoption_rate_active_only ? lang : best
+        )
+      : null;
+
   return {
     totalLanguages: languages.length,
     topLanguage: getTopLanguage(languages),
+    topActiveLanguage,
     totalReposWithCustomizations: languages.reduce((sum, l) => sum + l.repos_with_customizations, 0),
   };
 }
@@ -166,4 +176,83 @@ export function formatScanDate(scanDate: string): string {
     month: "long",
     year: "numeric",
   });
+}
+
+// --- Scope-aware helpers ---
+
+/**
+ * Get the adoption rate for a team based on scope.
+ */
+export function getTeamAdoptionRate(team: TeamAdoption, scope: AdoptionScope): number {
+  return scope === "active" ? team.adoption_rate_active_only : team.adoption_rate;
+}
+
+/**
+ * Get the repo count denominator for a team based on scope.
+ */
+export function getTeamRepoCount(team: TeamAdoption, scope: AdoptionScope): number {
+  return scope === "active" ? team.recently_active_repos : team.active_repos;
+}
+
+/**
+ * Get the adoption rate for a language based on scope.
+ */
+export function getLanguageAdoptionRate(lang: LanguageAdoption, scope: AdoptionScope): number {
+  return scope === "active" ? lang.adoption_rate_active_only : lang.adoption_rate;
+}
+
+/**
+ * Get the repo count denominator for a language based on scope.
+ */
+export function getLanguageRepoCount(lang: LanguageAdoption, scope: AdoptionScope): number {
+  return scope === "active" ? lang.recently_active_repos : lang.total_repos;
+}
+
+/**
+ * Get the repo count for a customization detail based on scope.
+ */
+export function getCustomizationRepoCount(detail: CustomizationDetail, scope: AdoptionScope): number {
+  return scope === "active" ? detail.active_repo_count : detail.repo_count;
+}
+
+/**
+ * Get top teams for chart display, sorted by scope-appropriate metric.
+ */
+export function getTopTeamsForChart(
+  teams: TeamAdoption[],
+  scope: AdoptionScope,
+  viewMode: "absolute" | "percentage",
+  maxTeams: number
+): TeamAdoption[] {
+  const withCustomizations = teams.filter((t) => t.repos_with_customizations > 0);
+  if (viewMode === "percentage") {
+    return withCustomizations
+      .filter((t) => getTeamRepoCount(t, scope) > 0)
+      .sort((a, b) => getTeamAdoptionRate(b, scope) - getTeamAdoptionRate(a, scope))
+      .slice(0, maxTeams);
+  }
+  return withCustomizations
+    .sort((a, b) => b.repos_with_customizations - a.repos_with_customizations)
+    .slice(0, maxTeams);
+}
+
+/**
+ * Get top languages for chart display, sorted by scope-appropriate adoption rate.
+ */
+export function getTopLanguagesForChart(
+  languages: LanguageAdoption[],
+  scope: AdoptionScope,
+  maxLanguages: number
+): LanguageAdoption[] {
+  return languages
+    .filter((l) => l.repos_with_customizations > 0)
+    .sort((a, b) => getLanguageAdoptionRate(b, scope) - getLanguageAdoptionRate(a, scope))
+    .slice(0, maxLanguages);
+}
+
+/**
+ * Sort customization details by scope-appropriate repo count (descending).
+ */
+export function sortCustomizationsByScope(details: CustomizationDetail[], scope: AdoptionScope): CustomizationDetail[] {
+  return [...details].sort((a, b) => getCustomizationRepoCount(b, scope) - getCustomizationRepoCount(a, scope));
 }

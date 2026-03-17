@@ -25,8 +25,10 @@ export default function TeamTable({ teams }: TeamTableProps) {
           <TableRow>
             <TableHeaderCell>Team</TableHeaderCell>
             <TableHeaderCell align="right">Aktive repoer</TableHeaderCell>
+            <TableHeaderCell align="right">Nylig aktive</TableHeaderCell>
             <TableHeaderCell align="right">Med tilpasninger</TableHeaderCell>
             <TableHeaderCell align="right">Adopsjonsrate</TableHeaderCell>
+            <TableHeaderCell align="right">Rate (aktive)</TableHeaderCell>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -34,8 +36,12 @@ export default function TeamTable({ teams }: TeamTableProps) {
             <TableRow key={team.team_slug}>
               <TableDataCell>{team.team_name || team.team_slug}</TableDataCell>
               <TableDataCell align="right">{team.active_repos}</TableDataCell>
+              <TableDataCell align="right">{team.recently_active_repos}</TableDataCell>
               <TableDataCell align="right">{team.repos_with_customizations}</TableDataCell>
               <TableDataCell align="right">{formatAdoptionRate(team.adoption_rate)}</TableDataCell>
+              <TableDataCell align="right">
+                {team.recently_active_repos > 0 ? formatAdoptionRate(team.adoption_rate_active_only) : "—"}
+              </TableDataCell>
             </TableRow>
           ))}
         </TableBody>

@@ -106,9 +106,9 @@ function TeamContent({ data }: { data: AdoptionData }) {
         />
         <MetricCard
           value={formatNumber(stats.totalReposWithCustomizations)}
-          label="Repoer totalt"
+          label="Tilpassede repoer"
           helpTitle="Tilpassede repoer"
-          helpText="Sum av repoer med Copilot-tilpasninger på tvers av team"
+          helpText="Repoer med Copilot-tilpasninger, summert på tvers av team"
         />
       </HGrid>
 
@@ -146,17 +146,17 @@ function LanguageContent({ data }: { data: AdoptionData }) {
           helpText="Antall programmeringsspråk med minst 5 repoer"
         />
         <MetricCard
-          value={stats.topLanguage?.language ?? "—"}
-          label="Høyest adopsjon"
-          helpTitle="Høyest adopsjon"
+          value={stats.topActiveLanguage?.language ?? stats.topLanguage?.language ?? "—"}
+          label="Høyest adopsjon (aktive)"
+          helpTitle="Høyest adopsjon blant aktive repoer"
           helpText={
-            stats.topLanguage
-              ? `Språket med høyest Copilot-adopsjonsrate (${formatAdoptionRate(stats.topLanguage.adoption_rate)})`
+            stats.topActiveLanguage
+              ? `Språket med høyest adopsjonsrate blant repoer med commit siste 90 dager (${formatAdoptionRate(stats.topActiveLanguage.adoption_rate_active_only)})`
               : "Ingen data"
           }
           subtitle={
-            stats.topLanguage
-              ? `${formatAdoptionRate(stats.topLanguage.adoption_rate)} av ${stats.topLanguage.total_repos} repoer`
+            stats.topActiveLanguage
+              ? `${formatAdoptionRate(stats.topActiveLanguage.adoption_rate_active_only)} av ${stats.topActiveLanguage.recently_active_repos} aktive repoer`
               : undefined
           }
         />
@@ -164,7 +164,7 @@ function LanguageContent({ data }: { data: AdoptionData }) {
           value={formatNumber(stats.totalReposWithCustomizations)}
           label="Repoer med tilpasninger"
           helpTitle="Repoer med tilpasninger"
-          helpText="Sum av repoer på tvers av alle språk"
+          helpText="Repoer med tilpasninger, summert på tvers av språk"
         />
       </HGrid>
 
@@ -183,6 +183,8 @@ function TopCustomizationsContent({ data }: { data: AdoptionData }) {
 
   const totalFiles = customizationDetails.length;
   const topFile = customizationDetails[0];
+  const totalActiveRepoUsages = customizationDetails.reduce((sum, d) => sum + d.active_repo_count, 0);
+  const totalRepoUsages = customizationDetails.reduce((sum, d) => sum + d.repo_count, 0);
 
   return (
     <VStack gap="space-24">
@@ -197,14 +199,15 @@ function TopCustomizationsContent({ data }: { data: AdoptionData }) {
           value={topFile.file_name}
           label="Mest brukte"
           helpTitle="Mest brukte tilpasning"
-          helpText={`Den mest brukte tilpasningen på tvers av navikt-repoer`}
-          subtitle={`${formatNumber(topFile.repo_count)} repoer`}
+          helpText="Tilpasningsfila som brukes i flest navikt-repoer"
+          subtitle={`${formatNumber(topFile.active_repo_count)} aktive / ${formatNumber(topFile.repo_count)} totalt`}
         />
         <MetricCard
-          value={formatNumber(new Set(customizationDetails.map((d) => d.category)).size)}
-          label="Kategorier"
-          helpTitle="Kategorier"
-          helpText="Antall kategorier med tilpasninger (agenter, skills, instruksjoner, prompts)"
+          value={formatNumber(totalActiveRepoUsages)}
+          label="Bruk i aktive repoer"
+          helpTitle="Bruk i aktive repoer"
+          helpText="Antall tilpasningsfiler i bruk i repoer med commit siste 90 dager"
+          subtitle={`${formatNumber(totalRepoUsages)} totalt`}
         />
       </HGrid>
 
@@ -247,11 +250,7 @@ async function CachedAdoptionData() {
 
   return (
     <VStack gap="space-24">
-      {scanDate && (
-        <BodyShort className="text-gray-600">
-          Siste skanning: {scanDate} • Viser Copilot-tilpasninger på tvers av navikt-repoer
-        </BodyShort>
-      )}
+      {scanDate && <BodyShort className="text-gray-600">Siste skanning: {scanDate}</BodyShort>}
       <Tabs tabs={tabs} />
     </VStack>
   );

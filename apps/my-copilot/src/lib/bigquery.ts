@@ -131,7 +131,9 @@ export class CopilotBigQueryClient {
   async getCustomizationDetails(): Promise<CustomizationDetail[]> {
     const viewName = "v_customization_details";
     const query = `
-      SELECT category, file_name, COUNT(DISTINCT repo) AS repo_count
+      SELECT category, file_name,
+        COUNT(DISTINCT repo) AS repo_count,
+        COUNTIF(is_recently_active) AS active_repo_count
       FROM ${this.adoptionViewRef(viewName)}
       WHERE scan_date = (SELECT MAX(scan_date) FROM ${this.adoptionViewRef(viewName)})
       GROUP BY category, file_name

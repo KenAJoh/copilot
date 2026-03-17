@@ -1,11 +1,12 @@
 "use client";
 
-import type { CustomizationDetail } from "@/lib/types";
+import type { CustomizationDetail, AdoptionScope } from "@/lib/types";
 import React, { useMemo, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { chartColors, commonHorizontalBarOptions, NO_DATA_MESSAGE } from "@/lib/chart-utils";
-import { Box, Heading, BodyShort, HGrid, HStack, VStack, Chips } from "@navikt/ds-react";
+import { Box, Heading, BodyShort, HGrid, HStack, VStack, Chips, ToggleGroup } from "@navikt/ds-react";
 import { getOfficialFileNames } from "@/lib/customizations";
+import { getCustomizationRepoCount, sortCustomizationsByScope } from "@/lib/adoption-utils";
 
 type OriginFilter = "all" | "official" | "custom";
 
@@ -32,19 +33,22 @@ function CategoryChart({
   category,
   items,
   maxItems,
+  scope,
 }: {
   category: string;
   items: CustomizationDetail[];
   maxItems: number;
+  scope: AdoptionScope;
 }) {
-  const top = items.slice(0, maxItems);
+  const sorted = sortCustomizationsByScope(items, scope);
+  const top = sorted.slice(0, maxItems);
   const color = categoryColors[category] ?? chartColors[5];
 
   const chartData = {
     labels: top.map((item) => item.file_name),
     datasets: [
       {
-        data: top.map((item) => item.repo_count),
+        data: top.map((item) => getCustomizationRepoCount(item, scope)),
         backgroundColor: color,
         borderRadius: 4,
         barThickness: 18,
@@ -72,6 +76,7 @@ function CategoryChart({
 
 const TopCustomizationsChart: React.FC<TopCustomizationsChartProps> = ({ data, maxItems = 10 }) => {
   const [originFilter, setOriginFilter] = useState<OriginFilter>("all");
+  const [scope, setScope] = useState<AdoptionScope>("active");
   const officialNames = useMemo(() => getOfficialFileNames(), []);
 
   const filteredData = useMemo(() => {
@@ -99,25 +104,37 @@ const TopCustomizationsChart: React.FC<TopCustomizationsChartProps> = ({ data, m
 
   return (
     <VStack gap="space-16">
-      <HStack gap="space-8" align="center">
-        <BodyShort size="small" className="text-gray-500">
-          Opprinnelse:
-        </BodyShort>
-        <Chips size="small">
-          <Chips.Toggle selected={originFilter === "all"} onClick={() => setOriginFilter("all")}>
-            Alle
-          </Chips.Toggle>
-          <Chips.Toggle selected={originFilter === "official"} onClick={() => setOriginFilter("official")}>
-            Offisielle
-          </Chips.Toggle>
-          <Chips.Toggle selected={originFilter === "custom"} onClick={() => setOriginFilter("custom")}>
-            Egne
-          </Chips.Toggle>
-        </Chips>
+      <HStack gap="space-16" align="center" justify="space-between" wrap>
+        <HStack gap="space-8" align="center">
+          <BodyShort size="small" className="text-gray-500">
+            Opprinnelse:
+          </BodyShort>
+          <Chips size="small">
+            <Chips.Toggle selected={originFilter === "all"} onClick={() => setOriginFilter("all")}>
+              Alle
+            </Chips.Toggle>
+            <Chips.Toggle selected={originFilter === "official"} onClick={() => setOriginFilter("official")}>
+              Offisielle
+            </Chips.Toggle>
+            <Chips.Toggle selected={originFilter === "custom"} onClick={() => setOriginFilter("custom")}>
+              Egne
+            </Chips.Toggle>
+          </Chips>
+        </HStack>
+        <ToggleGroup size="small" value={scope} onChange={(val) => setScope(val as AdoptionScope)}>
+          <ToggleGroup.Item value="active">Aktive repoer</ToggleGroup.Item>
+          <ToggleGroup.Item value="all">Alle repoer</ToggleGroup.Item>
+        </ToggleGroup>
       </HStack>
       <HGrid columns={{ xs: 1, md: 2 }} gap="space-16">
         {categories.map((category) => (
-          <CategoryChart key={category} category={category} items={grouped[category] ?? []} maxItems={maxItems} />
+          <CategoryChart
+            key={category}
+            category={category}
+            items={grouped[category] ?? []}
+            maxItems={maxItems}
+            scope={scope}
+          />
         ))}
       </HGrid>
     </VStack>

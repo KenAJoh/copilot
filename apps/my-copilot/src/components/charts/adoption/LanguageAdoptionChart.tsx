@@ -1,11 +1,12 @@
 "use client";
 
-import type { LanguageAdoption } from "@/lib/types";
-import React from "react";
+import type { LanguageAdoption, AdoptionScope } from "@/lib/types";
+import React, { useMemo, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { chartColors, commonHorizontalBarOptions, NO_DATA_MESSAGE } from "@/lib/chart-utils";
-import { Box, Heading } from "@navikt/ds-react";
+import { Box, Heading, HStack, VStack, ToggleGroup } from "@navikt/ds-react";
 import { TooltipItem } from "chart.js";
+import { getTopLanguagesForChart, getLanguageAdoptionRate, getLanguageRepoCount } from "@/lib/adoption-utils";
 
 interface LanguageAdoptionChartProps {
   data: LanguageAdoption[];
@@ -13,6 +14,13 @@ interface LanguageAdoptionChartProps {
 }
 
 const LanguageAdoptionChart: React.FC<LanguageAdoptionChartProps> = ({ data, maxLanguages = 12 }) => {
+  const [scope, setScope] = useState<AdoptionScope>("active");
+
+  const topLanguages = useMemo(
+    () => getTopLanguagesForChart(data ?? [], scope, maxLanguages),
+    [data, scope, maxLanguages]
+  );
+
   if (!data || data.length === 0) {
     return (
       <Box padding="space-16" borderRadius="8" className="bg-white border border-gray-200">
@@ -20,12 +28,6 @@ const LanguageAdoptionChart: React.FC<LanguageAdoptionChartProps> = ({ data, max
       </Box>
     );
   }
-
-  // Get top languages by adoption rate (only those with customizations)
-  const topLanguages = data
-    .filter((l) => l.repos_with_customizations > 0)
-    .sort((a, b) => b.adoption_rate - a.adoption_rate)
-    .slice(0, maxLanguages);
 
   if (topLanguages.length === 0) {
     return (
@@ -43,7 +45,7 @@ const LanguageAdoptionChart: React.FC<LanguageAdoptionChartProps> = ({ data, max
     datasets: [
       {
         label: "Adopsjonsrate",
-        data: topLanguages.map((l) => l.adoption_rate * 100),
+        data: topLanguages.map((l) => getLanguageAdoptionRate(l, scope) * 100),
         backgroundColor: chartColors[2], // purple
         borderRadius: 4,
         barThickness: 16,
@@ -60,7 +62,9 @@ const LanguageAdoptionChart: React.FC<LanguageAdoptionChartProps> = ({ data, max
         callbacks: {
           label: (context: TooltipItem<"bar">) => {
             const lang = topLanguages[context.dataIndex];
-            return `${lang.repos_with_customizations} av ${lang.total_repos} repo (${(context.raw as number).toFixed(0)}%)`;
+            const repoCount = getLanguageRepoCount(lang, scope);
+            const repoLabel = scope === "active" ? "aktive repo" : "repo";
+            return `${lang.repos_with_customizations} av ${repoCount} ${repoLabel} (${(context.raw as number).toFixed(0)}%)`;
           },
         },
       },
@@ -80,12 +84,20 @@ const LanguageAdoptionChart: React.FC<LanguageAdoptionChartProps> = ({ data, max
 
   return (
     <Box padding="space-16" borderRadius="8" className="bg-white border border-gray-200">
-      <Heading size="small" level="4" spacing>
-        Adopsjon etter programmeringsspråk
-      </Heading>
-      <div style={{ height: Math.max(300, topLanguages.length * 28) }}>
-        <Bar data={chartData} options={options} />
-      </div>
+      <VStack gap="space-16">
+        <HStack justify="space-between" align="center" gap="space-8" wrap>
+          <Heading size="small" level="4">
+            Adopsjon etter programmeringsspråk
+          </Heading>
+          <ToggleGroup size="small" value={scope} onChange={(val) => setScope(val as AdoptionScope)}>
+            <ToggleGroup.Item value="active">Aktive repoer</ToggleGroup.Item>
+            <ToggleGroup.Item value="all">Alle repoer</ToggleGroup.Item>
+          </ToggleGroup>
+        </HStack>
+        <div style={{ height: Math.max(300, topLanguages.length * 28) }}>
+          <Bar data={chartData} options={options} />
+        </div>
+      </VStack>
     </Box>
   );
 };

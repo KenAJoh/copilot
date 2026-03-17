@@ -1,14 +1,14 @@
 "use client";
 
-import type { TeamAdoption } from "@/lib/types";
+import type { TeamAdoption, AdoptionScope } from "@/lib/types";
 import React, { useMemo, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { chartColors, commonHorizontalBarOptions, NO_DATA_MESSAGE } from "@/lib/chart-utils";
 import { Box, Heading, HStack, VStack, ToggleGroup } from "@navikt/ds-react";
 import { TooltipItem } from "chart.js";
+import { getTopTeamsForChart, getTeamAdoptionRate, getTeamRepoCount } from "@/lib/adoption-utils";
 
 type ViewMode = "absolute" | "percentage";
-type Scope = "all" | "active";
 
 interface TeamAdoptionChartProps {
   data: TeamAdoption[];
@@ -17,23 +17,12 @@ interface TeamAdoptionChartProps {
 
 const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 15 }) => {
   const [viewMode, setViewMode] = useState<ViewMode>("percentage");
-  const [scope, setScope] = useState<Scope>("active");
+  const [scope, setScope] = useState<AdoptionScope>("active");
 
-  const topTeams = useMemo(() => {
-    if (!data || data.length === 0) return [];
-    const filtered = data.filter((t) => t.repos_with_customizations > 0);
-    if (viewMode === "percentage") {
-      return filtered
-        .filter((t) => (scope === "active" ? t.recently_active_repos > 0 : t.active_repos > 0))
-        .sort((a, b) =>
-          scope === "active"
-            ? b.adoption_rate_active_only - a.adoption_rate_active_only
-            : b.adoption_rate - a.adoption_rate
-        )
-        .slice(0, maxTeams);
-    }
-    return filtered.sort((a, b) => b.repos_with_customizations - a.repos_with_customizations).slice(0, maxTeams);
-  }, [data, viewMode, scope, maxTeams]);
+  const topTeams = useMemo(
+    () => getTopTeamsForChart(data ?? [], scope, viewMode, maxTeams),
+    [data, viewMode, scope, maxTeams]
+  );
 
   if (!data || data.length === 0) {
     return (
@@ -60,8 +49,7 @@ const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 
       {
         data: topTeams.map((t) => {
           if (viewMode === "percentage") {
-            const rate = scope === "active" ? t.adoption_rate_active_only : t.adoption_rate;
-            return Math.round(rate * 100);
+            return Math.round(getTeamAdoptionRate(t, scope) * 100);
           }
           return t.repos_with_customizations;
         }),
@@ -92,8 +80,8 @@ const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 
         callbacks: {
           label: (context: TooltipItem<"bar">) => {
             const team = topTeams[context.dataIndex];
-            const repoCount = scope === "active" ? team.recently_active_repos : team.active_repos;
-            const rate = scope === "active" ? team.adoption_rate_active_only : team.adoption_rate;
+            const repoCount = getTeamRepoCount(team, scope);
+            const rate = getTeamAdoptionRate(team, scope);
             const ratePercent = Math.round(rate * 100);
             const repoLabel = scope === "active" ? "aktive repo (siste 90 dager)" : "aktive repo";
             return viewMode === "percentage"
@@ -113,7 +101,7 @@ const TeamAdoptionChart: React.FC<TeamAdoptionChartProps> = ({ data, maxTeams = 
             {viewMode === "percentage" ? "Team med høyest adopsjonsrate" : "Team med flest tilpasninger"}
           </Heading>
           <HStack gap="space-8">
-            <ToggleGroup size="small" value={scope} onChange={(val) => setScope(val as Scope)}>
+            <ToggleGroup size="small" value={scope} onChange={(val) => setScope(val as AdoptionScope)}>
               <ToggleGroup.Item value="active">Aktive repoer</ToggleGroup.Item>
               <ToggleGroup.Item value="all">Alle repoer</ToggleGroup.Item>
             </ToggleGroup>

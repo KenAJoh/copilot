@@ -302,6 +302,7 @@ export interface CustomizationDetail {
   category: string;
   file_name: string;
   repo_count: number;
+  active_repo_count: number;
 }
 
 export interface CustomizationUsage {
@@ -317,3 +318,10 @@ export interface AdoptionData {
   languages: LanguageAdoption[];
   customizationDetails: CustomizationDetail[];
 }
+
+/**
+ * Scope for filtering adoption data by repo activity.
+ * "active" = repos with commit in last 90 days.
+ * "all" = all non-archived repos.
+ */
+export type AdoptionScope = "all" | "active";
