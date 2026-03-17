@@ -5,6 +5,7 @@ SELECT
   repo,
   primary_language,
   visibility,
+  IFNULL(default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY), false) AS is_recently_active,
   'agents' AS category,
   JSON_VALUE(f) AS file_name
 FROM `%s.%s.%s`,
@@ -20,6 +21,7 @@ SELECT
   repo,
   primary_language,
   visibility,
+  IFNULL(default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY), false) AS is_recently_active,
   'instructions' AS category,
   JSON_VALUE(f) AS file_name
 FROM `%s.%s.%s`,
@@ -35,6 +37,7 @@ SELECT
   repo,
   primary_language,
   visibility,
+  IFNULL(default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY), false) AS is_recently_active,
   'prompts' AS category,
   JSON_VALUE(f) AS file_name
 FROM `%s.%s.%s`,
@@ -50,6 +53,7 @@ SELECT
   repo,
   primary_language,
   visibility,
+  IFNULL(default_branch_last_commit >= TIMESTAMP_SUB(TIMESTAMP(scan_date), INTERVAL 90 DAY), false) AS is_recently_active,
   'skills' AS category,
   JSON_VALUE(f) AS file_name
 FROM `%s.%s.%s`,
