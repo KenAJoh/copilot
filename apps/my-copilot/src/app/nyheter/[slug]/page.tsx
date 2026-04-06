@@ -19,6 +19,14 @@ const markdownComponents: Components = {
     </Heading>
   ),
   p: ({ children }) => <BodyLong spacing>{children}</BodyLong>,
+  ul: ({ children }) => <ul>{children}</ul>,
+  ol: ({ children }) => <ol>{children}</ol>,
+  li: ({ children }) => <li>{children}</li>,
+  pre: ({ children }) => <pre>{children}</pre>,
+  code: ({ children, className }) => {
+    const isBlock = className?.startsWith("language-");
+    return isBlock ? <code className={className}>{children}</code> : <code>{children}</code>;
+  },
 };
 
 interface Props {
