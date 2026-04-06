@@ -1,8 +1,8 @@
 {
   "displayName": "Testing Standards",
-  "description": "Kotlin (Kotest/JUnit) and TypeScript (Jest) test patterns and coverage.",
+  "description": "Kotlin (Kotest/JUnit) and TypeScript (Vitest) test patterns and coverage.",
   "domain": "general",
-  "tags": ["testing", "jest", "kotest", "quality"],
+  "tags": ["testing", "vitest", "kotest", "quality"],
   "examples": [
     "Skriv en test for validateSøknad() med grensetilfeller"
   ]

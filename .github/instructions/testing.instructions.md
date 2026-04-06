@@ -4,7 +4,7 @@ applyTo: "**/*.test.{ts,tsx,kt,kts}"
 
 # Testing Standards
 
-Teststandarder for Nav: Kotest-matchers i Kotlin, Jest i TypeScript og felles testprinsipper.
+Teststandarder for Nav: Kotest-matchers i Kotlin, Vitest i TypeScript og felles testprinsipper.
 
 ## Kotlin Testing (Kotest)
 
@@ -178,7 +178,7 @@ class AuthenticationTest {
 }
 ```
 
-## TypeScript/Next.js Testing (Jest)
+## TypeScript/Next.js Testing (Vitest)
 
 ### Test Structure
 
@@ -220,20 +220,22 @@ describe("fetchData", () => {
 ### Mocking
 
 ```typescript
+import { vi } from "vitest";
+
 // Mock external module
-jest.mock("./cached-bigquery", () => ({
-  getCachedBigQueryUsage: jest.fn(),
+vi.mock("./cached-bigquery", () => ({
+  getCachedBigQueryUsage: vi.fn(),
 }));
 
 import { getCachedBigQueryUsage } from "./cached-bigquery";
 
 describe("API route", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should return usage data", async () => {
-    (getCachedBigQueryUsage as jest.Mock).mockResolvedValue({
+    vi.mocked(getCachedBigQueryUsage).mockResolvedValue({
       usage: [{ date: "2025-01-01", total_active_users: 100 }],
       error: null,
     });
@@ -308,7 +310,7 @@ Choose test type based on what you're verifying:
 
 | What to test | Test type | Tools |
 |---|---|---|
-| Pure functions, utils | Unit test | Kotest / Jest |
+| Pure functions, utils | Unit test | Kotest / Vitest |
 | Controller + validation | Slice test | `@WebMvcTest` + MockkBean |
 | Repository + SQL | Slice test | `@DataJpaTest` + Testcontainers |
 | Full API flow | Integration test | `@SpringBootTest` + Testcontainers |

@@ -106,14 +106,15 @@ export async function GET(
 ```typescript
 // src/app/api/{{ressurs}}/route.test.ts
 import { GET, POST } from "./route";
+import { vi } from "vitest";
 
-jest.mock("@/lib/auth", () => ({
-  getUser: jest.fn(),
+vi.mock("@/lib/auth", () => ({
+  getUser: vi.fn(),
 }));
 
-jest.mock("@/lib/{{ressurs}}", () => ({
-  fetchData: jest.fn(),
-  createResource: jest.fn(),
+vi.mock("@/lib/{{ressurs}}", () => ({
+  fetchData: vi.fn(),
+  createResource: vi.fn(),
 }));
 
 import { getUser } from "@/lib/auth";
@@ -121,19 +122,19 @@ import { fetchData, createResource } from "@/lib/{{ressurs}}";
 
 describe("GET /api/{{ressurs}}", () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it("should return 401 when not authenticated", async () => {
-    (getUser as jest.Mock).mockResolvedValue(null);
+    vi.mocked(getUser).mockResolvedValue(null);
 
     const response = await GET();
     expect(response.status).toBe(401);
   });
 
   it("should return data when authenticated", async () => {
-    (getUser as jest.Mock).mockResolvedValue({ name: "test" });
-    (fetchData as jest.Mock).mockResolvedValue({
+    vi.mocked(getUser).mockResolvedValue({ name: "test" });
+    vi.mocked(fetchData).mockResolvedValue({
       data: [{ id: "1" }],
       error: null,
     });
@@ -146,8 +147,8 @@ describe("GET /api/{{ressurs}}", () => {
   });
 
   it("should return 500 on fetch error", async () => {
-    (getUser as jest.Mock).mockResolvedValue({ name: "test" });
-    (fetchData as jest.Mock).mockResolvedValue({
+    vi.mocked(getUser).mockResolvedValue({ name: "test" });
+    vi.mocked(fetchData).mockResolvedValue({
       data: null,
       error: "DB error",
     });
@@ -159,7 +160,7 @@ describe("GET /api/{{ressurs}}", () => {
 
 describe("POST /api/{{ressurs}}", () => {
   it("should return 400 for invalid JSON", async () => {
-    (getUser as jest.Mock).mockResolvedValue({ name: "test" });
+    vi.mocked(getUser).mockResolvedValue({ name: "test" });
 
     const request = new Request("http://localhost/api/{{ressurs}}", {
       method: "POST",
@@ -171,8 +172,8 @@ describe("POST /api/{{ressurs}}", () => {
   });
 
   it("should create resource", async () => {
-    (getUser as jest.Mock).mockResolvedValue({ name: "test" });
-    (createResource as jest.Mock).mockResolvedValue({ id: "1" });
+    vi.mocked(getUser).mockResolvedValue({ name: "test" });
+    vi.mocked(createResource).mockResolvedValue({ id: "1" });
 
     const request = new Request("http://localhost/api/{{ressurs}}", {
       method: "POST",

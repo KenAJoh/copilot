@@ -116,8 +116,8 @@ Working directory: `apps/my-copilot`
 
 **Available tasks:**
 
-- `mise check` - Run all checks (ESLint, TypeScript, Prettier, Knip, Jest)
-- `mise test` - Run Jest tests
+- `mise check` - Run all checks (ESLint, TypeScript, Prettier, Knip, Vitest)
+- `mise test` - Run Vitest tests
 - `mise dev` - Start Next.js dev server (http://localhost:3000)
 
 ### Tech Stack
@@ -128,7 +128,7 @@ Working directory: `apps/my-copilot`
 - Tailwind CSS v4.1
 - Octokit for GitHub API
 - BigQuery for usage analytics (via @google-cloud/bigquery)
-- Jest for testing
+- Vitest for testing
 
 ### File Structure
 
@@ -199,7 +199,7 @@ formatNumber(151354); // "151 354" (Norwegian locale)
 
 ### Testing
 
-- Framework: Jest with TypeScript
+- Framework: Vitest with TypeScript
 - Location: `*.test.ts` files next to source
 - Run: `pnpm test` in `apps/my-copilot`
 - Focus on `lib/` utilities

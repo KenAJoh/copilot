@@ -29,8 +29,8 @@ mise test     # go test -v ./...
 mise build    # go build
 
 # Next.js app (my-copilot)
-mise check    # ESLint, TypeScript, Prettier, Knip, Jest
-mise test     # pnpm test (Jest)
+mise check    # ESLint, TypeScript, Prettier, Knip, Vitest
+mise test     # pnpm test (Vitest)
 mise build    # next build
 ```
 
@@ -75,7 +75,7 @@ docs/                 # Documentation
 - Nav Aksel Design System (`@navikt/ds-react`) for UI components
 - **Always use Aksel spacing tokens (Box, VStack, HStack), never Tailwind p-/m- utilities**
 - ESLint + Prettier + Knip for code quality
-- Jest for testing
+- Vitest for testing
 - **Norwegian UI text**: Follow `apps/my-copilot/ORDBOK.md` for terminology — keep English tech terms where there's no good Norwegian alternative, use simple words, avoid unnecessary anglicisms
 
 ## Git Workflow
