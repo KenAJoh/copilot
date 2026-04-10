@@ -681,14 +681,27 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   </div>
                 </div>
               </Box>
+              <Box background="info-soft" padding="space-16" borderRadius="8">
+                <div className="text-center">
+                  <Heading size="large" level="4">
+                    {formatNumber(prMetrics.totalMergedReviewedByCopilot)}
+                  </Heading>
+                  <div className="flex items-center justify-center gap-1">
+                    <BodyShort className="text-gray-600">Copilot-reviewede merget</BodyShort>
+                    <HelpText title="Copilot-reviewede PR-er merget" placement="top">
+                      Antall pull requests som ble reviewet av Copilot og deretter merget.
+                    </HelpText>
+                  </div>
+                </div>
+              </Box>
             </HGrid>
 
-            {(prMetrics.medianMinutesToMerge > 0 || prMetrics.medianMinutesToMergeCopilotAuthored > 0) && (
+            {(prMetrics.medianMinutesToMerge > 0 || prMetrics.medianMinutesToMergeCopilotAuthored > 0 || prMetrics.medianMinutesToMergeCopilotReviewed > 0) && (
               <>
                 <BodyShort weight="semibold" className="text-gray-700">
                   Tider
                 </BodyShort>
-                <HGrid columns={{ xs: 1, sm: 2 }} gap="space-16">
+                <HGrid columns={{ xs: 1, sm: 3 }} gap="space-16">
                   <Box background="neutral-moderate" padding="space-16" borderRadius="8">
                     <div className="text-center">
                       <Heading size="large" level="4">
@@ -712,6 +725,19 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                         <HelpText title="Median tid for Copilot-PR" placement="top">
                           Median tid fra en Copilot-opprettet PR opprettes til den merges. Sammenlign med totalen for å
                           se om Copilot-PR-er merges raskere.
+                        </HelpText>
+                      </div>
+                    </div>
+                  </Box>
+                  <Box background="info-soft" padding="space-16" borderRadius="8">
+                    <div className="text-center">
+                      <Heading size="large" level="4">
+                        {formatMinutes(prMetrics.medianMinutesToMergeCopilotReviewed)}
+                      </Heading>
+                      <div className="flex items-center justify-center gap-1">
+                        <BodyShort className="text-gray-600">Median tid (Copilot-review)</BodyShort>
+                        <HelpText title="Median tid for Copilot-reviewede PR-er" placement="top">
+                          Median tid fra en Copilot-reviewet PR opprettes til den merges.
                         </HelpText>
                       </div>
                     </div>

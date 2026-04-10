@@ -120,8 +120,10 @@ export const getPRMetrics = (usage: EnterpriseMetrics[]): PRMetrics | null => {
     totalReviewedByCopilot: 0,
     totalCreatedByCopilot: 0,
     totalMergedCreatedByCopilot: 0,
+    totalMergedReviewedByCopilot: 0,
     medianMinutesToMerge: 0,
     medianMinutesToMergeCopilotAuthored: 0,
+    medianMinutesToMergeCopilotReviewed: 0,
     totalSuggestions: 0,
     totalCopilotSuggestions: 0,
     totalAppliedSuggestions: 0,
@@ -139,6 +141,7 @@ export const getPRMetrics = (usage: EnterpriseMetrics[]): PRMetrics | null => {
     result.totalReviewedByCopilot += pr.total_reviewed_by_copilot || 0;
     result.totalCreatedByCopilot += pr.total_created_by_copilot || 0;
     result.totalMergedCreatedByCopilot += pr.total_merged_created_by_copilot || 0;
+    result.totalMergedReviewedByCopilot += pr.total_merged_reviewed_by_copilot || 0;
     result.totalSuggestions += pr.total_suggestions || 0;
     result.totalCopilotSuggestions += pr.total_copilot_suggestions || 0;
     result.totalAppliedSuggestions += pr.total_applied_suggestions || 0;
@@ -149,6 +152,7 @@ export const getPRMetrics = (usage: EnterpriseMetrics[]): PRMetrics | null => {
   const latest = usage[usage.length - 1];
   result.medianMinutesToMerge = latest.pull_requests?.median_minutes_to_merge || 0;
   result.medianMinutesToMergeCopilotAuthored = latest.pull_requests?.median_minutes_to_merge_copilot_authored || 0;
+  result.medianMinutesToMergeCopilotReviewed = latest.pull_requests?.median_minutes_to_merge_copilot_reviewed || 0;
 
   return result;
 };

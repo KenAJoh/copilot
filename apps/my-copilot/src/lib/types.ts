@@ -27,6 +27,7 @@ export interface EnterpriseMetrics {
 export interface EnterprisePullRequests {
   median_minutes_to_merge: number;
   median_minutes_to_merge_copilot_authored: number;
+  median_minutes_to_merge_copilot_reviewed: number;
   total_applied_suggestions: number;
   total_copilot_applied_suggestions: number;
   total_copilot_suggestions: number;
@@ -34,6 +35,7 @@ export interface EnterprisePullRequests {
   total_created_by_copilot: number;
   total_merged: number;
   total_merged_created_by_copilot: number;
+  total_merged_reviewed_by_copilot: number;
   total_reviewed: number;
   total_reviewed_by_copilot: number;
   total_suggestions: number;
@@ -189,8 +191,10 @@ export interface PRMetrics {
   totalReviewedByCopilot: number;
   totalCreatedByCopilot: number;
   totalMergedCreatedByCopilot: number;
+  totalMergedReviewedByCopilot: number;
   medianMinutesToMerge: number;
   medianMinutesToMergeCopilotAuthored: number;
+  medianMinutesToMergeCopilotReviewed: number;
   totalSuggestions: number;
   totalCopilotSuggestions: number;
   totalAppliedSuggestions: number;
