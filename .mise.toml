@@ -25,78 +25,31 @@ APPS_WITH_GENERATE = "mcp-onboarding my-copilot"
 
 [tasks.all]
 description = "Full pipeline: generate, check, test, build"
-run = '''
-#!/usr/bin/env bash
-set -e
-mise run generate
-mise run check
-mise run test
-mise run build
-'''
+run = "bash hack/all.sh"
 
 # ─── Standard tasks (delegated to all apps) ──────────────────────────────────
 
 [tasks.check]
 description = "Run all checks across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-for app in $APPS; do
-  echo "📦 $app:" && (cd "apps/$app" && mise run check) && echo ""
-done
-echo "📄 docs:" && mise run docs:check && echo ""
-echo "✅ All checks passed"
-'''
+run = "bash hack/check.sh"
 
 [tasks.test]
 description = "Run tests across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-for app in $APPS; do
-  echo "📦 $app:" && (cd "apps/$app" && mise run test) && echo ""
-done
-echo "✅ All tests passed"
-'''
+run = "bash hack/test.sh"
 
 [tasks.build]
 description = "Build all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-for app in $APPS; do
-  echo "📦 $app:" && (cd "apps/$app" && mise run build) && echo ""
-done
-echo "✅ All apps built successfully"
-'''
+run = "bash hack/build.sh"
 
 [tasks.update]
 description = "Update dependencies across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-for app in $APPS; do
-  echo "📦 $app:" && (cd "apps/$app" && mise run update) && echo ""
-done
-echo "📦 scripts/generate-docs:"
-(cd scripts/generate-docs && go get -u ./... && go mod tidy)
-echo ""
-echo "✅ All dependencies updated"
-'''
+run = "bash hack/update.sh"
 
 # ─── Generate (only apps that have generate tasks) ───────────────────────────
 
 [tasks.generate]
 description = "Generate all generated files"
-run = '''
-#!/usr/bin/env bash
-set -e
-for app in $APPS_WITH_GENERATE; do
-  echo "📦 $app:" && (cd "apps/$app" && mise run generate) && echo ""
-done
-echo "📄 docs:" && mise run docs:generate && echo ""
-echo "✅ All files generated"
-'''
+run = "bash hack/generate.sh"
 
 # ─── Docs ────────────────────────────────────────────────────────────────────
 
