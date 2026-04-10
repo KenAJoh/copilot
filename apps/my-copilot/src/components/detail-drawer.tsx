@@ -7,6 +7,7 @@ import { Alert, Box, BodyShort, Button, Heading, Tag, HStack, VStack, CopyButton
 import type { EnrichedCustomization } from "@/lib/enrich-customizations";
 import { DOMAIN_CONFIGS, TYPE_LABELS } from "@/lib/customization-types";
 import { normalizeExample } from "@/lib/manifest-types";
+import { Contributors } from "./contributors";
 
 const TOOLS_PREVIEW_COUNT = 5;
 
@@ -643,6 +644,8 @@ export function DetailDrawer({ item, allItems, open, onClose, onNavigate }: Deta
                         </HStack>
                       </VStack>
                     )}
+
+                    {item.type !== "mcp" && <Contributors key={item.id} itemId={item.id} />}
 
                     {item.type === "mcp" ? (
                       <McpDetails item={item} />

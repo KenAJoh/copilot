@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { getCopilotBilling, getPremiumRequestUsage } from "./github";
+import { getFileContributors } from "./contributors";
 
 export async function getCachedCopilotBilling(org: string) {
   "use cache";
@@ -23,4 +24,20 @@ export async function getCachedPremiumRequestUsage(org: string, year?: number, m
   cacheTag("premium-usage", org, `${year}-${month}`);
 
   return await getPremiumRequestUsage(org, year, month);
+}
+
+/**
+ * Cached version of getFileContributors.
+ * Contributors change infrequently — cache aggressively.
+ */
+export async function getCachedFileContributors(owner: string, repo: string, paths: string[]) {
+  "use cache";
+  cacheLife({
+    stale: 7200, // 2 hours until considered stale
+    revalidate: 86400, // 24 hours until revalidated
+    expire: 604800, // 7 days until expired
+  });
+  cacheTag("contributors", ...paths);
+
+  return await getFileContributors(owner, repo, paths);
 }

@@ -4,6 +4,11 @@ export type { Domain } from "./manifest-types";
 import type { ExampleItem } from "./manifest-types";
 import type { Domain } from "./manifest-types";
 
+export interface Contributor {
+  login: string;
+  avatarUrl: string;
+}
+
 interface BaseCustomization {
   id: string;
   name: string;

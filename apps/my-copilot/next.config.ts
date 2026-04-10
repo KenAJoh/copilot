@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   output: "standalone",
   serverExternalPackages: ["pino", "thread-stream", "@google-cloud/bigquery"],
+  images: {
+    remotePatterns: [{ hostname: "avatars.githubusercontent.com" }],
+  },
   async redirects() {
     return [
       { source: "/best-practices", destination: "/praksis", permanent: true },
