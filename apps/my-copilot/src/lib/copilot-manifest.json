@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-10T10:35:42.970Z",
+  "generatedAt": "2026-04-10T15:10:37.583Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -71,6 +71,7 @@
         "io.github.navikt/github-mcp/get_latest_release",
         "io.github.navikt/github-mcp/list_releases"
       ],
+      "agentReferences": ["nais-agent"],
       "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
       "examples": [
         {
@@ -112,6 +113,7 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/search_pull_requests"
       ],
+      "agentReferences": ["nais-agent", "observability-agent", "security-champion-agent"],
       "tags": ["auth", "azure-ad", "tokenx", "id-porten", "security"],
       "examples": [
         {
@@ -147,6 +149,13 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/list_pull_requests",
         "io.github.navikt/github-mcp/search_pull_requests"
+      ],
+      "agentReferences": [
+        "accessibility-agent",
+        "aksel-agent",
+        "auth-agent",
+        "observability-agent",
+        "security-champion-agent"
       ],
       "tags": ["code-review", "quality", "conventions", "pre-merge"],
       "examples": [
@@ -239,6 +248,7 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/search_pull_requests"
       ],
+      "agentReferences": ["nais-agent", "observability-agent", "security-champion-agent"],
       "tags": ["kafka", "events", "rapids-rivers", "streaming"],
       "examples": [
         {
@@ -283,6 +293,7 @@
         "io.github.navikt/github-mcp/list_releases",
         "io.github.navikt/github-mcp/list_tags"
       ],
+      "agentReferences": ["auth-agent", "kafka-agent", "observability-agent", "security-champion-agent"],
       "tags": ["nais", "kubernetes", "deployment", "infrastructure"],
       "examples": [
         {
@@ -324,6 +335,7 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/search_pull_requests"
       ],
+      "agentReferences": ["kafka-agent", "nais-agent", "security-champion-agent"],
       "tags": ["observability", "metrics", "logging", "tracing", "prometheus"],
       "examples": [
         {
@@ -367,6 +379,14 @@
         "io.github.navikt/github-mcp/list_releases",
         "io.github.navikt/github-mcp/list_tags",
         "io.github.navikt/github-mcp/list_branches"
+      ],
+      "agentReferences": [
+        "aksel-agent",
+        "auth-agent",
+        "kafka-agent",
+        "nais-agent",
+        "observability-agent",
+        "security-champion-agent"
       ],
       "tags": ["research", "analysis", "codebase-exploration"],
       "examples": [
@@ -415,6 +435,7 @@
         "io.github.navikt/github-mcp/list_tags",
         "io.github.navikt/github-mcp/list_branches"
       ],
+      "agentReferences": ["auth-agent", "nais-agent", "observability-agent"],
       "tags": ["security", "compliance", "gdpr", "threat-modeling"],
       "examples": [
         {

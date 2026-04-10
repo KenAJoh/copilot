@@ -6,6 +6,7 @@ import {
   getMcpServerConfig,
   getVsCodeAddMcpCommand,
   getMcpAddFields,
+  resolveAgentReferenceUrls,
   INSTALL_DIRS,
   CLIENT_SUPPORT,
   CLIENT_LABELS,
@@ -22,6 +23,31 @@ const base = {
 };
 
 const agent: Agent = { ...base, type: "agent", name: "nais-platform", tools: ["run_in_terminal", "read_file"] };
+const agentWithRefs: Agent = {
+  ...base,
+  type: "agent",
+  name: "security-champion-agent",
+  rawGitHubUrl: "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/security-champion.agent.md",
+  tools: ["run_in_terminal"],
+  agentReferences: ["auth-agent", "nais-agent"],
+};
+const authAgent: Agent = {
+  ...base,
+  type: "agent",
+  name: "auth-agent",
+  id: "auth-agent",
+  rawGitHubUrl: "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/auth.agent.md",
+  tools: [],
+};
+const naisAgent: Agent = {
+  ...base,
+  type: "agent",
+  name: "nais-agent",
+  id: "nais-agent",
+  rawGitHubUrl: "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/nais.agent.md",
+  tools: [],
+};
+const allItems = [agent, agentWithRefs, authAgent, naisAgent];
 const instruction: Instruction = {
   ...base,
   type: "instruction",
@@ -202,6 +228,28 @@ describe("getManualInstallCommand", () => {
   it("returns empty string for mcp", () => {
     expect(getManualInstallCommand(remoteMcp)).toBe("");
   });
+
+  it("includes referenced agents when allItems is provided", () => {
+    const cmd = getManualInstallCommand(agentWithRefs, allItems);
+    expect(cmd).toContain("security-champion.agent.md");
+    expect(cmd).toContain("auth.agent.md");
+    expect(cmd).toContain("nais.agent.md");
+    const lines = cmd.split(" && \\\n  ");
+    expect(lines).toHaveLength(3);
+  });
+
+  it("omits references when allItems is not provided", () => {
+    const cmd = getManualInstallCommand(agentWithRefs);
+    expect(cmd).toContain("security-champion.agent.md");
+    expect(cmd).not.toContain("auth.agent.md");
+    expect(cmd).not.toContain("nais.agent.md");
+  });
+
+  it("works for agent without references", () => {
+    const cmd = getManualInstallCommand(agent, allItems);
+    expect(cmd).toContain("nais.agent.md");
+    expect(cmd).not.toContain("auth.agent.md");
+  });
 });
 
 describe("getMcpServerConfig", () => {
@@ -292,5 +340,31 @@ describe("getMcpAddFields", () => {
 
   it("returns null for mcp with no remotes or packages", () => {
     expect(getMcpAddFields(emptyMcp)).toBeNull();
+  });
+});
+
+describe("resolveAgentReferenceUrls", () => {
+  it("returns URLs for referenced agents", () => {
+    const urls = resolveAgentReferenceUrls(agentWithRefs, allItems);
+    expect(urls).toEqual([
+      "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/auth.agent.md",
+      "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/nais.agent.md",
+    ]);
+  });
+
+  it("returns empty array for agent without references", () => {
+    expect(resolveAgentReferenceUrls(agent, allItems)).toEqual([]);
+  });
+
+  it("filters out references to unknown agents", () => {
+    const agentWithUnknownRef: Agent = {
+      ...base,
+      type: "agent",
+      name: "test-agent",
+      tools: [],
+      agentReferences: ["auth-agent", "nonexistent-agent"],
+    };
+    const urls = resolveAgentReferenceUrls(agentWithUnknownRef, allItems);
+    expect(urls).toEqual(["https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/auth.agent.md"]);
   });
 });

@@ -21,6 +21,7 @@ interface BaseCustomization {
 export interface Agent extends BaseCustomization {
   type: "agent";
   tools: string[];
+  agentReferences?: string[];
 }
 
 export interface Instruction extends BaseCustomization {

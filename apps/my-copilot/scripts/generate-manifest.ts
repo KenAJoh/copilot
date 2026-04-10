@@ -97,6 +97,7 @@ interface ManifestItem {
   installUrl: string | null;
   insidersInstallUrl: string | null;
   tools?: string[];
+  agentReferences?: string[];
   applyTo?: string;
   invocation?: string;
   tags?: string[];
@@ -104,38 +105,63 @@ interface ManifestItem {
   references?: { path: string; rawUrl: string }[];
 }
 
+/**
+ * Extract @xxx-agent references from markdown body text.
+ * Matches backtick-wrapped or bare @agent-name patterns followed by
+ * whitespace, punctuation, or end-of-string (avoids false positives
+ * on compound words like "@auth-agent-style").
+ * Returns deduplicated agent IDs (without the @ prefix).
+ */
+function extractAgentReferences(body: string, selfName: string): string[] {
+  const refs = new Set<string>();
+  for (const match of body.matchAll(/@([a-z][-a-z]*-agent)(?=[\s.,;:!?`)\]]|$)/gm)) {
+    const ref = match[1];
+    if (ref !== selfName) refs.add(ref);
+  }
+  return [...refs].sort();
+}
+
 function getAgents(): ManifestItem[] {
   const dir = path.join(GITHUB_DIR, "agents");
   if (!fs.existsSync(dir)) return [];
 
-  return fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith(".agent.md"))
-    .map((file) => {
-      const content = fs.readFileSync(path.join(dir, file), "utf-8");
-      const { data } = parseFrontmatter(content);
-      const name = (data.name as string) || file.replace(".agent.md", "");
-      const rawUrl = `${RAW_BASE}/agents/${file}`;
-      const description = (data.description as string) || "";
-      const tools = Array.isArray(data.tools) ? data.tools : [];
-      const meta = loadMetadata(path.join(dir, file.replace(".agent.md", ".metadata.json")));
+  const agentFiles = fs.readdirSync(dir).filter((f) => f.endsWith(".agent.md"));
 
-      return {
-        id: name,
-        name,
-        description,
-        type: "agent" as const,
-        domain: meta.domain || "general",
-        filePath: `.github/agents/${file}`,
-        rawGitHubUrl: rawUrl,
-        contentHash: contentHash(path.join(dir, file)),
-        installUrl: buildInstallUrl("agent", rawUrl),
-        insidersInstallUrl: buildInsidersInstallUrl("agent", rawUrl),
-        tools,
-        ...(meta.tags && { tags: meta.tags }),
-        ...(meta.examples && { examples: meta.examples }),
-      };
-    });
+  // Parse all agents in one pass, collecting names for reference validation
+  const parsed = agentFiles.map((file) => {
+    const filePath = path.join(dir, file);
+    const content = fs.readFileSync(filePath, "utf-8");
+    const { data, body } = parseFrontmatter(content);
+    const name = (data.name as string) || file.replace(".agent.md", "");
+    const meta = loadMetadata(path.join(dir, file.replace(".agent.md", ".metadata.json")));
+    return { file, filePath, data, body, name, meta };
+  });
+
+  const knownAgentIds = new Set(parsed.map((p) => p.name));
+
+  return parsed.map(({ file, filePath, data, body, name, meta }) => {
+    const rawUrl = `${RAW_BASE}/agents/${file}`;
+    const description = (data.description as string) || "";
+    const tools = Array.isArray(data.tools) ? data.tools : [];
+    const agentReferences = extractAgentReferences(body, name).filter((ref) => knownAgentIds.has(ref));
+
+    return {
+      id: name,
+      name,
+      description,
+      type: "agent" as const,
+      domain: meta.domain || "general",
+      filePath: `.github/agents/${file}`,
+      rawGitHubUrl: rawUrl,
+      contentHash: contentHash(filePath),
+      installUrl: buildInstallUrl("agent", rawUrl),
+      insidersInstallUrl: buildInsidersInstallUrl("agent", rawUrl),
+      tools,
+      ...(agentReferences.length > 0 && { agentReferences }),
+      ...(meta.tags && { tags: meta.tags }),
+      ...(meta.examples && { examples: meta.examples }),
+    };
+  });
 }
 
 function getInstructions(): ManifestItem[] {

@@ -178,7 +178,13 @@ export function CustomizationCatalog({ items }: CustomizationCatalogProps) {
         </Box>
       )}
 
-      <DetailDrawer item={selectedItem} open={selectedItem !== null} onClose={() => setSelectedItem(null)} />
+      <DetailDrawer
+        item={selectedItem}
+        allItems={items}
+        open={selectedItem !== null}
+        onClose={() => setSelectedItem(null)}
+        onNavigate={setSelectedItem}
+      />
     </VStack>
   );
 }

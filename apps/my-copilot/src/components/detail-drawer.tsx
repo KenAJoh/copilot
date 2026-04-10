@@ -44,10 +44,53 @@ import {
   CLIENT_SUPPORT,
 } from "@/lib/install-commands";
 
+function AgentReferences({
+  references,
+  allItems,
+  onNavigate,
+}: {
+  references: string[];
+  allItems: EnrichedCustomization[];
+  onNavigate?: (item: EnrichedCustomization) => void;
+}) {
+  const agentMap = new Map(allItems.filter((i) => i.type === "agent").map((i) => [i.id, i]));
+  const resolved = references.map((ref) => ({ id: ref, item: agentMap.get(ref) }));
+
+  return (
+    <VStack gap="space-8">
+      <Heading size="xsmall" level="4">
+        Refererer til
+      </Heading>
+      <HStack gap="space-4" wrap>
+        {resolved.map(({ id, item }) =>
+          item && onNavigate ? (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onNavigate(item)}
+              className="bg-transparent border-none cursor-pointer p-0"
+            >
+              <Tag size="xsmall" variant="info" className="cursor-pointer hover:underline">
+                @{id}
+              </Tag>
+            </button>
+          ) : (
+            <Tag key={id} size="xsmall" variant="neutral">
+              @{id}
+            </Tag>
+          )
+        )}
+      </HStack>
+    </VStack>
+  );
+}
+
 interface DetailDrawerProps {
   item: EnrichedCustomization | null;
+  allItems: EnrichedCustomization[];
   open: boolean;
   onClose: () => void;
+  onNavigate?: (item: EnrichedCustomization) => void;
 }
 
 function ExclusiveAccordion({ children }: { children: React.ReactNode }) {
@@ -356,12 +399,24 @@ function McpDetails({ item }: { item: EnrichedCustomization }) {
   );
 }
 
-function StaticCustomizationDetails({ item }: { item: EnrichedCustomization }) {
+function StaticCustomizationDetails({
+  item,
+  allItems,
+  onNavigate,
+}: {
+  item: EnrichedCustomization;
+  allItems: EnrichedCustomization[];
+  onNavigate?: (item: EnrichedCustomization) => void;
+}) {
   if (item.type === "mcp") return null;
 
   return (
     <VStack gap="space-16">
       {item.type === "agent" && item.tools.length > 0 && <ToolList tools={item.tools} />}
+
+      {item.type === "agent" && item.agentReferences && item.agentReferences.length > 0 && (
+        <AgentReferences references={item.agentReferences} allItems={allItems} onNavigate={onNavigate} />
+      )}
 
       {item.type === "instruction" && (
         <VStack gap="space-8">
@@ -432,10 +487,10 @@ function StaticCustomizationDetails({ item }: { item: EnrichedCustomization }) {
                 <BodyShort size="small">Eller kopier filen manuelt:</BodyShort>
                 <div className="relative">
                   <pre className="text-xs bg-gray-100 rounded p-2 pr-10 overflow-x-auto whitespace-pre-wrap break-all">
-                    {getManualInstallCommand(item)}
+                    {getManualInstallCommand(item, allItems)}
                   </pre>
                   <div className="absolute top-1 right-1">
-                    <CopyButton size="xsmall" copyText={getManualInstallCommand(item)} />
+                    <CopyButton size="xsmall" copyText={getManualInstallCommand(item, allItems)} />
                   </div>
                 </div>
                 <BodyShort size="small" className="text-gray-500">
@@ -455,10 +510,10 @@ function StaticCustomizationDetails({ item }: { item: EnrichedCustomization }) {
                   <BodyShort size="small">Kopier filen til prosjektet — samme plassering som for VS Code:</BodyShort>
                   <div className="relative">
                     <pre className="text-xs bg-gray-100 rounded p-2 pr-10 overflow-x-auto whitespace-pre-wrap break-all">
-                      {getManualInstallCommand(item)}
+                      {getManualInstallCommand(item, allItems)}
                     </pre>
                     <div className="absolute top-1 right-1">
-                      <CopyButton size="xsmall" copyText={getManualInstallCommand(item)} />
+                      <CopyButton size="xsmall" copyText={getManualInstallCommand(item, allItems)} />
                     </div>
                   </div>
                   <BodyShort size="small" className="text-gray-500">
@@ -484,10 +539,10 @@ function StaticCustomizationDetails({ item }: { item: EnrichedCustomization }) {
                   <BodyShort size="small">Kopier filen til prosjektet:</BodyShort>
                   <div className="relative">
                     <pre className="text-xs bg-gray-100 rounded p-2 pr-10 overflow-x-auto whitespace-pre-wrap break-all">
-                      {getManualInstallCommand(item)}
+                      {getManualInstallCommand(item, allItems)}
                     </pre>
                     <div className="absolute top-1 right-1">
-                      <CopyButton size="xsmall" copyText={getManualInstallCommand(item)} />
+                      <CopyButton size="xsmall" copyText={getManualInstallCommand(item, allItems)} />
                     </div>
                   </div>
                   <BodyShort size="small" className="text-gray-500">
@@ -505,7 +560,7 @@ function StaticCustomizationDetails({ item }: { item: EnrichedCustomization }) {
   );
 }
 
-export function DetailDrawer({ item, open, onClose }: DetailDrawerProps) {
+export function DetailDrawer({ item, allItems, open, onClose, onNavigate }: DetailDrawerProps) {
   if (!item) return null;
 
   const domainConfig = DOMAIN_CONFIGS[item.domain];
@@ -589,7 +644,11 @@ export function DetailDrawer({ item, open, onClose }: DetailDrawerProps) {
                       </VStack>
                     )}
 
-                    {item.type === "mcp" ? <McpDetails item={item} /> : <StaticCustomizationDetails item={item} />}
+                    {item.type === "mcp" ? (
+                      <McpDetails item={item} />
+                    ) : (
+                      <StaticCustomizationDetails item={item} allItems={allItems} onNavigate={onNavigate} />
+                    )}
                   </VStack>
                 </Box>
 

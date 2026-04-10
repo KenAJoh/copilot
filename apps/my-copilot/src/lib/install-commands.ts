@@ -1,4 +1,4 @@
-import type { AnyCustomization, CustomizationType } from "./customization-types";
+import type { Agent, AnyCustomization, CustomizationType } from "./customization-types";
 
 export const INSTALL_DIRS: Record<Exclude<CustomizationType, "mcp">, string> = {
   agent: ".github/agents",
@@ -41,7 +41,7 @@ export function getToolCount(item: AnyCustomization): number {
   return 0;
 }
 
-export function getManualInstallCommand(item: AnyCustomization): string {
+export function getManualInstallCommand(item: AnyCustomization, allItems?: AnyCustomization[]): string {
   if (item.type === "mcp") return "";
   if (item.type === "skill") {
     const skillDir = `.github/skills/${item.name}`;
@@ -62,7 +62,33 @@ export function getManualInstallCommand(item: AnyCustomization): string {
     return cmds.join(" && \\\n  ");
   }
   const dir = INSTALL_DIRS[item.type];
-  return `mkdir -p "${dir}" && curl -fsSL -o "${dir}/$(basename "${item.rawGitHubUrl}")" "${item.rawGitHubUrl}"`;
+  const cmds = [
+    `mkdir -p "${dir}" && curl -fsSL -o "${dir}/$(basename "${item.rawGitHubUrl}")" "${item.rawGitHubUrl}"`,
+  ];
+
+  if (item.type === "agent" && item.agentReferences && item.agentReferences.length > 0 && allItems) {
+    const refUrls = resolveAgentReferenceUrls(item, allItems);
+    for (const url of refUrls) {
+      cmds.push(`curl -fsSL -o "${dir}/$(basename "${url}")" "${url}"`);
+    }
+  }
+
+  return cmds.join(" && \\\n  ");
+}
+
+/**
+ * Resolve agentReferences to raw GitHub URLs using the full manifest.
+ * Returns URLs for referenced agents that exist in allItems.
+ */
+export function resolveAgentReferenceUrls(agent: Agent, allItems: AnyCustomization[]): string[] {
+  if (!agent.agentReferences || agent.agentReferences.length === 0) return [];
+
+  const agentMap = new Map<string, AnyCustomization>();
+  for (const item of allItems) {
+    if (item.type === "agent") agentMap.set(item.id, item);
+  }
+
+  return agent.agentReferences.filter((ref) => agentMap.has(ref)).map((ref) => agentMap.get(ref)!.rawGitHubUrl);
 }
 
 function buildPackageArgs(pkg: NonNullable<Extract<AnyCustomization, { type: "mcp" }>["packages"]>[0]): {
