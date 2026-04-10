@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-10T15:10:37.583Z",
+  "generatedAt": "2026-04-10T16:19:25.712Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -92,7 +92,7 @@
       "domain": "auth",
       "filePath": ".github/agents/auth.agent.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/auth.agent.md",
-      "contentHash": "9d013206d684372dfe60538f18641fd9cb2f91061c546dfc6e5a36baee340330",
+      "contentHash": "a45181c6b71381693c4da2056176f813752dbd3f49a89e328a2b7209be745741",
       "installUrl": "/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fauth.agent.md",
       "insidersInstallUrl": "/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fauth.agent.md",
       "tools": [
@@ -554,6 +554,32 @@
       "examples": ["Lag en responsiv søknadsoversikt med Aksel Box og VStack"]
     },
     {
+      "id": "testing-kotlin",
+      "name": "testing-kotlin",
+      "description": "Instruksjoner for **/*.test.{kt,kts}",
+      "type": "instruction",
+      "domain": "general",
+      "filePath": ".github/instructions/testing-kotlin.instructions.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-kotlin.instructions.md",
+      "contentHash": "13a5a10d86577f845bc1710505d67f2adfd242c6f2a4e19b044b06952a4f41d4",
+      "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting-kotlin.instructions.md",
+      "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting-kotlin.instructions.md",
+      "applyTo": "**/*.test.{kt,kts}"
+    },
+    {
+      "id": "testing-typescript",
+      "name": "testing-typescript",
+      "description": "Instruksjoner for **/*.test.{ts,tsx}",
+      "type": "instruction",
+      "domain": "general",
+      "filePath": ".github/instructions/testing-typescript.instructions.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-typescript.instructions.md",
+      "contentHash": "d3fd7e7d5f2ee256dd25194b09afe3c667a5c3496066a3ade13fe7cf4f50b7ba",
+      "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting-typescript.instructions.md",
+      "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting-typescript.instructions.md",
+      "applyTo": "**/*.test.{ts,tsx}"
+    },
+    {
       "id": "testing",
       "name": "Testing Standards",
       "description": "Kotlin (Kotest/JUnit) and TypeScript (Vitest) test patterns and coverage.",
@@ -561,7 +587,7 @@
       "domain": "general",
       "filePath": ".github/instructions/testing.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing.instructions.md",
-      "contentHash": "54b09caf505acd1e7e576da5de2bc109eda6c423c7ed25da38f2552b1b58d4ef",
+      "contentHash": "4a6a7547a3701ce134e8e85744fbc839e0a75cf563ae549ba4a48c4af56cf3ba",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting.instructions.md",
       "applyTo": "**/*.test.{ts,tsx,kt,kts}",
