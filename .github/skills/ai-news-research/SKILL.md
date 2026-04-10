@@ -11,15 +11,22 @@ Research AI coding agent news and write a monthly summary in Norwegian. Output: 
 
 Run web searches (adjust month/year):
 
-- `GitHub Copilot news [month] [year]`
-- `AI coding agent trends [month] [year]`
-- `AI coding agent hardening readiness enterprise [year]`
-- `Reddit AI coding agents AGENTS.md skills context [year]`
-- `site:github.blog copilot`
+```
+GitHub Copilot news [month] [year]
+AI coding agent trends [month] [year]
+AI coding agent hardening readiness enterprise [year]
+Reddit AI coding agents AGENTS.md skills context [year]
+site:github.blog copilot
+```
 
 ## Step 2: Fetch sources
 
 For each hit, fetch the full page and extract facts, numbers, quotes, and the exact URL.
+
+```
+web_fetch url="https://github.blog/..." → extract announcements, dates, feature names
+web_fetch url="https://news.ycombinator.com/..." → extract top comments, sentiment
+```
 
 | Source | What to look for |
 | --- | --- |
@@ -55,4 +62,4 @@ End with a "Relevans for Nav" table. Nav context:
 
 ## Example output
 
-See [docs/news/february.md](../../../docs/news/february.md).
+See `docs/news/` in the repository root for published examples.

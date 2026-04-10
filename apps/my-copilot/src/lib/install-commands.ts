@@ -45,10 +45,24 @@ export function getManualInstallCommand(item: AnyCustomization): string {
   if (item.type === "mcp") return "";
   if (item.type === "skill") {
     const skillDir = `.github/skills/${item.name}`;
-    return `mkdir -p ${skillDir} && curl -sO --output-dir ${skillDir} ${item.rawGitHubUrl}`;
+    const cmds = [`mkdir -p "${skillDir}"`, `curl -fsSL -o "${skillDir}/SKILL.md" "${item.rawGitHubUrl}"`];
+    if (item.references && item.references.length > 0) {
+      const refDirs = new Set<string>();
+      for (const ref of item.references) {
+        const dir = ref.path.substring(0, ref.path.lastIndexOf("/"));
+        if (dir) refDirs.add(dir);
+      }
+      for (const dir of refDirs) {
+        cmds.splice(1, 0, `mkdir -p "${skillDir}/${dir}"`);
+      }
+      for (const ref of item.references) {
+        cmds.push(`curl -fsSL -o "${skillDir}/${ref.path}" "${ref.rawUrl}"`);
+      }
+    }
+    return cmds.join(" && \\\n  ");
   }
   const dir = INSTALL_DIRS[item.type];
-  return `mkdir -p ${dir} && curl -sO --output-dir ${dir} ${item.rawGitHubUrl}`;
+  return `mkdir -p "${dir}" && curl -fsSL -o "${dir}/$(basename "${item.rawGitHubUrl}")" "${item.rawGitHubUrl}"`;
 }
 
 function buildPackageArgs(pkg: NonNullable<Extract<AnyCustomization, { type: "mcp" }>["packages"]>[0]): {

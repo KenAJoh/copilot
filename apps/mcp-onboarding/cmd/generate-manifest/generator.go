@@ -2,8 +2,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -26,6 +28,13 @@ type InstructionFrontmatter struct {
 type PromptFrontmatter struct {
 	Name        string `yaml:"name"`
 	Description string `yaml:"description"`
+}
+
+// SkillMetadata represents the metadata.json for a skill
+type SkillMetadata struct {
+	Description string   `json:"description"`
+	References  []string `json:"references"`
+	Excluded    bool     `json:"excluded"`
 }
 
 // parseFrontmatter extracts YAML frontmatter from a markdown file
@@ -132,7 +141,7 @@ func (g *Generator) loadAgents(dir string) ([]discovery.Customization, error) {
 		}
 
 		filename := filepath.Base(file)
-		relPath := filepath.Join(".github/agents", filename)
+		relPath := path.Join(".github/agents", filename)
 		category := g.inferCategory(fm.Name, fm.Description)
 		tags := g.extractTags(fm.Name, fm.Description)
 
@@ -172,7 +181,7 @@ func (g *Generator) loadInstructions(dir string) ([]discovery.Customization, err
 		}
 
 		filename := filepath.Base(file)
-		relPath := filepath.Join(".github/instructions", filename)
+		relPath := path.Join(".github/instructions", filename)
 		name := strings.TrimSuffix(filename, ".instructions.md")
 		displayName := g.humanizeName(name)
 		description := g.extractDescription(string(content))
@@ -212,7 +221,7 @@ func (g *Generator) loadPrompts(dir string) ([]discovery.Customization, error) {
 		}
 
 		filename := filepath.Base(file)
-		relPath := filepath.Join(".github/prompts", filename)
+		relPath := path.Join(".github/prompts", filename)
 		tags := g.extractTags(fm.Name, fm.Description)
 
 		prompts = append(prompts, discovery.Customization{
@@ -254,7 +263,25 @@ func (g *Generator) loadSkills(dir string) ([]discovery.Customization, error) {
 
 		name := entry.Name()
 		description := g.extractDescription(string(content))
-		relPath := filepath.Join(".github/skills", name)
+		relPath := path.Join(".github/skills", name)
+
+		// Read metadata.json (single source of truth for references and exclusion)
+		var refs []discovery.SkillReference
+		metaFile := filepath.Join(dir, name, "metadata.json")
+		if metaData, err := os.ReadFile(metaFile); err == nil { //nolint:gosec // Generator needs to read .github files
+			var meta SkillMetadata
+			if err := json.Unmarshal(metaData, &meta); err == nil {
+				if meta.Excluded {
+					continue
+				}
+				for _, ref := range meta.References {
+					refs = append(refs, discovery.SkillReference{
+						Path:   ref,
+						RawURL: g.generateRawURL(path.Join(".github/skills", name, ref)),
+					})
+				}
+			}
+		}
 
 		skills = append(skills, discovery.Customization{
 			Type:        discovery.TypeSkill,
@@ -263,7 +290,8 @@ func (g *Generator) loadSkills(dir string) ([]discovery.Customization, error) {
 			Description: description,
 			FilePath:    relPath,
 			InstallURL:  "",
-			RawURL:      g.generateRawURL(relPath),
+			RawURL:      g.generateRawURL(path.Join(relPath, "SKILL.md")),
+			References:  refs,
 		})
 	}
 
