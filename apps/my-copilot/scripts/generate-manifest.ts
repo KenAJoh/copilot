@@ -246,12 +246,17 @@ function getSkills(): ManifestItem[] {
 
 const items = [...getAgents(), ...getInstructions(), ...getPrompts(), ...getSkills()];
 
-const existing = fs.existsSync(OUTPUT) ? JSON.parse(fs.readFileSync(OUTPUT, "utf-8")) : null;
+let existing: { items: unknown; generatedAt: string } | null = null;
+try {
+  existing = JSON.parse(fs.readFileSync(OUTPUT, "utf-8"));
+} catch {
+  // File doesn't exist or is invalid JSON
+}
 const itemsChanged = !existing || JSON.stringify(existing.items) !== JSON.stringify(items);
 
 const manifest = {
   version: "1.0.0",
-  generatedAt: itemsChanged ? new Date().toISOString() : existing.generatedAt,
+  generatedAt: itemsChanged ? new Date().toISOString() : existing!.generatedAt,
   items,
 };
 

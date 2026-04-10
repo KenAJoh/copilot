@@ -186,7 +186,7 @@ describe("getManualInstallCommand", () => {
     expect(cmd).toContain('mkdir -p ".github/skills/aksel-spacing"');
     expect(cmd).toContain("curl -fsSL");
     expect(cmd).toContain(
-      'curl -fsSL -o ".github/skills/aksel-spacing/SKILL.md" "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/aksel-spacing/SKILL.md"',
+      'curl -fsSL -o ".github/skills/aksel-spacing/SKILL.md" "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/aksel-spacing/SKILL.md"'
     );
     expect(cmd).not.toContain("references");
   });
