@@ -11,6 +11,7 @@ import ModelUsageChart from "@/components/charts/ModelUsageChart";
 import LinesOfCodeChart from "@/components/charts/LinesOfCodeChart";
 import LanguageDistributionChart from "@/components/charts/LanguageDistributionChart";
 import AdoptionTrendChart from "@/components/charts/AdoptionTrendChart";
+import GenerationModeChart from "@/components/charts/GenerationModeChart";
 import MetricCard from "@/components/metric-card";
 import ErrorState from "@/components/error-state";
 import PremiumRequestsContent from "@/components/premium-requests-content";
@@ -35,6 +36,8 @@ import {
   buildFeatureChartData,
   buildLinesOfCodeData,
   buildModelChartData,
+  getGenerationModeSummary,
+  buildGenerationModeTrendData,
 } from "@/lib/data-utils";
 import type { LanguageData, EditorData, ModelData } from "@/lib/types";
 import { formatNumber } from "@/lib/format";
@@ -54,7 +57,7 @@ function UsageHeader() {
   return (
     <PageHero
       title="Statistikk"
-      description="Bruksdata og trender for GitHub Copilot i organisasjonen."
+      description="Bruksdata og trender for GitHub Copilot i Nav."
       actions={
         <Suspense fallback={<Skeleton variant="rectangle" width={192} height={40} />}>
           <TimeframeSelector />
@@ -113,6 +116,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
   const prMetrics = getPRMetrics(usage);
   const cliMetrics = getCLIMetrics(usage);
   const modelUsageMetrics = getModelUsageMetrics(usage);
+  const generationModeSummary = getGenerationModeSummary(usage);
 
   const trendData = buildTrendData(usage);
   const adoptionTrendData = buildAdoptionTrendData(usage);
@@ -121,6 +125,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
   const featureChartData = buildFeatureChartData(usage);
   const linesOfCodeData = buildLinesOfCodeData(usage);
   const modelChartData = buildModelChartData(usage);
+  const generationModeTrendData = buildGenerationModeTrendData(usage);
 
   // Tab content components
   const overviewContent = (
@@ -144,13 +149,13 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
           value={`${aggregatedMetrics.overallAcceptanceRate}%`}
           label="Aksepteringsrate"
           helpTitle="Aksepteringsrate"
-          helpText="Andel av Copilots kodeforslag som aksepteres av utviklerne. Gode rater ligger typisk mellom 20–40 %."
+          helpText="Andel av Copilots kodeforslag som utviklerne aksepterer. Gode rater ligger mellom 20–40 %."
         />
         <MetricCard
           value={formatNumber(aggregatedMetrics.totalInteractions)}
           label="Totale interaksjoner"
           helpTitle="Totale interaksjoner"
-          helpText="Totalt antall brukerinteraksjoner med Copilot i perioden, inkludert chat-meldinger, agent-forespørsler og andre handlinger i tillegg til kodeforslag."
+          helpText="Alle interaksjoner med Copilot i perioden: chat, agent-forespørsler, kodeforslag og andre handlinger."
         />
       </HGrid>
 
@@ -162,13 +167,12 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
               Adopsjon
             </Heading>
             <HelpText title="Adopsjon" placement="top">
-              Chat- og Agent-brukere er basert på GitHubs rullende 30-dagersvindu. Dropp ved månedsskifter skyldes at
+              Chat- og agent-brukere er basert på GitHubs rullende 30-dagersvindu. Dropp ved månedsskifter skyldes at
               brukere fra 30+ dager siden faller ut av vinduet.
             </HelpText>
           </div>
           <BodyShort className="text-gray-600">
-            Bruk av Copilots ulike funksjoner i organisasjonen. Chat og Agent viser aktive brukere siste 30 dager, CLI
-            viser daglige aktive brukere.
+            Bruk av Copilots funksjoner. Chat og agent viser aktive brukere siste 30 dager, CLI viser daglig aktive.
           </BodyShort>
           <HGrid columns={{ xs: 1, sm: 3 }} gap="space-16">
             <Box background="info-soft" padding="space-16" borderRadius="8">
@@ -179,8 +183,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Chat-brukere</BodyShort>
                   <HelpText title="Chat-brukere" placement="top">
-                    Antall unike brukere som har brukt Copilot Chat de siste 30 dagene. Inkluderer inline chat, ask mode
-                    og egendefinerte moduser.
+                    Unike brukere som har brukt Copilot Chat siste 30 dager. Inkluderer inline chat, spør-modus og
+                    egendefinerte moduser.
                   </HelpText>
                 </div>
               </div>
@@ -193,8 +197,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Agent-brukere</BodyShort>
                   <HelpText title="Agent-brukere" placement="top">
-                    Antall unike brukere som har brukt Copilot i agent mode de siste 30 dagene. Agent mode lar Copilot
-                    utføre oppgaver i flere steg, som å redigere filer, kjøre tester og lage pull requests.
+                    Unike brukere som har brukt agent mode siste 30 dager. I agent mode kan Copilot redigere filer,
+                    kjøre tester og lage pull requests i flere steg.
                   </HelpText>
                 </div>
               </div>
@@ -207,8 +211,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">CLI-brukere (daglig)</BodyShort>
                   <HelpText title="CLI-brukere" placement="top">
-                    Antall brukere som brukte Copilot CLI i terminalen siste dag. CLI lar utviklere bruke Copilot
-                    direkte fra kommandolinjen.
+                    Brukere som brukte Copilot CLI i terminalen siste dag.
                   </HelpText>
                 </div>
               </div>
@@ -229,7 +232,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
               Kodeforslag
             </Heading>
             <HelpText title="Kodeforslag" placement="top">
-              Inline kodeforslag i editoren — hvor mange Copilot har generert og hvor stor andel utviklerne aksepterte.
+              Inline kodeforslag i editoren. Hvor mange Copilot har generert, og hvor mange utviklerne aksepterte.
             </HelpText>
           </div>
           <HGrid columns={{ xs: 1, sm: 3 }} gap="space-16">
@@ -241,7 +244,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Genererte forslag</BodyShort>
                   <HelpText title="Genererte forslag" placement="top">
-                    Totalt antall inline kodeforslag Copilot har vist i editoren i perioden.
+                    Inline kodeforslag Copilot har vist i editoren i perioden.
                   </HelpText>
                 </div>
               </div>
@@ -254,7 +257,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Aksepterte forslag</BodyShort>
                   <HelpText title="Aksepterte forslag" placement="top">
-                    Antall kodeforslag som utviklerne godtok (Tab-tasten) i perioden.
+                    Kodeforslag utviklerne godtok (Tab-tasten) i perioden.
                   </HelpText>
                 </div>
               </div>
@@ -267,7 +270,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Aksepteringsrate</BodyShort>
                   <HelpText title="Aksepteringsrate" placement="top">
-                    Andel aksepterte forslag av totale forslag. Gode rater ligger typisk mellom 20–40 %.
+                    Andel aksepterte forslag av totale. Gode rater ligger mellom 20–40 %.
                   </HelpText>
                 </div>
               </div>
@@ -276,7 +279,69 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
         </VStack>
       </Box>
 
-      {/* 5. Daily Activity Trend */}
+      {/* 5. Generation Mode Split */}
+      {generationModeSummary && (
+        <Box background="neutral-soft" padding="space-24" borderRadius="12">
+          <VStack gap="space-16">
+            <div className="flex items-center gap-2">
+              <Heading size="small" level="3">
+                Bruker- vs. agentinitiiert
+              </Heading>
+              <HelpText title="Genereringsmodus" placement="top">
+                Fordeling mellom brukerinitiierte handlinger (kodeforslag, inline chat, spør-modus) og agentinitiierte
+                (agent-modus, agent-redigering, redigeringsmodus).
+              </HelpText>
+            </div>
+            <BodyShort className="text-gray-600">
+              Hvor stor del av Copilots aktivitet som drives av brukeren direkte vs. av agenten.
+            </BodyShort>
+            <HGrid columns={{ xs: 1, sm: 2, md: 3 }} gap="space-16">
+              <Box background="info-soft" padding="space-16" borderRadius="8">
+                <div className="text-center">
+                  <Heading size="large" level="4">
+                    {formatNumber(generationModeSummary.userInitiatedGenerations)}
+                  </Heading>
+                  <div className="flex items-center justify-center gap-1">
+                    <BodyShort className="text-gray-600">Brukerinitiiert</BodyShort>
+                    <HelpText title="Brukerinitiiert" placement="top">
+                      Kodeforslag (Tab-completions), inline chat og spør-modus.
+                    </HelpText>
+                  </div>
+                </div>
+              </Box>
+              <Box background="accent-soft" padding="space-16" borderRadius="8">
+                <div className="text-center">
+                  <Heading size="large" level="4">
+                    {formatNumber(generationModeSummary.agentInitiatedGenerations)}
+                  </Heading>
+                  <div className="flex items-center justify-center gap-1">
+                    <BodyShort className="text-gray-600">Agentinitiiert</BodyShort>
+                    <HelpText title="Agentinitiiert" placement="top">
+                      Agent-modus, agent-redigering, redigeringsmodus og egendefinert modus.
+                    </HelpText>
+                  </div>
+                </div>
+              </Box>
+              <Box background="success-soft" padding="space-16" borderRadius="8">
+                <div className="text-center">
+                  <Heading size="large" level="4">
+                    {generationModeSummary.agentShare}%
+                  </Heading>
+                  <div className="flex items-center justify-center gap-1">
+                    <BodyShort className="text-gray-600">Agent-andel</BodyShort>
+                    <HelpText title="Agent-andel" placement="top">
+                      Andel av genereringene som er agentinitiierte.
+                    </HelpText>
+                  </div>
+                </div>
+              </Box>
+            </HGrid>
+            <GenerationModeChart data={generationModeTrendData} />
+          </VStack>
+        </Box>
+      )}
+
+      {/* 6. Daily Activity Trend */}
       <TrendChart data={trendData} />
     </VStack>
   );
@@ -296,7 +361,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center gap-1">
                     Rangering
                     <HelpText title="Rangering" placement="top">
-                      Språkenes rangering basert på antall genereringer med Copilot.
+                      Rangering ut fra antall genereringer med Copilot.
                     </HelpText>
                   </div>
                 </TableHeaderCell>
@@ -394,7 +459,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center gap-1">
                     Rangering
                     <HelpText title="Rangering" placement="top">
-                      Rangering basert på aktivitetsnivå i hvert verktøy.
+                      Rangering ut fra aktivitetsnivå i hvert verktøy.
                     </HelpText>
                   </div>
                 </TableHeaderCell>
@@ -488,11 +553,11 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
               Kodelinjer
             </Heading>
             <HelpText title="Kodelinjer" placement="top">
-              Hvor mange kodelinjer Copilot har foreslått å legge til eller slette, og hvor mange som ble akseptert.
+              Kodelinjer Copilot har foreslått å legge til eller slette, og hvor mange utviklerne aksepterte.
             </HelpText>
           </div>
           <BodyShort className="text-gray-600">
-            Kodelinjer foreslått og akseptert av Copilot i perioden, fordelt på lagt til og slettet.
+            Foreslåtte og aksepterte kodelinjer i perioden, fordelt på lagt til og slettet.
           </BodyShort>
           <HGrid columns={{ xs: 1, sm: 2, md: 5 }} gap="space-16">
             <Box background="info-soft" padding="space-16" borderRadius="8">
@@ -503,7 +568,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Foreslått lagt til</BodyShort>
                   <HelpText title="Foreslått lagt til" placement="top">
-                    Totalt antall kodelinjer Copilot har foreslått å legge til i perioden.
+                    Kodelinjer Copilot har foreslått å legge til i perioden.
                   </HelpText>
                 </div>
               </div>
@@ -516,7 +581,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Akseptert lagt til</BodyShort>
                   <HelpText title="Akseptert lagt til" placement="top">
-                    Antall foreslåtte kodelinjer (lagt til) som utviklerne aksepterte.
+                    Foreslåtte kodelinjer (lagt til) som utviklerne aksepterte.
                   </HelpText>
                 </div>
               </div>
@@ -529,7 +594,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Foreslått slettet</BodyShort>
                   <HelpText title="Foreslått slettet" placement="top">
-                    Totalt antall kodelinjer Copilot har foreslått å slette i perioden.
+                    Kodelinjer Copilot har foreslått å slette i perioden.
                   </HelpText>
                 </div>
               </div>
@@ -542,7 +607,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <div className="flex items-center justify-center gap-1">
                   <BodyShort className="text-gray-600">Akseptert slettet</BodyShort>
                   <HelpText title="Akseptert slettet" placement="top">
-                    Antall foreslåtte kodelinjer (slettet) som utviklerne aksepterte.
+                    Foreslåtte kodelinjer (slettet) som utviklerne aksepterte.
                   </HelpText>
                 </div>
               </div>
@@ -580,7 +645,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
               </HelpText>
             </div>
             <BodyShort className="text-gray-600">
-              Genereringer og aksepteringer per Copilot-funksjon i perioden.
+              Genereringer og aksepteringer per funksjon i perioden.
             </BodyShort>
             <HGrid columns={{ xs: 1, sm: 2, md: 3 }} gap="space-16">
               {featureAdoption.features.map((feature) => (
@@ -592,8 +657,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                     <div className="flex items-center gap-1">
                       <BodyShort className="text-gray-600">{feature.label}</BodyShort>
                       <HelpText title={feature.label} placement="top">
-                        Genereringer: antall ganger Copilot produserte et forslag for denne funksjonen. Aksepteringer:
-                        antall ganger brukeren tok forslaget i bruk.
+                        Genereringer: antall ganger Copilot produserte et forslag. Aksepteringer: antall ganger
+                        brukeren tok forslaget i bruk.
                       </HelpText>
                     </div>
                     <BodyShort className="text-sm text-gray-500">
@@ -616,11 +681,11 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 Pull requests
               </Heading>
               <HelpText title="Pull requests" placement="top">
-                Pull request-aktivitet der Copilot var involvert som forfatter eller reviewer.
+                PR-aktivitet der Copilot var involvert som forfatter eller reviewer.
               </HelpText>
             </div>
             <BodyShort className="text-gray-600">
-              Pull request-aktivitet der Copilot var involvert — opprettelse, review og merge-tider.
+              Opprettelse, review og merge-tider for PR-er der Copilot var involvert.
             </BodyShort>
 
             <BodyShort weight="semibold" className="text-gray-700">
@@ -635,7 +700,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Totalt opprettet</BodyShort>
                     <HelpText title="Totalt opprettet" placement="top">
-                      Totalt antall pull requests opprettet på tvers av organisasjonen i perioden.
+                      PR-er opprettet i organisasjonen i perioden.
                     </HelpText>
                   </div>
                 </div>
@@ -648,8 +713,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Opprettet av Copilot</BodyShort>
                     <HelpText title="Opprettet av Copilot" placement="top">
-                      Antall pull requests opprettet av Copilot i agent mode. Copilot kan opprette PR-er autonomt basert
-                      på oppgavebeskrivelser.
+                      PR-er Copilot opprettet i agent mode, basert på oppgavebeskrivelser.
                     </HelpText>
                   </div>
                 </div>
@@ -662,7 +726,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Merget</BodyShort>
                     <HelpText title="Merget" placement="top">
-                      Totalt antall pull requests som ble merget i perioden.
+                      PR-er som ble merget i perioden.
                     </HelpText>
                   </div>
                 </div>
@@ -675,8 +739,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Copilot-PR-er merget</BodyShort>
                     <HelpText title="Copilot-PR-er merget" placement="top">
-                      Antall pull requests opprettet av Copilot som faktisk ble merget. Viser kvaliteten på Copilots
-                      autonome bidrag.
+                      Copilot-opprettede PR-er som ble merget.
                     </HelpText>
                   </div>
                 </div>
@@ -689,7 +752,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Copilot-reviewede merget</BodyShort>
                     <HelpText title="Copilot-reviewede PR-er merget" placement="top">
-                      Antall pull requests som ble reviewet av Copilot og deretter merget.
+                      PR-er reviewet av Copilot som deretter ble merget.
                     </HelpText>
                   </div>
                 </div>
@@ -710,7 +773,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Median tid til merge</BodyShort>
                         <HelpText title="Median tid til merge" placement="top">
-                          Median tid fra en PR opprettes til den merges, for alle PR-er.
+                          Median tid fra PR opprettes til den merges.
                         </HelpText>
                       </div>
                     </div>
@@ -723,8 +786,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Median tid (Copilot-PR)</BodyShort>
                         <HelpText title="Median tid for Copilot-PR" placement="top">
-                          Median tid fra en Copilot-opprettet PR opprettes til den merges. Sammenlign med totalen for å
-                          se om Copilot-PR-er merges raskere.
+                          Median tid for Copilot-opprettede PR-er. Sammenlign med totalen for å se om de merges
+                          raskere.
                         </HelpText>
                       </div>
                     </div>
@@ -737,7 +800,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Median tid (Copilot-review)</BodyShort>
                         <HelpText title="Median tid for Copilot-reviewede PR-er" placement="top">
-                          Median tid fra en Copilot-reviewet PR opprettes til den merges.
+                          Median tid for PR-er som Copilot har reviewet.
                         </HelpText>
                       </div>
                     </div>
@@ -749,7 +812,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
             <BodyShort weight="semibold" className="text-gray-700">
               Code review
             </BodyShort>
-            <HGrid columns={{ xs: 1, sm: 2, md: 4 }} gap="space-16">
+            <HGrid columns={{ xs: 1, sm: 2, md: 5 }} gap="space-16">
               <Box background="info-soft" padding="space-16" borderRadius="8">
                 <div className="text-center">
                   <Heading size="large" level="4">
@@ -758,7 +821,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Reviewed</BodyShort>
                     <HelpText title="Reviewed" placement="top">
-                      Antall pull requests som fikk review i perioden.
+                      PR-er som fikk review i perioden.
                     </HelpText>
                   </div>
                 </div>
@@ -771,7 +834,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Reviewed av Copilot</BodyShort>
                     <HelpText title="Reviewed av Copilot" placement="top">
-                      Antall pull requests som fikk code review av Copilot, med automatiske forslag til forbedringer.
+                      PR-er som fikk code review av Copilot, med automatiske forslag til forbedringer.
                     </HelpText>
                   </div>
                 </div>
@@ -784,8 +847,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Copilot review-forslag</BodyShort>
                     <HelpText title="Copilot review-forslag" placement="top">
-                      Konkrete kodeendringsforslag fra Copilot under code review. Utviklere kan godta eller avvise
-                      forslagene direkte i PR-en.
+                      Kodeendringsforslag fra Copilot under review. Utviklere kan godta eller avvise forslagene i
+                      PR-en.
                     </HelpText>
                   </div>
                 </div>
@@ -798,11 +861,26 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Anvendte forslag</BodyShort>
                     <HelpText title="Anvendte forslag" placement="top">
-                      Antall review-forslag som faktisk ble tatt i bruk av utviklerne.
+                      Review-forslag som utviklerne tok i bruk.
                     </HelpText>
                   </div>
                 </div>
               </Box>
+              {prMetrics.totalCopilotSuggestions > 0 && (
+                <Box background="neutral-moderate" padding="space-16" borderRadius="8">
+                  <div className="text-center">
+                    <Heading size="large" level="4">
+                      {Math.round((prMetrics.totalCopilotAppliedSuggestions / prMetrics.totalCopilotSuggestions) * 100)}%
+                    </Heading>
+                    <div className="flex items-center justify-center gap-1">
+                      <BodyShort className="text-gray-600">Aksepteringsrate</BodyShort>
+                      <HelpText title="Aksepteringsrate for review-forslag" placement="top">
+                        Andel av Copilots review-forslag som utviklerne tok i bruk.
+                      </HelpText>
+                    </div>
+                  </div>
+                </Box>
+              )}
             </HGrid>
           </VStack>
         </Box>
@@ -817,11 +895,11 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 Copilot CLI
               </Heading>
               <HelpText title="Copilot CLI" placement="top">
-                Copilot CLI lar utviklere bruke Copilot direkte fra terminalen.
+                Copilot direkte i terminalen.
               </HelpText>
             </div>
             <BodyShort className="text-gray-600">
-              Bruk av Copilot i kommandolinjen, inkludert sesjoner, forespørsler og tokenforbruk.
+              Sesjoner, forespørsler og tokenforbruk i CLI-et.
             </BodyShort>
 
             <BodyShort weight="semibold" className="text-gray-700">
@@ -836,7 +914,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Daglige CLI-brukere</BodyShort>
                     <HelpText title="Daglige CLI-brukere" placement="top">
-                      Antall unike brukere som brukte Copilot CLI siste dag i perioden.
+                      Unike brukere som brukte Copilot CLI siste dag i perioden.
                     </HelpText>
                   </div>
                 </div>
@@ -849,8 +927,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Sesjoner</BodyShort>
                     <HelpText title="CLI-sesjoner" placement="top">
-                      Totalt antall Copilot CLI-sesjoner i perioden. En sesjon er en sammenhengende interaksjon fra
-                      brukeren starter til avslutter CLI-verktøyet.
+                      CLI-sesjoner i perioden. En sesjon varer fra brukeren starter til avslutter CLI-et.
                     </HelpText>
                   </div>
                 </div>
@@ -863,8 +940,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Forespørsler</BodyShort>
                     <HelpText title="CLI-forespørsler" placement="top">
-                      Totalt antall forespørsler sendt til Copilot via CLI i perioden. Én sesjon kan inneholde flere
-                      forespørsler.
+                      Forespørsler sendt til Copilot via CLI. Én sesjon kan ha flere forespørsler.
                     </HelpText>
                   </div>
                 </div>
@@ -884,8 +960,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Snitt tokens/forespørsel</BodyShort>
                         <HelpText title="Snitt tokens per forespørsel" placement="top">
-                          Gjennomsnittlig antall tokens (input + output) per CLI-forespørsel. Tokens er tekstenheter
-                          modellen bruker — ca. 1 token per 4 tegn på engelsk.
+                          Gjennomsnittlig tokens (input + output) per forespørsel. Én token ≈ 4 tegn på engelsk.
                         </HelpText>
                       </div>
                     </div>
@@ -898,8 +973,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Input-tokens totalt</BodyShort>
                         <HelpText title="Input-tokens" placement="top">
-                          Totalt antall prompt-tokens (input) sendt til AI-modellen via CLI i perioden. Dette inkluderer
-                          brukerens spørsmål og kontekst.
+                          Prompt-tokens (input) sendt til modellen via CLI. Inkluderer spørsmål og kontekst.
                         </HelpText>
                       </div>
                     </div>
@@ -912,7 +986,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Output-tokens totalt</BodyShort>
                         <HelpText title="Output-tokens" placement="top">
-                          Totalt antall tokens generert av AI-modellen som svar på CLI-forespørsler i perioden.
+                          Tokens generert av modellen som svar på CLI-forespørsler.
                         </HelpText>
                       </div>
                     </div>
@@ -937,7 +1011,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
               </HelpText>
             </div>
             <BodyShort className="text-gray-600">
-              Hvilke AI-modeller som brukes og hvilke Copilot-funksjoner de støtter.
+              AI-modeller i bruk og hvilke funksjoner de støtter.
             </BodyShort>
 
             <HGrid columns={{ xs: 1, md: 2 }} gap="space-24">
@@ -950,7 +1024,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                         <div className="flex items-center gap-1">
                           Genereringer
                           <HelpText title="Genereringer" placement="top">
-                            Antall ganger denne modellen genererte et kodeforslag eller svar.
+                            Ganger modellen genererte et kodeforslag eller svar.
                           </HelpText>
                         </div>
                       </TableHeaderCell>

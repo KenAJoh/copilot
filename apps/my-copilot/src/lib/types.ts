@@ -133,6 +133,20 @@ export interface ModelChartData {
   generations: number;
 }
 
+export interface GenerationModeTrendData {
+  days: string[];
+  userInitiated: number[];
+  agentInitiated: number[];
+}
+
+export interface GenerationModeSummary {
+  userInitiatedGenerations: number;
+  agentInitiatedGenerations: number;
+  userInitiatedAcceptances: number;
+  agentInitiatedAcceptances: number;
+  agentShare: number;
+}
+
 // Processed aggregation types
 export interface LanguageData {
   name: string;

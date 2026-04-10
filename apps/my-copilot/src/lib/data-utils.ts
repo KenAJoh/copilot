@@ -14,6 +14,8 @@ import type {
   FeatureChartData,
   LinesOfCodeChartData,
   ModelChartData,
+  GenerationModeTrendData,
+  GenerationModeSummary,
 } from "./types";
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -22,10 +24,20 @@ const FEATURE_LABELS: Record<string, string> = {
   chat_panel_ask_mode: "Chat (spør)",
   agent_edit: "Agent-redigering",
   chat_panel_custom_mode: "Egendefinert modus",
+  chat_panel_edit_mode: "Redigeringsmodus",
   chat_inline: "Inline chat",
 };
 
 const EXCLUDED_FEATURES = new Set(["chat_panel_unknown_mode"]);
+
+// Generation mode classification (matches v_code_generation.sql)
+const USER_INITIATED_FEATURES = new Set(["code_completion", "chat_panel_ask_mode", "chat_inline"]);
+const AGENT_INITIATED_FEATURES = new Set([
+  "agent_edit",
+  "chat_panel_agent_mode",
+  "chat_panel_edit_mode",
+  "chat_panel_custom_mode",
+]);
 
 const calculateAcceptanceRate = (accepted: number, generated: number): number => {
   return generated > 0 ? Math.round((accepted / generated) * 100) : 0;
@@ -284,7 +296,7 @@ export const buildTrendData = (usage: EnterpriseMetrics[]): DailyTrend[] => {
     const features = day.totals_by_feature || [];
     const codeCompletion = features.find((f) => f.feature === "code_completion");
     const chatFeatures = features.filter((f) => f.feature.startsWith("chat_panel") || f.feature === "chat_inline");
-    const agentFeatures = features.filter((f) => f.feature === "chat_panel_agent_mode" || f.feature === "agent_edit");
+    const agentFeatures = features.filter((f) => AGENT_INITIATED_FEATURES.has(f.feature));
 
     return {
       day: day.day,
@@ -414,4 +426,62 @@ export const buildModelChartData = (usage: EnterpriseMetrics[], limit: number = 
     .map(([name, generations]) => ({ name, generations }))
     .sort((a, b) => b.generations - a.generations)
     .slice(0, limit);
+};
+
+export const getGenerationModeSummary = (usage: EnterpriseMetrics[]): GenerationModeSummary | null => {
+  if (!usage || usage.length === 0) return null;
+
+  let userGen = 0,
+    agentGen = 0,
+    userAcc = 0,
+    agentAcc = 0;
+
+  for (const day of usage) {
+    for (const f of day.totals_by_feature || []) {
+      const gen = f.code_generation_activity_count || 0;
+      const acc = f.code_acceptance_activity_count || 0;
+      if (USER_INITIATED_FEATURES.has(f.feature)) {
+        userGen += gen;
+        userAcc += acc;
+      } else if (AGENT_INITIATED_FEATURES.has(f.feature)) {
+        agentGen += gen;
+        agentAcc += acc;
+      }
+    }
+  }
+
+  const total = userGen + agentGen;
+  if (total === 0) return null;
+
+  return {
+    userInitiatedGenerations: userGen,
+    agentInitiatedGenerations: agentGen,
+    userInitiatedAcceptances: userAcc,
+    agentInitiatedAcceptances: agentAcc,
+    agentShare: Math.round((agentGen / total) * 100),
+  };
+};
+
+export const buildGenerationModeTrendData = (usage: EnterpriseMetrics[]): GenerationModeTrendData => {
+  return {
+    days: usage.map((d) => d.day),
+    userInitiated: usage.map((day) => {
+      let sum = 0;
+      for (const f of day.totals_by_feature || []) {
+        if (USER_INITIATED_FEATURES.has(f.feature)) {
+          sum += f.code_generation_activity_count || 0;
+        }
+      }
+      return sum;
+    }),
+    agentInitiated: usage.map((day) => {
+      let sum = 0;
+      for (const f of day.totals_by_feature || []) {
+        if (AGENT_INITIATED_FEATURES.has(f.feature)) {
+          sum += f.code_generation_activity_count || 0;
+        }
+      }
+      return sum;
+    }),
+  };
 };
