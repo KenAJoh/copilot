@@ -1,6 +1,14 @@
 [tools]
 node = "24"
 pnpm = "10.24.0"
+fnox = "latest"
+
+[env]
+GITHUB_ORG = "navikt"
+GCP_TEAM_PROJECT_ID = "copilot-dev-e17a"
+NEXT_PUBLIC_FARO_APP_NAME = "my-copilot-browser"
+NEXT_PUBLIC_FARO_URL = "https://telemetry.nav.no/collect"
+NEXT_PUBLIC_FARO_NAMESPACE = "nais"
 
 [tasks.version]
 run = 'echo "$(date +%Y%m%d)-$(git rev-parse --short HEAD)"'
@@ -32,8 +40,8 @@ run = "pnpm build"
 description = "Build Next.js production bundle"
 
 [tasks.dev]
-run = "pnpm dev"
-description = "Start Next.js development server"
+run = "fnox exec -- pnpm dev"
+description = "Start Next.js development server (secrets from Keychain)"
 
 [tasks.generate]
 run = "pnpm generate && pnpm prettier --write src/lib/copilot-manifest.json"
@@ -41,30 +49,7 @@ description = "Generate customizations manifest from .github files"
 
 [tasks."generate:check"]
 description = "Check if generated manifest is up to date"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-MANIFEST="src/lib/copilot-manifest.json"
-TMPFILE=$(mktemp)
-trap 'rm -f "$TMPFILE"' EXIT
-
-cp "$MANIFEST" "$TMPFILE"
-
-pnpm generate
-pnpm prettier --write "$MANIFEST"
-
-if diff -q "$TMPFILE" "$MANIFEST" > /dev/null 2>&1; then
-  echo "✅ Manifest is up to date"
-  exit 0
-else
-  echo "❌ Manifest is out of date. Run 'mise generate' to update it."
-  echo ""
-  echo "Differences:"
-  diff -u "$TMPFILE" "$MANIFEST" || true
-  exit 1
-fi
-'''
+run = "bash hack/generate-check.sh"
 
 [tasks.knip]
 run = "pnpm knip"

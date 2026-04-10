@@ -2,6 +2,14 @@
 go = "1.26"
 golangci-lint = "2.10.1"
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
+fnox = "latest"
+
+[env]
+GITHUB_ORG = "navikt"
+GITHUB_ENTERPRISE_SLUG = "nav"
+GCP_TEAM_PROJECT_ID = "copilot-dev-e17a"
+BIGQUERY_DATASET = "copilot_metrics"
+BIGQUERY_TABLE = "usage_metrics"
 
 [tasks.version]
 description = "Generate version string (YYYYMMDD-gitsha)"
@@ -64,20 +72,23 @@ description = "Run all checks, build, test and docker build"
 depends = ["check", "build", "test", "docker:build"]
 
 [tasks.run]
-description = "Run the application locally (requires env vars)"
-run = "go run ."
+description = "Run the application locally"
+run = "fnox exec -- go run ."
 
 [tasks.dev]
 description = "Run with development settings (DEBUG log level)"
-run = "LOG_LEVEL=DEBUG go run ."
+env = { LOG_LEVEL = "DEBUG" }
+run = "fnox exec -- go run ."
 
 [tasks."run:once"]
 description = "Run single ingestion for yesterday"
-run = "LOG_LEVEL=DEBUG go run . --run-once"
+env = { LOG_LEVEL = "DEBUG" }
+run = "fnox exec -- go run . --run-once"
 
 [tasks."run:backfill"]
 description = "Run historical backfill"
-run = "LOG_LEVEL=DEBUG go run . --backfill"
+env = { LOG_LEVEL = "DEBUG" }
+run = "fnox exec -- go run . --backfill"
 
 [tasks."docker:build"]
 description = "Build Docker image"
@@ -85,11 +96,4 @@ run = "docker build -t copilot-metrics:local ."
 
 [tasks."docker:run"]
 description = "Run Docker container (requires env vars)"
-run = '''
-docker run --rm \
-  -e GITHUB_APP_ID \
-  -e GITHUB_APP_PRIVATE_KEY \
-  -e GITHUB_APP_INSTALLATION_ID \
-  -e GCP_TEAM_PROJECT_ID \
-  copilot-metrics:local --run-once
-'''
+run = "bash hack/docker-run.sh"

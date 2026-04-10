@@ -16,6 +16,10 @@ COPY docs/news/articles ./docs/news/articles
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV GITHUB_ORG=navikt
+ENV NEXT_PUBLIC_FARO_APP_NAME=my-copilot-browser
+ENV NEXT_PUBLIC_FARO_URL=https://telemetry.nav.no/collect
+ENV NEXT_PUBLIC_FARO_NAMESPACE=nais
 
 RUN pnpm build
 

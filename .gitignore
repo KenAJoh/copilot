@@ -22,6 +22,7 @@ secrets*.yaml
 .env
 .env.*
 !.env.example
+fnox.local.toml
 *.pem
 *.key
 *credentials*

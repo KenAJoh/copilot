@@ -2,6 +2,15 @@
 go = "1.26"
 golangci-lint = "2.10.1"
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
+fnox = "latest"
+
+[env]
+GITHUB_ORG = "navikt"
+GCP_TEAM_PROJECT_ID = "copilot-dev-e17a"
+BIGQUERY_DATASET = "copilot_adoption"
+BIGQUERY_TABLE = "repo_scan"
+GRAPHQL_BATCH_SIZE = "3"
+SCAN_CONCURRENCY = "5"
 
 [tasks.version]
 description = "Generate version string (YYYYMMDD-gitsha)"
@@ -64,12 +73,13 @@ description = "Run all checks, build, test and docker build"
 depends = ["check", "build", "test", "docker:build"]
 
 [tasks.run]
-description = "Run the application locally (requires env vars)"
-run = "go run ."
+description = "Run the application locally"
+run = "fnox exec -- go run ."
 
 [tasks.dev]
 description = "Run with development settings (DEBUG log level)"
-run = "LOG_LEVEL=DEBUG go run . --run-once"
+env = { LOG_LEVEL = "DEBUG" }
+run = "fnox exec -- go run . --run-once"
 
 [tasks."docker:build"]
 description = "Build Docker image"
