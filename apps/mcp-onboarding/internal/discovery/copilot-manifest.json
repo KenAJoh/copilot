@@ -325,9 +325,39 @@
     },
     {
       "type": "instruction",
+      "name": "testing-kotlin",
+      "displayName": "Testing/Kotlin Development",
+      "description": "Kotlin-spesifikke testmønstre for Nav: Kotest-matchers, TestRapid, Testcontainers og MockOAuth2Server.",
+      "tags": [
+        "auth",
+        "azure-ad",
+        "tokenx",
+        "security"
+      ],
+      "filePath": ".github/instructions/testing-kotlin.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-kotlin.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-kotlin.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "testing-typescript",
+      "displayName": "Testing/Typescript Development",
+      "description": "TypeScript-spesifikke testmønstre for Nav: Vitest, mocking, async og React-komponenttesting.",
+      "tags": [
+        "testing",
+        "jest",
+        "junit",
+        "quality"
+      ],
+      "filePath": ".github/instructions/testing-typescript.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-typescript.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-typescript.instructions.md"
+    },
+    {
+      "type": "instruction",
       "name": "testing",
       "displayName": "Testing Development",
-      "description": "Teststandarder for Nav: Kotest-matchers i Kotlin, Vitest i TypeScript og felles testprinsipper.",
+      "description": "Felles testprinsipper for Nav. Språkspesifikke eksempler finnes i egne instruksjoner for [Kotlin](testing-kotlin.instructions.md) og [TypeScript](testing-typescript.instructions.md).",
       "tags": [
         "kotlin",
         "ktor",
