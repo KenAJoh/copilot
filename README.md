@@ -195,6 +195,19 @@ fnox set SLACK_WEBHOOK_URL
 
 Non-secret config (org names, BigQuery datasets, etc.) is in each app's `.mise.toml` under `[env]`.
 
+**Using a different secret backend?** The committed `fnox.toml` defaults to macOS Keychain, but you can override with any provider (1Password, GCP Secret Manager, etc.) in a gitignored `fnox.local.toml`:
+
+```toml
+# fnox.local.toml — your personal override
+[providers]
+op = { type = "1password", vault = "Nav Dev" }
+
+[secrets]
+GITHUB_APP_ID = { provider = "op", value = "copilot-portal/GITHUB_APP_ID" }
+```
+
+See [fnox providers](https://fnox.jdx.dev/providers/) for all supported backends.
+
 **Run an app:**
 
 ```bash
