@@ -25,13 +25,7 @@
         "com.figma/figma-mcp/get_design_context",
         "com.figma/figma-mcp/get_screenshot"
       ],
-      "tags": [
-        "wcag",
-        "a11y",
-        "universell-utforming",
-        "aksel",
-        "aria"
-      ],
+      "tags": ["wcag", "a11y", "universell-utforming", "aksel", "aria"],
       "examples": [
         "Sjekk denne komponenten for tilgjengelighetsfeil",
         "Gå gjennom WCAG-krav for denne sida",
@@ -77,16 +71,8 @@
         "io.github.navikt/github-mcp/get_latest_release",
         "io.github.navikt/github-mcp/list_releases"
       ],
-      "agentReferences": [
-        "nais-agent"
-      ],
-      "tags": [
-        "aksel",
-        "design-system",
-        "nextjs",
-        "react",
-        "ui"
-      ],
+      "agentReferences": ["nais-agent"],
+      "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
       "examples": [
         {
           "prompt": "@aksel-agent Konverter Tailwind-layouten i dp-soknad til Aksel spacing tokens",
@@ -127,18 +113,8 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/search_pull_requests"
       ],
-      "agentReferences": [
-        "nais-agent",
-        "observability-agent",
-        "security-champion-agent"
-      ],
-      "tags": [
-        "auth",
-        "azure-ad",
-        "tokenx",
-        "id-porten",
-        "security"
-      ],
+      "agentReferences": ["nais-agent", "observability-agent", "security-champion-agent"],
+      "tags": ["auth", "azure-ad", "tokenx", "id-porten", "security"],
       "examples": [
         {
           "prompt": "@auth-agent Sett opp Azure AD-autentisering i fp-sak",
@@ -181,12 +157,7 @@
         "observability-agent",
         "security-champion-agent"
       ],
-      "tags": [
-        "code-review",
-        "quality",
-        "conventions",
-        "pre-merge"
-      ],
+      "tags": ["code-review", "quality", "conventions", "pre-merge"],
       "examples": [
         {
           "prompt": "@code-review-agent Gå gjennom endringene mine før jeg lager PR",
@@ -224,14 +195,7 @@
         "io.github.navikt/github-mcp/get_file_contents",
         "io.github.navikt/github-mcp/search_code"
       ],
-      "tags": [
-        "norsk",
-        "teknisk-skriving",
-        "redigering",
-        "språk",
-        "klarspråk",
-        "ai-markører"
-      ],
+      "tags": ["norsk", "teknisk-skriving", "redigering", "språk", "klarspråk", "ai-markører"],
       "examples": [
         {
           "prompt": "@forfatter Sjekk feilmeldingene og hjelpetekstene i denne React-komponenten for klarspråk",
@@ -284,17 +248,8 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/search_pull_requests"
       ],
-      "agentReferences": [
-        "nais-agent",
-        "observability-agent",
-        "security-champion-agent"
-      ],
-      "tags": [
-        "kafka",
-        "events",
-        "rapids-rivers",
-        "streaming"
-      ],
+      "agentReferences": ["nais-agent", "observability-agent", "security-champion-agent"],
+      "tags": ["kafka", "events", "rapids-rivers", "streaming"],
       "examples": [
         {
           "prompt": "@kafka-agent Lag en Rapids & Rivers consumer for sykmeldingshendelser i syfosmmanuell-backend",
@@ -338,18 +293,8 @@
         "io.github.navikt/github-mcp/list_releases",
         "io.github.navikt/github-mcp/list_tags"
       ],
-      "agentReferences": [
-        "auth-agent",
-        "kafka-agent",
-        "observability-agent",
-        "security-champion-agent"
-      ],
-      "tags": [
-        "nais",
-        "kubernetes",
-        "deployment",
-        "infrastructure"
-      ],
+      "agentReferences": ["auth-agent", "kafka-agent", "observability-agent", "security-champion-agent"],
+      "tags": ["nais", "kubernetes", "deployment", "infrastructure"],
       "examples": [
         {
           "prompt": "@nais-agent Lag et Nais-manifest for dp-soknad med PostgreSQL og Redis",
@@ -390,18 +335,8 @@
         "io.github.navikt/github-mcp/pull_request_read",
         "io.github.navikt/github-mcp/search_pull_requests"
       ],
-      "agentReferences": [
-        "kafka-agent",
-        "nais-agent",
-        "security-champion-agent"
-      ],
-      "tags": [
-        "observability",
-        "metrics",
-        "logging",
-        "tracing",
-        "prometheus"
-      ],
+      "agentReferences": ["kafka-agent", "nais-agent", "security-champion-agent"],
+      "tags": ["observability", "metrics", "logging", "tracing", "prometheus"],
       "examples": [
         {
           "prompt": "@observability-agent Sett opp Prometheus-metrikker for REST-endepunktene i mulighetsrommet",
@@ -453,11 +388,7 @@
         "observability-agent",
         "security-champion-agent"
       ],
-      "tags": [
-        "research",
-        "analysis",
-        "codebase-exploration"
-      ],
+      "tags": ["research", "analysis", "codebase-exploration"],
       "examples": [
         {
           "prompt": "@research-agent Finn alle steder fp-sak bruker deprecated Kafka-APIet",
@@ -492,12 +423,7 @@
         "io.github.navikt/github-mcp/search_code",
         "io.github.navikt/github-mcp/search_repositories"
       ],
-      "agentReferences": [
-        "code-review-agent",
-        "nais-agent",
-        "observability-agent",
-        "security-champion-agent"
-      ]
+      "agentReferences": ["code-review-agent", "nais-agent", "observability-agent", "security-champion-agent"]
     },
     {
       "id": "security-champion-agent",
@@ -534,17 +460,8 @@
         "io.github.navikt/github-mcp/list_tags",
         "io.github.navikt/github-mcp/list_branches"
       ],
-      "agentReferences": [
-        "auth-agent",
-        "nais-agent",
-        "observability-agent"
-      ],
-      "tags": [
-        "security",
-        "compliance",
-        "gdpr",
-        "threat-modeling"
-      ],
+      "agentReferences": ["auth-agent", "nais-agent", "observability-agent"],
+      "tags": ["security", "compliance", "gdpr", "threat-modeling"],
       "examples": [
         {
           "prompt": "@security-champion-agent Gjennomfør en trusselmodell for sosialhjelp-innsyn-api",
@@ -568,15 +485,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Faccessibility.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Faccessibility.instructions.md",
       "applyTo": "src/**/*.{tsx,jsx}",
-      "tags": [
-        "accessibility",
-        "wcag",
-        "a11y",
-        "universell-utforming"
-      ],
-      "examples": [
-        "Legg til riktige ARIA-attributter på dette skjemaet"
-      ]
+      "tags": ["accessibility", "wcag", "a11y", "universell-utforming"],
+      "examples": ["Legg til riktige ARIA-attributter på dette skjemaet"]
     },
     {
       "id": "database",
@@ -590,15 +500,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "applyTo": "**/db/migration/**/*.sql",
-      "tags": [
-        "database",
-        "flyway",
-        "sql",
-        "migration"
-      ],
-      "examples": [
-        "Lag en Flyway-migrasjon som legger til en status-kolonne i vedtak-tabellen i dp-inntekt"
-      ]
+      "tags": ["database", "flyway", "sql", "migration"],
+      "examples": ["Lag en Flyway-migrasjon som legger til en status-kolonne i vedtak-tabellen i dp-inntekt"]
     },
     {
       "id": "docker",
@@ -612,15 +515,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdocker.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdocker.instructions.md",
       "applyTo": "**/Dockerfile",
-      "tags": [
-        "docker",
-        "dockerfile",
-        "container",
-        "multi-stage"
-      ],
-      "examples": [
-        "Lag en multi-stage Dockerfile for en Spring Boot-applikasjon"
-      ]
+      "tags": ["docker", "dockerfile", "container", "multi-stage"],
+      "examples": ["Lag en multi-stage Dockerfile for en Spring Boot-applikasjon"]
     },
     {
       "id": "github-actions",
@@ -634,15 +530,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fgithub-actions.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fgithub-actions.instructions.md",
       "applyTo": ".github/workflows/*.{yml,yaml}",
-      "tags": [
-        "github-actions",
-        "ci-cd",
-        "workflow",
-        "deployment"
-      ],
-      "examples": [
-        "Lag en GitHub Actions workflow som bygger og deployer til Nais"
-      ]
+      "tags": ["github-actions", "ci-cd", "workflow", "deployment"],
+      "examples": ["Lag en GitHub Actions workflow som bygger og deployer til Nais"]
     },
     {
       "id": "kotlin-ktor",
@@ -656,14 +545,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "applyTo": "**/*.kt",
-      "tags": [
-        "kotlin",
-        "ktor",
-        "backend"
-      ],
-      "examples": [
-        "Lag et nytt endepunkt i fp-sak med Azure AD-autentisering og feilhåndtering"
-      ]
+      "tags": ["kotlin", "ktor", "backend"],
+      "examples": ["Lag et nytt endepunkt i fp-sak med Azure AD-autentisering og feilhåndtering"]
     },
     {
       "id": "kotlin-spring",
@@ -677,14 +560,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-spring.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-spring.instructions.md",
       "applyTo": "**/*.kt",
-      "tags": [
-        "kotlin",
-        "spring",
-        "backend"
-      ],
-      "examples": [
-        "Lag en REST-controller i kursportalen-backend med Spring Boot og validering"
-      ]
+      "tags": ["kotlin", "spring", "backend"],
+      "examples": ["Lag en REST-controller i kursportalen-backend med Spring Boot og validering"]
     },
     {
       "id": "nextjs-aksel",
@@ -698,16 +575,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fnextjs-aksel.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fnextjs-aksel.instructions.md",
       "applyTo": "src/**/*.{tsx,ts}",
-      "tags": [
-        "aksel",
-        "design-system",
-        "nextjs",
-        "react",
-        "ui"
-      ],
-      "examples": [
-        "Lag en responsiv søknadsoversikt med Aksel Box og VStack"
-      ]
+      "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
+      "examples": ["Lag en responsiv søknadsoversikt med Aksel Box og VStack"]
     },
     {
       "id": "testing-kotlin",
@@ -747,15 +616,8 @@
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Ftesting.instructions.md",
       "applyTo": "**/*.test.{ts,tsx,kt,kts}",
-      "tags": [
-        "testing",
-        "vitest",
-        "kotest",
-        "quality"
-      ],
-      "examples": [
-        "Skriv en test for validateSøknad() med grensetilfeller"
-      ]
+      "tags": ["testing", "vitest", "kotest", "quality"],
+      "examples": ["Skriv en test for validateSøknad() med grensetilfeller"]
     },
     {
       "id": "aksel-component",
@@ -769,15 +631,8 @@
       "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Faksel-component.prompt.md",
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Faksel-component.prompt.md",
       "invocation": "#aksel-component",
-      "tags": [
-        "aksel",
-        "design-system",
-        "react",
-        "component"
-      ],
-      "examples": [
-        "#aksel-component Lag en varslingsbanner med ikon og lukkeknapp"
-      ]
+      "tags": ["aksel", "design-system", "react", "component"],
+      "examples": ["#aksel-component Lag en varslingsbanner med ikon og lukkeknapp"]
     },
     {
       "id": "kafka-topic",
@@ -791,15 +646,8 @@
       "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md",
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fkafka-topic.prompt.md",
       "invocation": "#kafka-topic",
-      "tags": [
-        "nais",
-        "kafka",
-        "rapids-rivers",
-        "infrastructure"
-      ],
-      "examples": [
-        "#kafka-topic Legg til et topic for sykmeldingshendelser"
-      ]
+      "tags": ["nais", "kafka", "rapids-rivers", "infrastructure"],
+      "examples": ["#kafka-topic Legg til et topic for sykmeldingshendelser"]
     },
     {
       "id": "nais-manifest",
@@ -813,15 +661,8 @@
       "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md",
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnais-manifest.prompt.md",
       "invocation": "#nais-manifest",
-      "tags": [
-        "nais",
-        "kubernetes",
-        "deployment",
-        "infrastructure"
-      ],
-      "examples": [
-        "#nais-manifest Generer et manifest for dp-soknad i prod-gcp"
-      ]
+      "tags": ["nais", "kubernetes", "deployment", "infrastructure"],
+      "examples": ["#nais-manifest Generer et manifest for dp-soknad i prod-gcp"]
     },
     {
       "id": "nextjs-api-route",
@@ -835,15 +676,8 @@
       "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnextjs-api-route.prompt.md",
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fnextjs-api-route.prompt.md",
       "invocation": "#nextjs-api-route",
-      "tags": [
-        "nextjs",
-        "api-route",
-        "app-router",
-        "scaffold"
-      ],
-      "examples": [
-        "#api-route Lag en API-route for å hente brukerdata fra BigQuery"
-      ]
+      "tags": ["nextjs", "api-route", "app-router", "scaffold"],
+      "examples": ["#api-route Lag en API-route for å hente brukerdata fra BigQuery"]
     },
     {
       "id": "spring-boot-endpoint",
@@ -857,16 +691,8 @@
       "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fspring-boot-endpoint.prompt.md",
       "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fspring-boot-endpoint.prompt.md",
       "invocation": "#spring-boot-endpoint",
-      "tags": [
-        "spring-boot",
-        "kotlin",
-        "rest",
-        "endpoint",
-        "scaffold"
-      ],
-      "examples": [
-        "#spring-boot-endpoint Lag et CRUD-endepunkt for vedtak med PostgreSQL"
-      ]
+      "tags": ["spring-boot", "kotlin", "rest", "endpoint", "scaffold"],
+      "examples": ["#spring-boot-endpoint Lag et CRUD-endepunkt for vedtak med PostgreSQL"]
     },
     {
       "id": "aksel-spacing",
@@ -879,15 +705,8 @@
       "contentHash": "9059ca6ef8aedc4c5130eef88b1f65e018ac2fc8543a2a1146f264dba23de9ed",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "aksel",
-        "design-system",
-        "spacing",
-        "responsive"
-      ],
-      "examples": [
-        "Lag en responsiv to-kolonne layout med Aksel-spacing"
-      ]
+      "tags": ["aksel", "design-system", "spacing", "responsive"],
+      "examples": ["Lag en responsiv to-kolonne layout med Aksel-spacing"]
     },
     {
       "id": "api-design",
@@ -900,13 +719,7 @@
       "contentHash": "42d4a3492b1be1f1d32556eee8cfbcc9850f337610d5ee2c55881e907317d7d4",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "api",
-        "rest",
-        "design",
-        "openapi",
-        "error-handling"
-      ],
+      "tags": ["api", "rest", "design", "openapi", "error-handling"],
       "examples": [
         {
           "scenario": "REST API-design",
@@ -941,12 +754,7 @@
       "contentHash": "68a93957fe50a81df1f13cf9e61f040ac681e58b04d69d8e02b61800e34b0c6a",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "git",
-        "commit",
-        "conventional-commits",
-        "changelog"
-      ],
+      "tags": ["git", "commit", "conventional-commits", "changelog"],
       "examples": [
         {
           "scenario": "Commit-melding",
@@ -977,15 +785,8 @@
       "contentHash": "eeeb48b922eb44ecdb3a53e07889545fa0ffb2dedd8676032b83e7e8ece22cd9",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "database",
-        "flyway",
-        "sql",
-        "migration"
-      ],
-      "examples": [
-        "Lag en Flyway-migrasjon som legger til en indeks på fødselsnummer"
-      ]
+      "tags": ["database", "flyway", "sql", "migration"],
+      "examples": ["Lag en Flyway-migrasjon som legger til en indeks på fødselsnummer"]
     },
     {
       "id": "kotlin-app-config",
@@ -998,15 +799,8 @@
       "contentHash": "eb122934680f56ead18d5c42f526c6bf19a4974d908f53c20f68b99112e3ce67",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "kotlin",
-        "configuration",
-        "sealed-class",
-        "environment"
-      ],
-      "examples": [
-        "Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local"
-      ]
+      "tags": ["kotlin", "configuration", "sealed-class", "environment"],
+      "examples": ["Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local"]
     },
     {
       "id": "observability-setup",
@@ -1019,15 +813,8 @@
       "contentHash": "9b606c89aaf224e38d145734761cedc8811cf3ed1173507d69ccb90f6b1496d7",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "prometheus",
-        "opentelemetry",
-        "health",
-        "metrics"
-      ],
-      "examples": [
-        "Sett opp Prometheus-metrikker og helseendepunkter for dp-soknad"
-      ],
+      "tags": ["prometheus", "opentelemetry", "health", "metrics"],
+      "examples": ["Sett opp Prometheus-metrikker og helseendepunkter for dp-soknad"],
       "references": [
         {
           "path": "references/grafana-queries.md",
@@ -1050,13 +837,7 @@
       "contentHash": "31172cfeab40e8a1b458b593f3b7db8839ae34176614770e2914797c13ca4b98",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "playwright",
-        "e2e",
-        "testing",
-        "accessibility",
-        "responsive"
-      ],
+      "tags": ["playwright", "e2e", "testing", "accessibility", "responsive"],
       "examples": [
         {
           "scenario": "Innlogging",
@@ -1091,13 +872,7 @@
       "contentHash": "6bb7f9e1a94cb55fe93b38f1bbdbd67aa5c2a347044b1be49f7b6c20b1b8b764",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "postgresql",
-        "sql",
-        "optimization",
-        "review",
-        "indexing"
-      ],
+      "tags": ["postgresql", "sql", "optimization", "review", "indexing"],
       "examples": [
         {
           "scenario": "Ytelsesgjennomgang",
@@ -1132,13 +907,7 @@
       "contentHash": "89a1594c5d6d317835e41506cc4d18aff82f8d1e16dedb686563f8c8236fea95",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "rust",
-        "cargo",
-        "clippy",
-        "async",
-        "tokio"
-      ],
+      "tags": ["rust", "cargo", "clippy", "async", "tokio"],
       "examples": [
         {
           "prompt": "Sett opp et nytt Rust-prosjekt med anbefalte lints",
@@ -1169,12 +938,7 @@
       "contentHash": "846e2b1c1cb7252d49a9cf87622db59ba7311362d68584a16b141c28040010f3",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "security",
-        "pre-commit",
-        "vulnerability-scanning",
-        "code-review"
-      ],
+      "tags": ["security", "pre-commit", "vulnerability-scanning", "code-review"],
       "examples": [
         {
           "prompt": "Kjør en sikkerhetssjekk på endringene i fp-sak før jeg pusher",
@@ -1197,13 +961,7 @@
       "contentHash": "075d61929edd5d83d799f38e90e8f0c0058e151994bd04112ac18264c66cf827",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "spring-boot",
-        "kotlin",
-        "scaffold",
-        "nais",
-        "project-setup"
-      ],
+      "tags": ["spring-boot", "kotlin", "scaffold", "nais", "project-setup"],
       "examples": [
         {
           "scenario": "Nytt prosjekt",
@@ -1234,15 +992,8 @@
       "contentHash": "8e692f89cda59737473847aea320762f6a975aca45bc15b3578374307f65b32d",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "tokenx",
-        "auth",
-        "service-to-service",
-        "nais"
-      ],
-      "examples": [
-        "Sett opp TokenX-utveksling mellom dp-soknad og dp-inntekt"
-      ]
+      "tags": ["tokenx", "auth", "service-to-service", "nais"],
+      "examples": ["Sett opp TokenX-utveksling mellom dp-soknad og dp-inntekt"]
     },
     {
       "id": "web-design-reviewer",
@@ -1255,13 +1006,7 @@
       "contentHash": "7b4c7c02d38fa397d2722d39831efebd987bfe23401561f6fb47ebe42f3ded11",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "design-review",
-        "responsive",
-        "accessibility",
-        "layout",
-        "visual-inspection"
-      ],
+      "tags": ["design-review", "responsive", "accessibility", "layout", "visual-inspection"],
       "examples": [
         {
           "prompt": "Sjekk designet på localhost:3000 og finn layout-problemer",
@@ -1294,13 +1039,7 @@
       "contentHash": "2002cc45b8a6aedfe24b63e4b20e4181742b4b722ff04fc738968cc35a8a202c",
       "installUrl": null,
       "insidersInstallUrl": null,
-      "tags": [
-        "security",
-        "macos",
-        "developer-tools",
-        "audit",
-        "hardening"
-      ],
+      "tags": ["security", "macos", "developer-tools", "audit", "hardening"],
       "examples": [
         {
           "prompt": "Kjør en sikkerhetssjekk av Mac-en min",
