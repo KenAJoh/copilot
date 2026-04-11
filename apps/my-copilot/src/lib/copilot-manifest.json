@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-11T19:39:30.120Z",
+  "generatedAt": "2026-04-11T20:11:53.183Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -1096,7 +1096,7 @@
       "name": "security-review",
       "description": "Bruk før commit, push eller pull request for å sjekke at koden er trygg å merge",
       "type": "skill",
-      "domain": "general",
+      "domain": "auth",
       "filePath": ".github/skills/security-review/SKILL.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/security-review/SKILL.md",
       "contentHash": "846e2b1c1cb7252d49a9cf87622db59ba7311362d68584a16b141c28040010f3",
@@ -1221,7 +1221,7 @@
       "name": "workstation-security",
       "description": "Sikkerhetssjekk for macOS-utviklermaskiner — OS-herding, SSH, Git, hemmeligheter, shell, nettverk, pakkeverktøy og Nav-plattformverktøy",
       "type": "skill",
-      "domain": "general",
+      "domain": "auth",
       "filePath": ".github/skills/workstation-security/SKILL.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/workstation-security/SKILL.md",
       "contentHash": "358d1bbbdc6da620cfc41df8756dc701a8b9d73fec9959090580501212344542",
