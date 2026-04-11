@@ -123,9 +123,9 @@ func TestMCPHandler_CallTool_HelloWorld(t *testing.T) {
 		t.Fatalf("expected no error, got: %s", resp.Error.Message)
 	}
 
-	result, ok := resp.Result.(*CallToolResult)
+	result, ok := resp.Result.(CallToolResult)
 	if !ok {
-		t.Fatal("expected *CallToolResult type")
+		t.Fatal("expected CallToolResult type")
 	}
 	if len(result.Content) == 0 {
 		t.Fatal("expected at least one content item")
@@ -144,9 +144,9 @@ func TestMCPHandler_CallTool_Greet(t *testing.T) {
 		t.Fatalf("expected no error, got: %s", resp.Error.Message)
 	}
 
-	result, ok := resp.Result.(*CallToolResult)
+	result, ok := resp.Result.(CallToolResult)
 	if !ok {
-		t.Fatal("expected *CallToolResult type")
+		t.Fatal("expected CallToolResult type")
 	}
 	if len(result.Content) == 0 {
 		t.Fatal("expected content")
@@ -162,9 +162,9 @@ func TestMCPHandler_CallTool_Echo(t *testing.T) {
 		t.Fatalf("expected no error, got: %s", resp.Error.Message)
 	}
 
-	result, ok := resp.Result.(*CallToolResult)
+	result, ok := resp.Result.(CallToolResult)
 	if !ok {
-		t.Fatal("expected *CallToolResult type")
+		t.Fatal("expected CallToolResult type")
 	}
 	if len(result.Content) == 0 {
 		t.Fatal("expected content")
@@ -198,7 +198,7 @@ func TestMCPHandler_CallTool_UnknownTool(t *testing.T) {
 		// Tool not found might return error in result content, not in JSONRPC error
 		return
 	}
-	result, ok := resp.Result.(*CallToolResult)
+	result, ok := resp.Result.(CallToolResult)
 	if ok && result.IsError {
 		// Expected - unknown tool returns error in content
 		return
@@ -246,9 +246,9 @@ func TestMCPHandler_CallTool_Whoami(t *testing.T) {
 		t.Fatalf("expected no error, got: %s", resp.Error.Message)
 	}
 
-	result, ok := resp.Result.(*CallToolResult)
+	result, ok := resp.Result.(CallToolResult)
 	if !ok {
-		t.Fatal("expected *CallToolResult type")
+		t.Fatal("expected CallToolResult type")
 	}
 	if len(result.Content) == 0 {
 		t.Fatal("expected content")

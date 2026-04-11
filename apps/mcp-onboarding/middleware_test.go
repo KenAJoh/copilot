@@ -13,7 +13,7 @@ func TestAuthMiddleware_NoAuthHeader(t *testing.T) {
 	store := newTestStore()
 	mw := NewAuthMiddleware(store)
 
-	handler := mw.Authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := mw.Authenticate(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		t.Error("handler should not be called")
 	}))
 
@@ -34,7 +34,7 @@ func TestAuthMiddleware_InvalidFormat(t *testing.T) {
 	store := newTestStore()
 	mw := NewAuthMiddleware(store)
 
-	handler := mw.Authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := mw.Authenticate(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		t.Error("handler should not be called")
 	}))
 
@@ -52,7 +52,7 @@ func TestAuthMiddleware_InvalidToken(t *testing.T) {
 	store := newTestStore()
 	mw := NewAuthMiddleware(store)
 
-	handler := mw.Authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := mw.Authenticate(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		t.Error("handler should not be called")
 	}))
 
@@ -76,7 +76,7 @@ func TestAuthMiddleware_ExpiredToken(t *testing.T) {
 	})
 	mw := NewAuthMiddleware(store)
 
-	handler := mw.Authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	handler := mw.Authenticate(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		t.Error("handler should not be called for expired token")
 	}))
 
@@ -132,7 +132,7 @@ func TestAuthMiddleware_UnauthorizedResponse(t *testing.T) {
 	store := newTestStore()
 	mw := NewAuthMiddleware(store)
 
-	handler := mw.Authenticate(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	handler := mw.Authenticate(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {}))
 
 	req := httptest.NewRequest("GET", "/mcp", nil)
 	req.Host = "example.com"

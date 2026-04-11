@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -19,6 +18,7 @@ func TestExchangeCode_Success(t *testing.T) {
 			t.Error("expected Accept: application/json")
 		}
 		w.Header().Set("Content-Type", "application/json")
+		//nolint:gosec // test data, not real credentials
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
 			"access_token":  "gho_test123",
 			"refresh_token": "ghr_refresh456",
@@ -112,6 +112,7 @@ func TestExchangeCode_InvalidJSON(t *testing.T) {
 func TestRefreshToken_Success(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		//nolint:gosec // test data, not real credentials
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
 			"access_token":  "gho_new_token",
 			"refresh_token": "ghr_new_refresh",
@@ -483,6 +484,6 @@ type rewriteTransport struct {
 func (t *rewriteTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req = req.Clone(req.Context())
 	req.URL.Scheme = "http"
-	req.URL.Host = fmt.Sprintf("%s", t.rewrite[len("http://"):])
+	req.URL.Host = t.rewrite[len("http://"):]
 	return t.base.RoundTrip(req)
 }

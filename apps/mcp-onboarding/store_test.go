@@ -156,10 +156,10 @@ func TestTokenStore_ClientRegistration(t *testing.T) {
 	store := newTestStore()
 
 	reg := &ClientRegistration{
-		ClientID:   "client-123",
-		ClientName: "Test App",
+		ClientID:     "client-123",
+		ClientName:   "Test App",
 		RedirectURIs: []string{"http://localhost:33418"},
-		CreatedAt:  time.Now(),
+		CreatedAt:    time.Now(),
 	}
 
 	store.SaveClientRegistration(reg)
