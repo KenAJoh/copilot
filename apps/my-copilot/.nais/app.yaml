@@ -89,6 +89,8 @@ spec:
   accessPolicy:
     outbound:
       external:
+        - host: api.github.com
+        - host: avatars.githubusercontent.com
         - host: login.microsoftonline.com
         - host: {{mcp_registry_host}}
         - host: bigquery.googleapis.com
