@@ -43,6 +43,10 @@ kubeconfig.yaml
 *.swo
 *~
 
+# Go build/cache artifacts (sandbox workarounds)
+.gocache/
+go-build*/
+
 # OS
 .DS_Store
 Thumbs.db
