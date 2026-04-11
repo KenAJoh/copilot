@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-11T19:25:39.962Z",
+  "generatedAt": "2026-04-11T19:39:30.120Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -1219,12 +1219,12 @@
     {
       "id": "workstation-security",
       "name": "workstation-security",
-      "description": "Security audit checklist for macOS developer workstations — checks OS hardening, SSH, Git, credentials, shell, network, package managers, and Nav platform tooling",
+      "description": "Sikkerhetssjekk for macOS-utviklermaskiner — OS-herding, SSH, Git, hemmeligheter, shell, nettverk, pakkeverktøy og Nav-plattformverktøy",
       "type": "skill",
       "domain": "general",
       "filePath": ".github/skills/workstation-security/SKILL.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/workstation-security/SKILL.md",
-      "contentHash": "53cc78b11becf8310a69fa947469416e0beed1f0090693531f2d10e9379f72ba",
+      "contentHash": "358d1bbbdc6da620cfc41df8756dc701a8b9d73fec9959090580501212344542",
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": [
@@ -1232,26 +1232,24 @@
         "macos",
         "developer-tools",
         "audit",
-        "hardening",
-        "naisdevice",
-        "kolide"
+        "hardening"
       ],
       "examples": [
         {
-          "prompt": "Run a security audit of my Mac",
-          "scenario": "Full workstation security assessment"
+          "prompt": "Kjør en sikkerhetssjekk av Mac-en min",
+          "scenario": "Full sikkerhetsgjennomgang av utviklermaskin"
         },
         {
-          "prompt": "Check if my SSH and Git configs are secure",
-          "scenario": "Targeted audit of specific categories"
+          "prompt": "Sjekk om SSH- og Git-konfig er trygg",
+          "scenario": "Målrettet sjekk av spesifikke kategorier"
         },
         {
-          "prompt": "Are there any leaked credentials on my machine?",
-          "scenario": "Credential and secret scanning"
+          "prompt": "Finnes det lekkede hemmeligheter på maskinen min?",
+          "scenario": "Skanning av hemmeligheter og tilgangsnøkler"
         },
         {
-          "prompt": "Is my machine ready for NAIS development?",
-          "scenario": "Nav platform readiness check"
+          "prompt": "Er maskinen klar for Nais-utvikling?",
+          "scenario": "Nav-plattform-klarsjekk"
         }
       ]
     }

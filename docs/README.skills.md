@@ -51,7 +51,7 @@ rm -rf /tmp/nav-copilot
 | **spring-boot-scaffold** | Scaffold et nytt Spring Boot Kotlin-prosjekt med Nais-konfigurasjon, Flyway og standard Nav-mønstre | [`.github/skills/spring-boot-scaffold/`](../.github/skills/spring-boot-scaffold/SKILL.md) |
 | **tokenx-auth** | Tjeneste-til-tjeneste-autentisering med TokenX token exchange i Nais | [`.github/skills/tokenx-auth/`](../.github/skills/tokenx-auth/SKILL.md) |
 | **web-design-reviewer** | Visuell inspeksjon av nettsider for å identifisere og fikse designproblemer. Trigges av forespørsler som "sjekk designet", "gå gjennom UI-en", "fiks layouten", "finn designfeil". Finner problemer med responsivt design, tilgjengelighet, visuell konsistens og layout, og fikser dem i kildekoden. | [`.github/skills/web-design-reviewer/`](../.github/skills/web-design-reviewer/SKILL.md) |
-| **workstation-security** | Security audit checklist for macOS developer workstations — checks OS hardening, SSH, Git, credentials, shell, network, package managers, and Nav platform tooling | [`.github/skills/workstation-security/`](../.github/skills/workstation-security/SKILL.md) |
+| **workstation-security** | Sikkerhetssjekk for macOS-utviklermaskiner — OS-herding, SSH, Git, hemmeligheter, shell, nettverk, pakkeverktøy og Nav-plattformverktøy | [`.github/skills/workstation-security/`](../.github/skills/workstation-security/SKILL.md) |
 <!-- END GENERATED TABLE -->
 
 ## Creating Nav Skills
