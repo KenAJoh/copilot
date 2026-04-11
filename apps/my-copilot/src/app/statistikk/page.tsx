@@ -644,9 +644,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 Aktivitet per Copilot-funksjon, målt i genereringer og aksepteringer.
               </HelpText>
             </div>
-            <BodyShort className="text-gray-600">
-              Genereringer og aksepteringer per funksjon i perioden.
-            </BodyShort>
+            <BodyShort className="text-gray-600">Genereringer og aksepteringer per funksjon i perioden.</BodyShort>
             <HGrid columns={{ xs: 1, sm: 2, md: 3 }} gap="space-16">
               {featureAdoption.features.map((feature) => (
                 <Box key={feature.name} background="info-soft" padding="space-16" borderRadius="8">
@@ -657,8 +655,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                     <div className="flex items-center gap-1">
                       <BodyShort className="text-gray-600">{feature.label}</BodyShort>
                       <HelpText title={feature.label} placement="top">
-                        Genereringer: antall ganger Copilot produserte et forslag. Aksepteringer: antall ganger
-                        brukeren tok forslaget i bruk.
+                        Genereringer: antall ganger Copilot produserte et forslag. Aksepteringer: antall ganger brukeren
+                        tok forslaget i bruk.
                       </HelpText>
                     </div>
                     <BodyShort className="text-sm text-gray-500">
@@ -759,7 +757,9 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
               </Box>
             </HGrid>
 
-            {(prMetrics.medianMinutesToMerge > 0 || prMetrics.medianMinutesToMergeCopilotAuthored > 0 || prMetrics.medianMinutesToMergeCopilotReviewed > 0) && (
+            {(prMetrics.medianMinutesToMerge > 0 ||
+              prMetrics.medianMinutesToMergeCopilotAuthored > 0 ||
+              prMetrics.medianMinutesToMergeCopilotReviewed > 0) && (
               <>
                 <BodyShort weight="semibold" className="text-gray-700">
                   Tider
@@ -786,8 +786,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                       <div className="flex items-center justify-center gap-1">
                         <BodyShort className="text-gray-600">Median tid (Copilot-PR)</BodyShort>
                         <HelpText title="Median tid for Copilot-PR" placement="top">
-                          Median tid for Copilot-opprettede PR-er. Sammenlign med totalen for å se om de merges
-                          raskere.
+                          Median tid for Copilot-opprettede PR-er. Sammenlign med totalen for å se om de merges raskere.
                         </HelpText>
                       </div>
                     </div>
@@ -847,8 +846,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                   <div className="flex items-center justify-center gap-1">
                     <BodyShort className="text-gray-600">Copilot review-forslag</BodyShort>
                     <HelpText title="Copilot review-forslag" placement="top">
-                      Kodeendringsforslag fra Copilot under review. Utviklere kan godta eller avvise forslagene i
-                      PR-en.
+                      Kodeendringsforslag fra Copilot under review. Utviklere kan godta eller avvise forslagene i PR-en.
                     </HelpText>
                   </div>
                 </div>
@@ -870,7 +868,8 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 <Box background="neutral-moderate" padding="space-16" borderRadius="8">
                   <div className="text-center">
                     <Heading size="large" level="4">
-                      {Math.round((prMetrics.totalCopilotAppliedSuggestions / prMetrics.totalCopilotSuggestions) * 100)}%
+                      {Math.round((prMetrics.totalCopilotAppliedSuggestions / prMetrics.totalCopilotSuggestions) * 100)}
+                      %
                     </Heading>
                     <div className="flex items-center justify-center gap-1">
                       <BodyShort className="text-gray-600">Aksepteringsrate</BodyShort>
@@ -898,9 +897,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 Copilot direkte i terminalen.
               </HelpText>
             </div>
-            <BodyShort className="text-gray-600">
-              Sesjoner, forespørsler og tokenforbruk i CLI-et.
-            </BodyShort>
+            <BodyShort className="text-gray-600">Sesjoner, forespørsler og tokenforbruk i CLI-et.</BodyShort>
 
             <BodyShort weight="semibold" className="text-gray-700">
               Bruk
@@ -1010,9 +1007,7 @@ async function UsageContent({ usage }: { usage: EnterpriseMetrics[] }) {
                 Hvilke AI-modeller som brukes og for hvilke Copilot-funksjoner.
               </HelpText>
             </div>
-            <BodyShort className="text-gray-600">
-              AI-modeller i bruk og hvilke funksjoner de støtter.
-            </BodyShort>
+            <BodyShort className="text-gray-600">AI-modeller i bruk og hvilke funksjoner de støtter.</BodyShort>
 
             <HGrid columns={{ xs: 1, md: 2 }} gap="space-24">
               <div className="overflow-hidden">
