@@ -1,5 +1,5 @@
 {
-  "description": "Sikkerhetssjekk for macOS-utviklermaskiner — OS-herding, SSH, Git, hemmeligheter, shell, nettverk, pakkeverktøy og Nav-plattformverktøy",
+  "description": "Sikkerhetssjekk for macOS-utviklermaskiner — brannmur, SSH, Git, hemmeligheter, nettverk og Nav-plattformverktøy",
   "domain": "auth",
   "tags": ["security", "macos", "developer-tools", "audit", "hardening"],
   "examples": [
@@ -9,15 +9,15 @@
     },
     {
       "prompt": "Sjekk om SSH- og Git-konfig er trygg",
-      "scenario": "Målrettet sjekk av spesifikke kategorier"
+      "scenario": "Sjekk av SSH og Git"
     },
     {
       "prompt": "Finnes det lekkede hemmeligheter på maskinen min?",
-      "scenario": "Skanning av hemmeligheter og tilgangsnøkler"
+      "scenario": "Skanning av hemmeligheter og tokens"
     },
     {
       "prompt": "Er maskinen klar for Nais-utvikling?",
-      "scenario": "Nav-plattform-klarsjekk"
+      "scenario": "Klarsjekk for Nav-plattformen"
     }
   ]
 }

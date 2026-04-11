@@ -1,5 +1,5 @@
 {
-  "description": "Idiomatisk Rust-utvikling med cargo, clippy, error handling, async/tokio, unsafe og prosjektoppsett",
+  "description": "Idiomatisk Rust-utvikling med cargo, clippy, error handling, async/tokio, unsafe og testing",
   "domain": "backend",
   "tags": ["rust", "cargo", "clippy", "async", "tokio"],
   "examples": [
@@ -8,16 +8,16 @@
       "scenario": "Prosjektoppsett med Cargo.toml og rustfmt"
     },
     {
-      "prompt": "Implementer feilhåndtering med thiserror og anyhow",
-      "scenario": "Strukturert feilhåndtering for bibliotek og applikasjon"
+      "prompt": "Sett opp feilhåndtering med thiserror og anyhow",
+      "scenario": "Error handling for bibliotek og applikasjon"
     },
     {
-      "prompt": "Skriv en async HTTP-tjeneste med axum og tokio",
-      "scenario": "Asynkron webtjeneste med graceful shutdown"
+      "prompt": "Lag en async HTTP-tjeneste med axum og tokio",
+      "scenario": "Webtjeneste med graceful shutdown"
     },
     {
       "prompt": "Gjennomgå unsafe-koden min",
-      "scenario": "Sikkerhetsgjennomgang av unsafe-blokker"
+      "scenario": "Review av unsafe-kode"
     }
   ]
 }

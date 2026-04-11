@@ -1,6 +1,6 @@
 ---
 name: workstation-security
-description: Sikkerhetssjekk for macOS-utviklermaskiner — OS-herding, SSH, Git, hemmeligheter, shell, nettverk, pakkeverktøy og Nav-plattformverktøy
+description: Sikkerhetssjekk for macOS-utviklermaskiner — brannmur, SSH, Git, hemmeligheter, nettverk og Nav-plattformverktøy
 ---
 
 # Workstation Security Audit

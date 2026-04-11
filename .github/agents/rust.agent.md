@@ -1,6 +1,6 @@
 ---
 name: rust-agent
-description: Ekspert på idiomatisk Rust-utvikling — ownership, error handling, async/tokio, unsafe, clippy, cargo, testing og Microsoft Pragmatic Rust Guidelines
+description: Idiomatisk Rust-utvikling med cargo, clippy, error handling, async/tokio, unsafe og testing
 tools:
   - execute
   - read
