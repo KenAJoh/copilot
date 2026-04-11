@@ -3,14 +3,13 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
 // --- ExchangeCode tests ---
 
 func TestExchangeCode_Success(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mock := &mockServer{handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Errorf("expected POST, got %s", r.Method)
 		}
@@ -26,19 +25,13 @@ func TestExchangeCode_Success(t *testing.T) {
 			"token_type":    "bearer",
 			"scope":         "read:org",
 		})
-	}))
-	defer server.Close()
+	})}
 
 	client := &GitHubClient{
 		ClientID:     "test-id",
 		ClientSecret: "test-secret",
-		HTTPClient:   server.Client(),
-		APIBaseURL:   server.URL,
-	}
-	// Override the hardcoded URL by using a transport that redirects
-	client.HTTPClient.Transport = &rewriteTransport{
-		base:    http.DefaultTransport,
-		rewrite: server.URL,
+		HTTPClient:   &http.Client{Transport: &mockTransport{handler: mock.handler}},
+		APIBaseURL:   "http://test",
 	}
 
 	token, err := client.ExchangeCode("test-code")
@@ -60,23 +53,18 @@ func TestExchangeCode_Success(t *testing.T) {
 }
 
 func TestExchangeCode_ErrorResponse(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	mock := &mockServer{handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]string{
 			"error":             "bad_verification_code",
 			"error_description": "The code has expired",
 		})
-	}))
-	defer server.Close()
+	})}
 
 	client := &GitHubClient{
 		ClientID:     "test-id",
 		ClientSecret: "test-secret",
-		HTTPClient:   server.Client(),
-	}
-	client.HTTPClient.Transport = &rewriteTransport{
-		base:    http.DefaultTransport,
-		rewrite: server.URL,
+		HTTPClient:   &http.Client{Transport: &mockTransport{handler: mock.handler}},
 	}
 
 	_, err := client.ExchangeCode("expired-code")
@@ -86,19 +74,14 @@ func TestExchangeCode_ErrorResponse(t *testing.T) {
 }
 
 func TestExchangeCode_InvalidJSON(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	mock := &mockServer{handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, _ = w.Write([]byte("not json"))
-	}))
-	defer server.Close()
+	})}
 
 	client := &GitHubClient{
 		ClientID:     "test-id",
 		ClientSecret: "test-secret",
-		HTTPClient:   server.Client(),
-	}
-	client.HTTPClient.Transport = &rewriteTransport{
-		base:    http.DefaultTransport,
-		rewrite: server.URL,
+		HTTPClient:   &http.Client{Transport: &mockTransport{handler: mock.handler}},
 	}
 
 	_, err := client.ExchangeCode("some-code")
@@ -110,7 +93,7 @@ func TestExchangeCode_InvalidJSON(t *testing.T) {
 // --- RefreshToken tests ---
 
 func TestRefreshToken_Success(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	mock := &mockServer{handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		//nolint:gosec // test data, not real credentials
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
@@ -120,17 +103,12 @@ func TestRefreshToken_Success(t *testing.T) {
 			"token_type":    "bearer",
 			"scope":         "read:org",
 		})
-	}))
-	defer server.Close()
+	})}
 
 	client := &GitHubClient{
 		ClientID:     "test-id",
 		ClientSecret: "test-secret",
-		HTTPClient:   server.Client(),
-	}
-	client.HTTPClient.Transport = &rewriteTransport{
-		base:    http.DefaultTransport,
-		rewrite: server.URL,
+		HTTPClient:   &http.Client{Transport: &mockTransport{handler: mock.handler}},
 	}
 
 	token, err := client.RefreshToken("ghr_old_refresh")
@@ -146,22 +124,17 @@ func TestRefreshToken_Success(t *testing.T) {
 }
 
 func TestRefreshToken_Error(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	mock := &mockServer{handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]string{
 			"error": "invalid_grant",
 		})
-	}))
-	defer server.Close()
+	})}
 
 	client := &GitHubClient{
 		ClientID:     "test-id",
 		ClientSecret: "test-secret",
-		HTTPClient:   server.Client(),
-	}
-	client.HTTPClient.Transport = &rewriteTransport{
-		base:    http.DefaultTransport,
-		rewrite: server.URL,
+		HTTPClient:   &http.Client{Transport: &mockTransport{handler: mock.handler}},
 	}
 
 	_, err := client.RefreshToken("bad-refresh-token")
@@ -190,7 +163,7 @@ func TestGetUser_Success(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	user, err := client.GetUser("test-token")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -218,7 +191,7 @@ func TestGetUser_Unauthorized(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	_, err := client.GetUser("bad-token")
 	if err == nil {
 		t.Fatal("expected error for 401 response")
@@ -239,7 +212,7 @@ func TestGetUserOrganizations_Success(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	orgs, err := client.GetUserOrganizations("test-token")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -264,7 +237,7 @@ func TestGetUserOrganizations_Forbidden(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	_, err := client.GetUserOrganizations("test-token")
 	if err == nil {
 		t.Fatal("expected error for 403 response")
@@ -285,7 +258,7 @@ func TestCheckOrgMembership_IsMember(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	isMember, org := client.CheckOrgMembership("test-token", []string{"navikt"})
 	if !isMember {
 		t.Error("expected user to be a member of navikt")
@@ -306,7 +279,7 @@ func TestCheckOrgMembership_CaseInsensitive(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	isMember, org := client.CheckOrgMembership("test-token", []string{"navikt"})
 	if !isMember {
 		t.Error("expected case-insensitive org match")
@@ -327,7 +300,7 @@ func TestCheckOrgMembership_NotMember(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	isMember, org := client.CheckOrgMembership("test-token", []string{"navikt"})
 	if isMember {
 		t.Error("expected user NOT to be a member of navikt")
@@ -349,7 +322,7 @@ func TestCheckOrgMembership_MultipleAllowedOrgs(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	isMember, org := client.CheckOrgMembership("test-token", []string{"github", "navikt"})
 	if !isMember {
 		t.Error("expected user to be a member of one of the allowed orgs")
@@ -367,7 +340,7 @@ func TestCheckOrgMembership_APIError(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	isMember, org := client.CheckOrgMembership("test-token", []string{"navikt"})
 	if isMember {
 		t.Error("expected false when API returns error")
@@ -391,7 +364,7 @@ func TestListDirectory_Success(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	contents, err := client.ListDirectory("test-token", "navikt", "app", ".github")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -412,7 +385,7 @@ func TestListDirectory_NotFound(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	contents, err := client.ListDirectory("test-token", "navikt", "app", ".github/missing")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -431,7 +404,7 @@ func TestListDirectory_ServerError(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	_, err := client.ListDirectory("test-token", "navikt", "app", "dir")
 	if err == nil {
 		t.Fatal("expected error for 500 response")
@@ -467,23 +440,9 @@ func TestGetRepoFileContent_ServerError(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	_, err := client.GetRepoFileContent("test-token", "navikt", "app", "broken")
 	if err == nil {
 		t.Fatal("expected error for 403 response")
 	}
-}
-
-// rewriteTransport redirects all requests to a test server URL,
-// used to test ExchangeCode and RefreshToken which have hardcoded GitHub URLs.
-type rewriteTransport struct {
-	base    http.RoundTripper
-	rewrite string
-}
-
-func (t *rewriteTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	req = req.Clone(req.Context())
-	req.URL.Scheme = "http"
-	req.URL.Host = t.rewrite[len("http://"):]
-	return t.base.RoundTrip(req)
 }

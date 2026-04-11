@@ -11,22 +11,46 @@ import (
 	"github.com/navikt/copilot/mcp-onboarding/internal/discovery"
 )
 
-func newGitHubMock(t *testing.T, handlers map[string]http.HandlerFunc) *httptest.Server {
-	t.Helper()
+// mockTransport serves HTTP requests in-process without TCP connections.
+// This avoids macOS sandbox restrictions that block outbound TCP.
+type mockTransport struct {
+	handler http.Handler
+}
+
+func (t *mockTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	w := httptest.NewRecorder()
+	t.handler.ServeHTTP(w, req)
+	return w.Result(), nil
+}
+
+// mockServer wraps a handler as a mock that replaces httptest.Server.
+// It satisfies the same usage pattern (Close is a no-op).
+type mockServer struct {
+	handler http.Handler
+}
+
+func (m *mockServer) Close() {} // no-op, no TCP listener to close
+
+func newGitHubMock(_ *testing.T, handlers map[string]http.HandlerFunc) *mockServer {
 	mux := http.NewServeMux()
 	for pattern, handler := range handlers {
 		mux.HandleFunc(pattern, handler)
 	}
-	return httptest.NewServer(mux)
+	return &mockServer{handler: mux}
 }
 
-func newTestGitHubClient(serverURL string) *GitHubClient {
-	return &GitHubClient{
+func newTestGitHubClient(mock *mockServer) *GitHubClient {
+	client := &GitHubClient{
 		ClientID:     "test-id",
 		ClientSecret: "test-secret",
-		HTTPClient:   http.DefaultClient,
-		APIBaseURL:   serverURL,
+		APIBaseURL:   "http://test",
 	}
+	if mock != nil {
+		client.HTTPClient = &http.Client{Transport: &mockTransport{handler: mock.handler}}
+	} else {
+		client.HTTPClient = http.DefaultClient
+	}
+	return client
 }
 
 // --- GitHub API method tests ---
@@ -43,7 +67,7 @@ func TestGetRepoFile_Exists(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	exists, err := client.GetRepoFile("test-token", "navikt", "my-app", ".github/copilot-instructions.md")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -62,7 +86,7 @@ func TestGetRepoFile_NotFound(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	exists, err := client.GetRepoFile("test-token", "navikt", "my-app", "AGENTS.md")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -85,7 +109,7 @@ func TestGetDirectoryCount(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	count, err := client.GetDirectoryCount("test-token", "navikt", "my-app", ".github/instructions")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -103,7 +127,7 @@ func TestGetDirectoryCount_NotFound(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	count, err := client.GetDirectoryCount("test-token", "navikt", "my-app", ".github/agents")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -122,7 +146,7 @@ func TestGetRepoLanguages(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	langs, err := client.GetRepoLanguages("test-token", "navikt", "my-app")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -148,7 +172,7 @@ func TestGetRepoLanguages_Error(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	_, err := client.GetRepoLanguages("test-token", "navikt", "private-repo")
 	if err == nil {
 		t.Error("expected error for 403 response")
@@ -167,7 +191,7 @@ func TestGetRepoFileContent_Found(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	content, err := client.GetRepoFileContent("test-token", "navikt", "my-app", "package.json")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -185,7 +209,7 @@ func TestGetRepoFileContent_NotFound(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	content, err := client.GetRepoFileContent("test-token", "navikt", "my-app", "missing.txt")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -203,7 +227,7 @@ func TestDetectRepoInfo_FullStack(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 
 	info, err := handler.detectRepoInfo("tok", "navikt", "my-api")
@@ -233,7 +257,7 @@ func TestDetectRepoInfo_GradleProject(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 
 	info, err := handler.detectRepoInfo("tok", "navikt", "kotlin-svc")
@@ -254,7 +278,7 @@ func TestDetectRepoInfo_MavenProject(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 
 	info, err := handler.detectRepoInfo("tok", "navikt", "legacy")
@@ -328,7 +352,7 @@ func TestCheckAgentReadiness_FullRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 123, GitHubAccessToken: "test-token"}
 
@@ -397,7 +421,7 @@ func TestCheckAgentReadiness_EmptyRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 123, GitHubAccessToken: "test-token"}
 
@@ -425,7 +449,7 @@ func TestCheckAgentReadiness_EmptyRepo(t *testing.T) {
 }
 
 func TestCheckAgentReadiness_MissingParams(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 123, GitHubAccessToken: "test-token"}
 
@@ -450,7 +474,7 @@ func TestSuggestCustomizations_KotlinRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 123, GitHubAccessToken: "test-token"}
 
@@ -475,7 +499,7 @@ func TestSuggestCustomizations_KotlinRepo(t *testing.T) {
 }
 
 func TestSuggestCustomizations_MissingParams(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 123, GitHubAccessToken: "test-token"}
 
@@ -490,7 +514,7 @@ func TestSuggestCustomizations_MissingParams(t *testing.T) {
 }
 
 func TestToolsList_IncludesReadinessTools(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 
 	req := &JSONRPCRequest{
@@ -540,7 +564,7 @@ func TestInspectRepo_PassesAuthToken(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 123, GitHubAccessToken: "my-secret-token"}
 
@@ -572,7 +596,7 @@ func TestProcessRequest_UserContextPassedToTools(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "hans", ID: 42, GitHubAccessToken: "token-123"}
 
@@ -601,7 +625,7 @@ func TestProcessRequest_UserContextPassedToTools(t *testing.T) {
 
 // --- Phase 2: generate_copilot_instructions & generate_setup_steps ---
 
-func newRepoInfoMock(t *testing.T, langs string, files map[string]bool) *httptest.Server {
+func newRepoInfoMock(t *testing.T, langs string, files map[string]bool) *mockServer {
 	t.Helper()
 	return newGitHubMock(t, map[string]http.HandlerFunc{
 		"/": func(w http.ResponseWriter, r *http.Request) {
@@ -641,7 +665,7 @@ func TestGenerateAgentsMD_GoRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "tok"}
 
@@ -672,7 +696,7 @@ func TestGenerateAgentsMD_PnpmRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "tok"}
 
@@ -691,7 +715,7 @@ func TestGenerateAgentsMD_PnpmRepo(t *testing.T) {
 }
 
 func TestGenerateAgentsMD_MissingParams(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "tok"}
 
@@ -710,7 +734,7 @@ func TestGenerateSetupSteps_GoRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "tok"}
 
@@ -740,7 +764,7 @@ func TestGenerateSetupSteps_GradleRepo(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "tok"}
 
@@ -762,7 +786,7 @@ func TestGenerateSetupSteps_GradleRepo(t *testing.T) {
 }
 
 func TestGenerateSetupSteps_MissingParams(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "tok"}
 
@@ -773,7 +797,7 @@ func TestGenerateSetupSteps_MissingParams(t *testing.T) {
 }
 
 func TestToolsList_IncludesPhase2Tools(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 
 	req := &JSONRPCRequest{
@@ -808,7 +832,7 @@ func TestDetectPackageManager_Pnpm(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 
 	info, err := handler.detectRepoInfo("tok", "navikt", "app")
@@ -827,7 +851,7 @@ func TestDetectPackageManager_Yarn(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 
 	info, err := handler.detectRepoInfo("tok", "navikt", "app")
@@ -845,7 +869,7 @@ func TestDetectPackageManager_NpmDefault(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 
 	info, err := handler.detectRepoInfo("tok", "navikt", "app")
@@ -873,7 +897,7 @@ func TestListTeamRepos(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	repos, err := client.ListTeamRepos("test-token", "navikt", "dagpenger")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -898,7 +922,7 @@ func TestListTeamRepos_NotFound(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	_, err := client.ListTeamRepos("test-token", "navikt", "nonexistent")
 	if err == nil {
 		t.Fatal("expected error for nonexistent team")
@@ -920,7 +944,7 @@ func TestSearchReposByPrefix(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	repos, err := client.SearchReposByPrefix("test-token", "navikt", "dp-")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -942,7 +966,7 @@ func TestSearchReposByPrefix_Empty(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	repos, err := client.SearchReposByPrefix("test-token", "navikt", "zzz-nonexistent-")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -983,7 +1007,7 @@ func TestTeamReadiness_ByPrefix(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "test-token"}
 
@@ -1037,7 +1061,7 @@ func TestTeamReadiness_ByTeam(t *testing.T) {
 	})
 	defer server.Close()
 
-	client := newTestGitHubClient(server.URL)
+	client := newTestGitHubClient(server)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "test-token"}
 
@@ -1060,7 +1084,7 @@ func TestTeamReadiness_ByTeam(t *testing.T) {
 }
 
 func TestTeamReadiness_MissingParams(t *testing.T) {
-	client := newTestGitHubClient("http://unused")
+	client := newTestGitHubClient(nil)
 	handler := newTestMCPHandler(client)
 	user := &UserContext{Login: "testuser", ID: 1, GitHubAccessToken: "test-token"}
 

@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"net/http/httptest"
 	"strings"
 	"testing"
 )
@@ -58,21 +57,20 @@ func TestDownloadAndParseNDJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				if r.Header.Get("Authorization") != "" {
 					t.Error("download request should NOT have Authorization header")
 				}
 				w.WriteHeader(tt.status)
 				_, _ = w.Write([]byte(tt.body))
-			}))
-			defer server.Close()
+			})
 
 			client := &GitHubClient{
 				httpClient:     &http.Client{},
-				downloadClient: server.Client(),
+				downloadClient: mockClient(handler),
 			}
 
-			records, err := client.downloadAndParseNDJSON(context.Background(), server.URL)
+			records, err := client.downloadAndParseNDJSON(context.Background(), "http://test/download")
 			if tt.wantErr {
 				if err == nil {
 					t.Fatal("expected error, got nil")
@@ -90,21 +88,19 @@ func TestDownloadAndParseNDJSON(t *testing.T) {
 }
 
 func TestDownloadAndParseNDJSON_LargeRecord(t *testing.T) {
-	// Simulate a large NDJSON record like the real enterprise metrics
 	largeValue := strings.Repeat("x", 500_000)
 	body := `{"data":"` + largeValue + `"}` + "\n"
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(body))
-	}))
-	defer server.Close()
+	})
 
 	client := &GitHubClient{
-		downloadClient: server.Client(),
+		downloadClient: mockClient(handler),
 	}
 
-	records, err := client.downloadAndParseNDJSON(context.Background(), server.URL)
+	records, err := client.downloadAndParseNDJSON(context.Background(), "http://test/download")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -114,24 +110,21 @@ func TestDownloadAndParseNDJSON_LargeRecord(t *testing.T) {
 }
 
 func TestDownloadUsesDownloadClient(t *testing.T) {
-	authServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	authHandler := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		t.Error("httpClient (auth) should NOT be used for downloads")
-		w.WriteHeader(http.StatusOK)
-	}))
-	defer authServer.Close()
+	})
 
-	downloadServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	downloadHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"ok":true}` + "\n"))
-	}))
-	defer downloadServer.Close()
+	})
 
 	client := &GitHubClient{
-		httpClient:     authServer.Client(),
-		downloadClient: downloadServer.Client(),
+		httpClient:     mockClient(authHandler),
+		downloadClient: mockClient(downloadHandler),
 	}
 
-	records, err := client.downloadAndParseNDJSON(context.Background(), downloadServer.URL)
+	records, err := client.downloadAndParseNDJSON(context.Background(), "http://test/download")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -141,21 +134,18 @@ func TestDownloadUsesDownloadClient(t *testing.T) {
 }
 
 func TestFetchMetricsFromURL_StringResponse(t *testing.T) {
-	// The API sometimes returns a JSON string instead of a JSON object
-	// when the report is not yet available.
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`"No report available for this day"`))
-	}))
-	defer server.Close()
+	})
 
 	client := &GitHubClient{
-		httpClient:     server.Client(),
+		httpClient:     mockClient(handler),
 		downloadClient: &http.Client{},
 	}
 
-	_, err := client.fetchMetricsFromURL(context.Background(), server.URL)
+	_, err := client.fetchMetricsFromURL(context.Background(), "http://test/report")
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
@@ -165,19 +155,18 @@ func TestFetchMetricsFromURL_StringResponse(t *testing.T) {
 }
 
 func TestFetchMetricsFromURL_ValidResponse(t *testing.T) {
-	downloadServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	downloadHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("{\"users\":42}\n"))
-	}))
-	defer downloadServer.Close()
+	})
 
 	reportResp := MetricsReportResponse{
-		DownloadLinks: []string{downloadServer.URL},
+		DownloadLinks: []string{"http://test/ndjson"},
 		ReportDay:     "2026-03-20",
 	}
 	reportJSON, _ := json.Marshal(reportResp)
 
-	reportServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	reportHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if got := r.Header.Get("Accept"); got != "application/vnd.github+json" {
 			t.Errorf("Accept header = %q, want %q", got, "application/vnd.github+json")
 		}
@@ -187,15 +176,14 @@ func TestFetchMetricsFromURL_ValidResponse(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(reportJSON)
-	}))
-	defer reportServer.Close()
+	})
 
 	client := &GitHubClient{
-		httpClient:     reportServer.Client(),
-		downloadClient: downloadServer.Client(),
+		httpClient:     mockClient(reportHandler),
+		downloadClient: mockClient(downloadHandler),
 	}
 
-	records, err := client.fetchMetricsFromURL(context.Background(), reportServer.URL)
+	records, err := client.fetchMetricsFromURL(context.Background(), "http://test/report")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -206,20 +194,19 @@ func TestFetchMetricsFromURL_ValidResponse(t *testing.T) {
 
 func TestFetchMetricsFromURLWithRetry_NoRetryOnStringResponse(t *testing.T) {
 	attempts := 0
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		attempts++
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`"Report is being generated"`))
-	}))
-	defer server.Close()
+	})
 
 	client := &GitHubClient{
-		httpClient:     server.Client(),
+		httpClient:     mockClient(handler),
 		downloadClient: &http.Client{},
 	}
 
-	_, err := client.fetchMetricsFromURLWithRetry(context.Background(), server.URL)
+	_, err := client.fetchMetricsFromURLWithRetry(context.Background(), "http://test/report")
 	if err == nil {
 		t.Fatal("expected error, got nil")
 	}
