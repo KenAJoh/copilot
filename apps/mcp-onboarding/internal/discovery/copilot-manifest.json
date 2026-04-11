@@ -574,6 +574,15 @@
           "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/web-design-reviewer/references/visual-checklist.md"
         }
       ]
+    },
+    {
+      "type": "skill",
+      "name": "workstation-security",
+      "displayName": "workstation-security",
+      "description": "Run these checks with `run_in_terminal` or `bash`. Report every finding with a severity (CRITICAL / HIGH / MEDIUM / INFO / PASS) and a concrete fix. Summarize results in a table at the end.",
+      "filePath": ".github/skills/workstation-security",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/workstation-security/SKILL.md"
     }
   ]
 }
