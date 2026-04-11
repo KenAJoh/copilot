@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-11T20:11:53.183Z",
+  "generatedAt": "2026-04-11T20:15:52.286Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -467,6 +467,36 @@
           "prompt": "@research-agent Undersøk hvordan feilhåndtering fungerer i søknadsflyten i dp-soknad",
           "scenario": "Undersøk mønstre"
         }
+      ]
+    },
+    {
+      "id": "rust-agent",
+      "name": "rust-agent",
+      "description": "Ekspert på idiomatisk Rust-utvikling — ownership, error handling, async/tokio, unsafe, clippy, cargo, testing og Microsoft Pragmatic Rust Guidelines",
+      "type": "agent",
+      "domain": "general",
+      "filePath": ".github/agents/rust.agent.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/rust.agent.md",
+      "contentHash": "3e27002ee33662323d3bdcdab491d995bf65bf59ae9b28ec7912993c701fcc8d",
+      "installUrl": "/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Frust.agent.md",
+      "insidersInstallUrl": "/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Frust.agent.md",
+      "tools": [
+        "execute",
+        "read",
+        "edit",
+        "search",
+        "web",
+        "todo",
+        "ms-vscode.vscode-websearchforcopilot/websearch",
+        "io.github.navikt/github-mcp/get_file_contents",
+        "io.github.navikt/github-mcp/search_code",
+        "io.github.navikt/github-mcp/search_repositories"
+      ],
+      "agentReferences": [
+        "code-review-agent",
+        "nais-agent",
+        "observability-agent",
+        "security-champion-agent"
       ]
     },
     {
@@ -1088,6 +1118,43 @@
         {
           "scenario": "JSONB-mønstre",
           "prompt": "Gå gjennom bruk av JSONB"
+        }
+      ]
+    },
+    {
+      "id": "rust-development",
+      "name": "rust-development",
+      "description": "Idiomatisk Rust-utvikling med cargo, clippy, error handling, async/tokio, unsafe og prosjektoppsett. Bruk for: nytt Rust-prosjekt, Cargo.toml-oppsett, feilhåndtering, unsafe-review, async-patterns, workspace-struktur, ytelsesoptimalisering, lint-konfig.",
+      "type": "skill",
+      "domain": "backend",
+      "filePath": ".github/skills/rust-development/SKILL.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/rust-development/SKILL.md",
+      "contentHash": "d923102ff9931c4c90c645bb246978d96a69be8fb501ec3493e3f09a6d90334c",
+      "installUrl": null,
+      "insidersInstallUrl": null,
+      "tags": [
+        "rust",
+        "cargo",
+        "clippy",
+        "async",
+        "tokio"
+      ],
+      "examples": [
+        {
+          "prompt": "Sett opp et nytt Rust-prosjekt med anbefalte lints",
+          "scenario": "Prosjektoppsett med Cargo.toml og rustfmt"
+        },
+        {
+          "prompt": "Implementer feilhåndtering med thiserror og anyhow",
+          "scenario": "Strukturert feilhåndtering for bibliotek og applikasjon"
+        },
+        {
+          "prompt": "Skriv en async HTTP-tjeneste med axum og tokio",
+          "scenario": "Asynkron webtjeneste med graceful shutdown"
+        },
+        {
+          "prompt": "Gjennomgå unsafe-koden min",
+          "scenario": "Sikkerhetsgjennomgang av unsafe-blokker"
         }
       ]
     },
