@@ -25,7 +25,10 @@ func isGitRepo(dir string) bool {
 	return err == nil
 }
 
-// cmdInteractive runs an interactive collection picker and installer.
+// cmdInteractive runs an interactive flow based on current state:
+//  1. Not installed → prompt to pick and install a collection
+//  2. Installed but outdated → prompt to sync/upgrade
+//  3. Installed and up-to-date → launch cplt/copilot
 func cmdInteractive() error {
 	// I3: Use git root, not CWD (which could be a subdirectory)
 	targetDir := findGitRoot(".")
@@ -33,23 +36,34 @@ func cmdInteractive() error {
 		return fmt.Errorf("not in a git repository")
 	}
 
-	// If already installed, offer sync instead
+	// If already installed, check for updates or launch Copilot
 	state, err := readState(targetDir)
 	if err != nil {
 		return fmt.Errorf("reading install state: %w", err)
 	}
 	if state != nil {
-		fmt.Printf("%s is already installed %s\n",
-			bold(state.Collection), dim(fmt.Sprintf("(v%s, %s)", state.Version, state.SourceSHA)))
+		reader := bufio.NewReader(os.Stdin)
 
 		// Fast staleness check (cached, 2s timeout)
 		if latest := checkStaleness(state.Version); latest != "" {
-			fmt.Printf("\n%s Update available: %s → %s\n",
-				yellow("⚠"), state.Version, latest)
-			fmt.Printf("Run %s to update.\n", bold("nav-pilot sync --apply"))
-		} else {
-			fmt.Printf("\nRun %s to check for updates.\n", bold("nav-pilot sync"))
+			fmt.Printf("%s Update available for %s: %s → %s\n",
+				yellow("⚠"), bold(state.Collection), state.Version, latest)
+			fmt.Println()
+			fmt.Printf("Sync now? [Y/n]: ")
+			answer, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Println()
+				return nil
+			}
+			answer = strings.TrimSpace(strings.ToLower(answer))
+			if answer == "" || answer == "y" || answer == "yes" {
+				fmt.Println()
+				return cmdSync(targetDir, "", "", true, false)
+			}
 		}
+
+		// Up-to-date (or user skipped sync) — launch Copilot CLI
+		launchCopilot(reader)
 		return nil
 	}
 
@@ -173,6 +187,26 @@ func findCopilotCLI() (path, name string) {
 		return p, "cplt"
 	}
 	return "", ""
+}
+
+// launchCopilot launches cplt directly, or hints at copilot.
+func launchCopilot(reader *bufio.Reader) {
+	cliPath, cliName := findCopilotCLI()
+	if cliPath == "" {
+		if _, err := exec.LookPath("copilot"); err == nil {
+			fmt.Printf(dim("Tip: run %s to start coding.\n"), bold("copilot"))
+		}
+		return
+	}
+
+	fmt.Printf("Launching %s...\n\n", bold(cliName))
+	cmd := exec.Command(cliPath)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s Could not launch %s: %v\n", yellow("⚠"), cliName, err)
+	}
 }
 
 // offerLaunchCopilot prompts the user to launch the Copilot CLI after install.
