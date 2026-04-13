@@ -116,7 +116,7 @@ lint_skill() {
   fi
 
   if (( has_steps == 0 )); then
-    warn "[$name] No numbered workflow steps — agents follow sequenced procedures more reliably."
+    $QUIET || dim "  ℹ  [$name] No numbered workflow steps (reference skills may not need them)."
   else
     ok "has numbered steps"
   fi
