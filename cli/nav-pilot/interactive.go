@@ -63,7 +63,7 @@ func cmdInteractive() error {
 		}
 
 		// Up-to-date (or user skipped sync) — launch Copilot CLI
-		launchCopilot(reader)
+		launchCopilot()
 		return nil
 	}
 
@@ -190,7 +190,7 @@ func findCopilotCLI() (path, name string) {
 }
 
 // launchCopilot launches cplt directly, or hints at copilot.
-func launchCopilot(reader *bufio.Reader) {
+func launchCopilot() {
 	cliPath, cliName := findCopilotCLI()
 	if cliPath == "" {
 		if _, err := exec.LookPath("copilot"); err == nil {
