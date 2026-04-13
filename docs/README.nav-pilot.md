@@ -23,6 +23,10 @@ nav-pilot install kotlin-backend # eller direkte
 # Oppdater nav-pilot
 nav-pilot update
 
+# Rapporter en feil eller foreslå en forbedring
+nav-pilot feedback             # åpner bug-rapport i nettleser
+nav-pilot feedback --feature   # åpner feature request
+
 # Bruk i Copilot
 @nav-pilot Jeg trenger en ny tjeneste som behandler dagpengesøknader
 ```

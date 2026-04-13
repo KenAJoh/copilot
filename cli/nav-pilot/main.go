@@ -50,6 +50,7 @@ Commands:
   status                  Show what's currently installed
   uninstall               Remove installed collection files
   update                  Update nav-pilot CLI to the latest version
+  feedback                Report a bug or request a feature
   version                 Show version information
 
 Flags:
@@ -60,6 +61,7 @@ Flags:
   -s, --source <repo>     Source repository (default: navikt/copilot)
   --apply                 Apply available updates (sync only)
   --json                  Output results as JSON (sync only)
+  -F, --feature           Submit a feature request (feedback only)
 
 Get started:
   nav-pilot list                         # See available collections
@@ -84,7 +86,7 @@ func run(args []string) error {
 	command := args[0]
 	rest := args[1:]
 
-	var dryRun, force, apply, jsonOutput, listItems bool
+	var dryRun, force, apply, jsonOutput, listItems, featureRequest bool
 	var targetDir, ref, sourceRepo string
 	var positional []string
 
@@ -102,6 +104,8 @@ func run(args []string) error {
 			jsonOutput = true
 		case "--items":
 			listItems = true
+		case "-F", "--feature":
+			featureRequest = true
 		case "-t", "--target":
 			if i+1 >= len(rest) {
 				return fmt.Errorf("--target requires a value")
@@ -156,6 +160,8 @@ func run(args []string) error {
 		return cmdUninstall(targetDir, dryRun)
 	case "update":
 		return cmdUpdate()
+	case "feedback":
+		return cmdFeedback(targetDir, featureRequest)
 	case "version", "--version", "-v":
 		fmt.Printf("nav-pilot %s (commit: %s, built: %s)\n", version, commit, buildDate)
 		return nil

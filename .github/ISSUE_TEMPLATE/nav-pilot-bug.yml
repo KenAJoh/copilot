@@ -1,0 +1,51 @@
+name: "nav-pilot: Bug report"
+description: Report a bug with the nav-pilot CLI
+labels: ["nav-pilot"]
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: "When I ran 'nav-pilot sync', it..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      description: What should have happened instead?
+      placeholder: "I expected the files to be updated..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this? List the steps.
+      placeholder: |
+        1. Run `nav-pilot install kotlin-backend`
+        2. Edit a file
+        3. Run `nav-pilot sync --apply`
+    validations:
+      required: false
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Auto-filled by `nav-pilot feedback`. Leave as-is.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else that might help (logs, screenshots, etc.)
+    validations:
+      required: false

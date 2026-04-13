@@ -1,0 +1,47 @@
+name: "nav-pilot: Feature request"
+description: Suggest a new feature or improvement for nav-pilot
+labels: ["nav-pilot", "enhancement"]
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the problem or pain point this feature would address.
+      placeholder: "I often need to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe your ideal solution
+      description: What would the feature look like? How would you use it?
+      placeholder: "A command like `nav-pilot ...` that..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any workarounds or alternative approaches you've tried?
+    validations:
+      required: false
+
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Diagnostics
+      description: Auto-filled by `nav-pilot feedback --feature`. Leave as-is.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Anything else (examples from other tools, screenshots, etc.)
+    validations:
+      required: false
