@@ -85,8 +85,8 @@ func TestFetchLatestVersion(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, `[
-			{"tag_name": "nav-pilot/2026.04.13-abc1234"},
-			{"tag_name": "nav-pilot/2026.04.12-def5678"}
+			{"tag_name": "nav-pilot/2026.04.13.17.01.38-abc1234"},
+			{"tag_name": "nav-pilot/2026.04.12.09.30.00-def5678"}
 		]`)
 	}))
 	defer srv.Close()
@@ -101,16 +101,16 @@ func TestFetchLatestVersion(t *testing.T) {
 	_ = origAPI
 
 	// Test the tag parsing logic directly
-	tag := "nav-pilot/2026.04.13-abc1234"
+	tag := "nav-pilot/2026.04.13.17.01.38-abc1234"
 	ver := tag[len("nav-pilot/"):]
-	if ver != "2026.04.13-abc1234" {
+	if ver != "2026.04.13.17.01.38-abc1234" {
 		t.Errorf("unexpected version: %s", ver)
 	}
 }
 
 func TestFetchLatestVersion_SkipsNonNavPilot(t *testing.T) {
 	// Verify the filtering logic: only nav-pilot/ prefixed tags are matched
-	tags := []string{"other-app/1.0.0", "nav-pilot/2026.04.13-abc1234"}
+	tags := []string{"other-app/1.0.0", "nav-pilot/2026.04.13.17.01.38-abc1234"}
 	var found string
 	for _, tag := range tags {
 		if len(tag) > len("nav-pilot/") && tag[:len("nav-pilot/")] == "nav-pilot/" {
@@ -118,8 +118,8 @@ func TestFetchLatestVersion_SkipsNonNavPilot(t *testing.T) {
 			break
 		}
 	}
-	if found != "2026.04.13-abc1234" {
-		t.Errorf("expected 2026.04.13-abc1234, got %s", found)
+	if found != "2026.04.13.17.01.38-abc1234" {
+		t.Errorf("expected 2026.04.13.17.01.38-abc1234, got %s", found)
 	}
 }
 

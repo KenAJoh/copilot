@@ -114,8 +114,8 @@ func isBrewManaged() bool {
 
 // fetchLatestVersion queries the GitHub releases API for the latest nav-pilot release.
 // It filters by the "nav-pilot/" tag prefix to avoid picking up other monorepo releases.
-// Returns the raw version (matching the build-injected format, e.g. "2026.04.13-abc1234")
-// and the full tag (e.g. "nav-pilot/2026.04.13-abc1234").
+// Returns the raw version (matching the build-injected format, e.g. "2026.04.13.17.01.38-abc1234")
+// and the full tag (e.g. "nav-pilot/2026.04.13.17.01.38-abc1234").
 func fetchLatestVersion() (ver string, tag string, err error) {
 	resp, err := httpClient.Get(releasesAPI + "?per_page=20")
 	if err != nil {

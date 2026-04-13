@@ -37,7 +37,7 @@ jobs:
         run: |
           COMMIT_SHA="${{ github.event.workflow_run.head_sha || github.sha }}"
           SHORT_SHA="${COMMIT_SHA:0:7}"
-          DATE=$(date -u +%Y.%m.%d)
+          DATE=$(date -u +%Y.%m.%d.%H.%M.%S)
           VERSION="${DATE}-${SHORT_SHA}"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "commit_sha=${COMMIT_SHA}" >> "$GITHUB_OUTPUT"
