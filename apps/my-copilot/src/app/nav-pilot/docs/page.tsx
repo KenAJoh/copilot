@@ -1,6 +1,7 @@
 import { Heading, BodyShort, BodyLong, Box, HGrid, Label, VStack, Tag } from "@navikt/ds-react";
 import { CodeBlock } from "@/components/code-block";
 import { AltInstall } from "@/components/alt-install";
+import { FileExplorer } from "@/components/file-explorer";
 import { LinkableHeading } from "@/components/linkable-heading";
 import { PageHero } from "@/components/page-hero";
 import { TableOfContents, type TocItem } from "@/components/table-of-contents";
@@ -87,6 +88,14 @@ const DOC_SECTIONS: TocItem[] = [
     children: [
       { id: "installer-cli", label: "Installer CLI" },
       { id: "kommandooversikt", label: "Kommandooversikt" },
+    ],
+  },
+  {
+    id: "slik-fungerer-det",
+    label: "Slik fungerer det",
+    children: [
+      { id: "filstruktur", label: "Filstruktur" },
+      { id: "livssyklus", label: "Livssyklus" },
     ],
   },
   {
@@ -270,6 +279,7 @@ export default function NavPilotDocs() {
                 <PipelineSection />
                 <SyncSection />
                 <CliReferenceSection />
+                <HowItWorksSection />
                 <ResourcesSection />
               </VStack>
             </div>
@@ -1152,7 +1162,129 @@ nav-pilot add prompt kafka-topic`}
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Section 7: Ressurser
+   Section 7: Slik fungerer det
+   ═══════════════════════════════════════════════════════════════ */
+
+function HowItWorksSection() {
+  return (
+    <section id="slik-fungerer-det">
+      <VStack gap="space-16">
+        <div>
+          <LinkableHeading size="medium" level="2">
+            Slik fungerer det
+          </LinkableHeading>
+          <BodyLong className="mt-3" style={{ color: "#475569" }}>
+            nav-pilot installerer markdown-filer i repoet ditt. GitHub Copilot leser disse filene automatisk og
+            tilpasser seg deretter. Klikk på filene under for å se hva de gjør.
+          </BodyLong>
+        </div>
+
+        {/* Interactive file explorer */}
+        <div id="filstruktur">
+          <LinkableHeading size="small" level="3">
+            Filstruktur
+          </LinkableHeading>
+          <BodyShort size="small" className="mt-2 mb-4" style={{ color: "#475569" }}>
+            Dette er filene som installeres i <code className="text-xs font-mono rounded px-1 py-0.5" style={{ background: "#f1f5f9" }}>.github/</code>-mappen din. Klikk for detaljer.
+          </BodyShort>
+          <FileExplorer />
+        </div>
+
+        {/* Lifecycle */}
+        <div id="livssyklus">
+          <LinkableHeading size="small" level="3">
+            Livssyklus
+          </LinkableHeading>
+          <BodyShort size="small" className="mt-2 mb-4" style={{ color: "#475569" }}>
+            Fra installasjon til daglig bruk — slik henger delene sammen.
+          </BodyShort>
+          <div className="flex flex-col" style={{ gap: "2px" }}>
+            {[
+              {
+                step: "1",
+                title: "Installer",
+                desc: "nav-pilot install kopierer markdown-filer fra navikt/copilot til .github/ i repoet ditt.",
+                cmd: "nav-pilot install kotlin-backend",
+                accent: "#3b82f6",
+                bg: "#eff6ff",
+              },
+              {
+                step: "2",
+                title: "Commit og push",
+                desc: "Filene committes som vanlig kode. Hele teamet får samme Copilot-tilpasning.",
+                cmd: "git add .github/ && git commit",
+                accent: "#7c3aed",
+                bg: "#f5f3ff",
+              },
+              {
+                step: "3",
+                title: "Copilot leser automatisk",
+                desc: "GitHub Copilot oppdager filene og tilpasser seg. Instruksjoner aktiveres automatisk, agenter kalles med @.",
+                cmd: "@nav-pilot planlegg et nytt API",
+                accent: "#059669",
+                bg: "#ecfdf5",
+              },
+              {
+                step: "4",
+                title: "Hold oppdatert",
+                desc: "nav-pilot sjekker automatisk for nye versjoner. Bruk sync for å oppdatere filene når nye skills eller forbedringer er tilgjengelig.",
+                cmd: "nav-pilot sync --apply",
+                accent: "#d97706",
+                bg: "#fffbeb",
+              },
+            ].map((phase, i, arr) => (
+              <div
+                key={phase.step}
+                className="flex items-start gap-4"
+                style={{
+                  padding: "1rem 1.25rem",
+                  background: phase.bg,
+                  borderRadius:
+                    i === 0
+                      ? "10px 10px 0 0"
+                      : i === arr.length - 1
+                        ? "0 0 10px 10px"
+                        : "0",
+                }}
+              >
+                <div
+                  className="flex-shrink-0 flex items-center justify-center rounded-full font-bold"
+                  style={{
+                    width: "2rem",
+                    height: "2rem",
+                    background: "white",
+                    color: phase.accent,
+                    fontSize: "0.875rem",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+                  }}
+                >
+                  {phase.step}
+                </div>
+                <div className="flex-1">
+                  <Label size="small" style={{ color: phase.accent }}>
+                    {phase.title}
+                  </Label>
+                  <BodyShort size="small" style={{ color: "#475569" }}>
+                    {phase.desc}
+                  </BodyShort>
+                  <code
+                    className="text-xs font-mono mt-1 inline-block rounded px-1.5 py-0.5"
+                    style={{ background: "rgba(255,255,255,0.7)", color: "#64748b" }}
+                  >
+                    {phase.cmd}
+                  </code>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </VStack>
+    </section>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Section 8: Ressurser
    ═══════════════════════════════════════════════════════════════ */
 
 function ResourcesSection() {
