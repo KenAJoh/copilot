@@ -39,9 +39,17 @@ func cmdInteractive() error {
 		return fmt.Errorf("reading install state: %w", err)
 	}
 	if state != nil {
-		fmt.Printf("%s is already installed %s\n\n",
+		fmt.Printf("%s is already installed %s\n",
 			bold(state.Collection), dim(fmt.Sprintf("(v%s, %s)", state.Version, state.SourceSHA)))
-		fmt.Printf("Run %s to check for updates.\n", bold("nav-pilot sync"))
+
+		// Fast staleness check (cached, 2s timeout)
+		if latest := checkStaleness(state.Version); latest != "" {
+			fmt.Printf("\n%s Update available: %s → %s\n",
+				yellow("⚠"), state.Version, latest)
+			fmt.Printf("Run %s to update.\n", bold("nav-pilot sync --apply"))
+		} else {
+			fmt.Printf("\nRun %s to check for updates.\n", bold("nav-pilot sync"))
+		}
 		return nil
 	}
 
