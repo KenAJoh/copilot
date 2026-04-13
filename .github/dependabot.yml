@@ -8,6 +8,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
       github-actions:
         patterns:
@@ -22,6 +24,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
       nextjs-core:
         patterns:
@@ -53,6 +57,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
       copilot-metrics-go:
         patterns:
@@ -67,6 +73,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
       mcp-onboarding-go:
         patterns:
@@ -81,6 +89,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
       mcp-registry-go:
         patterns:
@@ -95,6 +105,8 @@ updates:
       day: "monday"
       time: "06:00"
       timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
       nav-pilot-go:
         patterns:
