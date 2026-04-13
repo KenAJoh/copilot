@@ -163,10 +163,10 @@ for r in d.get('references', []):
     done < <(find "$refs_dir" -maxdepth 1 -type f -name '*.md' | sort)
   fi
 
-  # 3. Links in SKILL.md pointing to references/
+  # 3. Links in SKILL.md pointing to references/ (only markdown links, strip #fragments)
   while IFS= read -r link; do
     [[ -n "$link" ]] && md_refs+=("$link")
-  done < <(echo "$body" | grep -oE '(\.\/)?references\/[^] )"]+' | sed 's|^\./||' | sort -u || true)
+  done < <(echo "$body" | grep -oE '\((\.\/)?references\/[^] )"]+\)' | sed 's|^(||;s|)$||;s|^\./||;s|#.*||' | sort -u || true)
 
   # Compare: any set non-empty means references exist somewhere
   if (( ${#meta_refs[@]} + ${#fs_refs[@]} + ${#md_refs[@]} > 0 )); then
