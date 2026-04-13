@@ -14,10 +14,10 @@ All apps deployed on NAIS (Kubernetes on GCP).
 From repo root:
 
 ```bash
-mise check    # Lint + type check all apps
-mise test     # Run all tests
+mise check    # Lint + type check + test all apps
+mise test     # Run all tests (verbose)
 mise build    # Build all apps
-mise all      # All of the above
+mise all      # Full pipeline: generate → check → build
 ```
 
 Per-app (run from `apps/<name>/`):
@@ -83,6 +83,17 @@ docs/                 # Documentation
 - Feature branches off `main`
 - PRs require passing CI checks
 - Squash merge to `main`
+- **Semantic commit messages** using [Conventional Commits](https://www.conventionalcommits.org/):
+  - `feat:` new features
+  - `fix:` bug fixes
+  - `style:` visual/UI changes (no logic change)
+  - `refactor:` code restructuring
+  - `docs:` documentation changes
+  - `chore:` maintenance, config, dependencies
+  - `test:` adding or updating tests
+  - Scopes in parentheses when helpful: `feat(docs):`, `style(my-copilot):`
+- **No `Co-authored-by` trailers** in commit messages
+- **Do not push** unless explicitly asked
 
 ## NAIS Deployment
 

@@ -12,10 +12,11 @@
 # Root-only tasks:
 #   docs:*    — documentation generation and checking
 #   ratchet:* — GitHub Actions SHA pinning
-#   all       — full pipeline: generate → check → test → build
+#   all       — full pipeline: generate → check → build
 
 [tools]
 "go:github.com/sethvargo/ratchet" = "latest"
+shellcheck = "latest"
 
 [env]
 APPS = "copilot-adoption copilot-metrics mcp-onboarding mcp-registry my-copilot"
@@ -24,7 +25,7 @@ APPS_WITH_GENERATE = "mcp-onboarding my-copilot"
 # ─── Pipeline ────────────────────────────────────────────────────────────────
 
 [tasks.all]
-description = "Full pipeline: generate, check, test, build"
+description = "Full pipeline: generate, check, build"
 run = "bash hack/all.sh"
 
 # ─── Standard tasks (delegated to all apps) ──────────────────────────────────
@@ -66,6 +67,42 @@ run = "(cd scripts/generate-docs && go run . --check)"
 [tasks."skills:lint"]
 description = "Lint .github/skills/ for quality (token budget, structure, metadata)"
 run = "bash scripts/lint-skills.sh"
+
+# ─── nav-pilot installer ─────────────────────────────────────────────────────
+
+[tasks."nav-pilot:build"]
+description = "Build nav-pilot installer CLI"
+run = """
+LDFLAGS="-X main.version=dev -X main.commit=$(git rev-parse --short HEAD) -X main.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+(cd cli/nav-pilot && go build -ldflags "$LDFLAGS" -o nav-pilot .)
+"""
+
+[tasks."nav-pilot:test"]
+description = "Run nav-pilot installer tests"
+run = "(cd cli/nav-pilot && go test -race -v ./...)"
+
+[tasks."nav-pilot:check"]
+description = "Run all nav-pilot checks (mirrors CI: build, test, vet, staticcheck, shellcheck)"
+run = """
+echo "  build..."   && cd cli/nav-pilot && go build -o /dev/null . && \
+echo "  test..."    && go test -race ./... && \
+echo "  vet..."     && go vet ./... && \
+echo "  staticcheck..." && staticcheck ./... && \
+cd ../.. && \
+echo "  shellcheck..." && shellcheck scripts/install.sh && \
+echo "  ✅ nav-pilot checks passed"
+"""
+
+[tasks."nav-pilot:install"]
+description = "Build and install nav-pilot CLI to GOBIN"
+run = """
+LDFLAGS="-X main.version=dev -X main.commit=$(git rev-parse --short HEAD) -X main.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+cd cli/nav-pilot && go build -ldflags "$LDFLAGS" -o nav-pilot .
+DEST="${GOBIN:-${GOPATH:-$HOME/go}/bin}"
+mkdir -p "$DEST"
+mv nav-pilot "$DEST/nav-pilot"
+echo "✓ Installed nav-pilot to $DEST/nav-pilot"
+"""
 
 # ─── Ratchet (GitHub Actions pinning) ────────────────────────────────────────
 

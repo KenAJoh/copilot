@@ -1,0 +1,70 @@
+name: nav-pilot CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cli/nav-pilot/**'
+      - 'scripts/install.sh'
+      - '.github/skills/**'
+      - '.github/agents/**'
+      - '.github/collections/**'
+      - '.github/instructions/**'
+      - '.github/prompts/**'
+      - '.github/workflows/nav-pilot-ci.yaml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'cli/nav-pilot/**'
+      - 'scripts/install.sh'
+      - '.github/skills/**'
+      - '.github/agents/**'
+      - '.github/collections/**'
+      - '.github/instructions/**'
+      - '.github/prompts/**'
+      - '.github/workflows/nav-pilot-ci.yaml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and test installer
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5 # v5.5.0
+        with:
+          go-version-file: cli/nav-pilot/go.mod
+          cache: true
+
+      - name: Build
+        run: cd cli/nav-pilot && go build -o nav-pilot .
+
+      - name: Test
+        run: cd cli/nav-pilot && go test -race -v ./...
+
+      - name: Vet
+        run: cd cli/nav-pilot && go vet ./...
+
+      - name: Staticcheck
+        run: |
+          go install honnef.co/go/tools/cmd/staticcheck@v0.7.0
+          cd cli/nav-pilot && staticcheck ./...
+
+  shellcheck:
+    name: Lint install.sh
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: ShellCheck
+        run: shellcheck scripts/install.sh

@@ -9,14 +9,32 @@ Agenter, instruksjoner, skills og MCP-servere som gjør GitHub Copilot smartere 
 En samling Copilot-tilpasninger for Nav-økosystemet:
 
 <!-- BEGIN GENERATED COUNTS -->
-- **🤖 [11 Agenter](docs/README.agents.md)** — Spesialiserte AI-assistenter for Nav-domener
+- **🤖 [12 Agenter](docs/README.agents.md)** — Spesialiserte AI-assistenter for Nav-domener
 - **📋 [10 Instruksjoner](docs/README.instructions.md)** — Kodestandarder som aktiveres automatisk basert på filmønster
 - **⚡ [5 Prompts](docs/README.prompts.md)** — Scaffolding-maler for vanlige Nav-mønstre
-- **🎯 [14 Skills](docs/README.skills.md)** — Produksjonsmønstre fra ekte Nav-repoer
+- **🎯 [18 Skills](docs/README.skills.md)** — Produksjonsmønstre fra ekte Nav-repoer
 - **🔌 [MCP-servere](docs/README.mcp.md)** — Nav-godkjente MCP-servere fra registeret
 <!-- END GENERATED COUNTS -->
 
 Alle tilpasninger finnes på **[verktøysida](https://min-copilot.ansatt.nav.no/verktoy)** med søk, filtrering og installeringshjelp.
+
+### 🧭 nav-pilot — Nytt!
+
+**[nav-pilot](docs/README.nav-pilot.md)** er Navs AI-utviklerverktøy — én agent med en 4-fase modell (Intervju → Plan → Review → Lever) som koder inn Navs institusjonelle kunnskap. Installer en samling, bruk `@nav-pilot`, og gå fra idé til Nav-kompatibel arkitekturplan.
+
+```bash
+# Installer nav-pilot CLI
+curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
+
+# Installer Kotlin-backend-samlingen i repoet ditt
+cd /path/to/your/repo
+nav-pilot install kotlin-backend
+
+# Bruk i Copilot
+@nav-pilot Jeg trenger en ny tjeneste som behandler dagpengesøknader
+```
+
+**[Les mer →](docs/README.nav-pilot.md)** · **[Samlinger →](docs/README.collections.md)**
 
 ## Kom i gang
 
@@ -31,6 +49,9 @@ Gå til **[min-copilot.ansatt.nav.no/verktoy](https://min-copilot.ansatt.nav.no/
 - **[Prompts →](docs/README.prompts.md)** — VS Code, JetBrains
 - **[Skills →](docs/README.skills.md)** — VS Code
 - **[MCP-servere →](docs/README.mcp.md)** — Alle editorer
+- **[Samlinger →](docs/README.collections.md)** — Installer alt på én gang
+- **[nav-pilot →](docs/README.nav-pilot.md)** — Navs AI-utviklerverktøy
+- **[Testing →](docs/README.testing.md)** — Strukturelle og E2E-tester for nav-pilot
 - **[Hold tilpasninger oppdatert →](docs/README.sync.md)** — Automatisk sync-workflow (som Dependabot)
 
 ### Med MCP Onboarding
@@ -49,6 +70,8 @@ Bruk **MCP Onboarding**-serveren for å utforske tilpasninger, sjekke agent-read
 | 🎯 **Skills**        | Produksjonsmønstre med innebygde maler og referanser                                    | **[Skills →](docs/README.skills.md)**              |
 | 🔌 **MCP-servere**   | Nav-godkjente servere fra [MCP-registeret](https://mcp-registry.nav.no)                 | **[MCP-servere →](docs/README.mcp.md)**            |
 | 🔄 **Sync**          | Hold tilpasninger oppdatert automatisk (som Dependabot)                                 | **[Sync →](docs/README.sync.md)**                  |
+| 📦 **Samlinger**     | Installer en hel pakke med agenter, skills og instruksjoner på én gang                  | **[Samlinger →](docs/README.collections.md)**      |
+| 🧭 **nav-pilot**     | Planleggingsagent som koder inn Navs institusjonelle kunnskap                           | **[nav-pilot →](docs/README.nav-pilot.md)**        |
 
 ---
 
@@ -150,6 +173,7 @@ Tilpasningene dekker Navs kjernestack:
 │   ├── README.mcp.md
 │   ├── README.prompts.md
 │   ├── README.skills.md
+│   ├── README.testing.md
 │   └── README.collections.md
 ├── apps/                 # Nav applications (my-copilot, copilot-metrics, mcp-registry, mcp-onboarding)
 └── dashboards/           # Grafana dashboard definitions

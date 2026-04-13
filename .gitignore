@@ -6,6 +6,10 @@ apps/mcp-onboarding/coverage.out
 apps/mcp-onboarding/bin/mcp-hello-world
 apps/copilot-metrics/bin/copilot-metrics
 apps/copilot-metrics/copilot-metrics
+cli/nav-pilot/nav-pilot
+cli/nav-pilot/install-collection
+nav-pilot-darwin-*
+nav-pilot-linux-*
 
 # Logs
 .github/aw/logs/
@@ -53,3 +57,12 @@ Thumbs.db
 apps/copilot-adoption/copilot-adoption
 apps/copilot-adoption/bin/copilot-adoption
 apps/mcp-registry/mcp-registry
+nvim.log
+cli/nav-pilot/cover.out
+
+# Screenshots
+Screenshot*.png
+Gemini_Generated_Image*
+
+# Dependencies
+node_modules/
