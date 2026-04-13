@@ -954,19 +954,19 @@ function GetStartedSection() {
 
               <div>
                 <Heading size="xsmall" level="3" className="mb-2">
-                  2. Installer en samling i repoet ditt
+                  2. Kjør nav-pilot i repoet ditt
                 </Heading>
                 <div
                   className="rounded-lg p-4 overflow-x-auto flex items-center gap-3"
                   style={{ background: "#1e1e1e" }}
                 >
                   <code className="font-mono whitespace-nowrap flex-1" style={{ fontSize: "0.8rem", color: "#d4d4d4" }}>
-                    nav-pilot install kotlin-backend
+                    nav-pilot
                   </code>
-                  <CopyButton copyText="nav-pilot install kotlin-backend" size="xsmall" style={{ color: "white" }} />
+                  <CopyButton copyText="nav-pilot" size="xsmall" style={{ color: "white" }} />
                 </div>
                 <p className="mt-2" style={{ color: "#64748b", fontSize: "0.8125rem", margin: "0.5rem 0 0" }}>
-                  Tilgjengelige samlinger: fullstack · kotlin-backend · nextjs-frontend · platform
+                  Velger samling, installerer og starter cplt — alt interaktivt.
                 </p>
               </div>
 
