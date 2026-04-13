@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-13T07:33:59.395Z",
+  "generatedAt": "2026-04-13T14:08:40.300Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -1248,7 +1248,7 @@
       "domain": "auth",
       "filePath": ".github/skills/workstation-security/SKILL.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/workstation-security/SKILL.md",
-      "contentHash": "2002cc45b8a6aedfe24b63e4b20e4181742b4b722ff04fc738968cc35a8a202c",
+      "contentHash": "6b90d06f27799ffb8b4728126ffc261f1b58ce6caf86442209188c4247cd5f6f",
       "installUrl": null,
       "insidersInstallUrl": null,
       "tags": ["security", "macos", "developer-tools", "audit", "hardening"],
