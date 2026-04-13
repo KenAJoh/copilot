@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-const (
+var (
 	releasesAPI = "https://api.github.com/repos/navikt/copilot/releases"
 	downloadURL = "https://github.com/navikt/copilot/releases/download"
 )

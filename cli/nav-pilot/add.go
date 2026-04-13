@@ -8,7 +8,7 @@ import (
 
 // cmdAdd installs a single agent, skill, instruction, or prompt from the source repo.
 // It appends to the existing state file if one exists.
-func cmdAdd(itemType, name, targetDir, ref string, dryRun, force bool) error {
+func cmdAdd(itemType, name, targetDir, ref, sourceRepo string, dryRun, force bool) error {
 	// Validate type
 	switch itemType {
 	case "agent", "skill", "instruction", "prompt":
@@ -28,11 +28,16 @@ func cmdAdd(itemType, name, targetDir, ref string, dryRun, force bool) error {
 	}
 
 	fmt.Println(dim("Resolving source..."))
-	src, err := resolveSource(ref, "")
+	src, err := resolveSource(ref, sourceRepo)
 	if err != nil {
 		return err
 	}
 	defer src.Cleanup()
+
+	sourceLabel := "navikt/copilot"
+	if sourceRepo != "" {
+		sourceLabel = sourceRepo
+	}
 
 	result := &installResult{}
 
@@ -42,7 +47,7 @@ func cmdAdd(itemType, name, targetDir, ref string, dryRun, force bool) error {
 	} else {
 		fmt.Println(bold(fmt.Sprintf("Adding %s: %s", itemType, name)))
 	}
-	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("navikt/copilot@%s", src.SHA)))
+	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("%s@%s", sourceLabel, src.SHA)))
 	fmt.Println()
 
 	// Dispatch to the appropriate installer

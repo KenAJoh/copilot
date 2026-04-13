@@ -302,9 +302,9 @@ func removeEmptyGitHubDirs(targetDir string) {
 
 // ─── Commands ───────────────────────────────────────────────────────────────
 
-func cmdList(ref string, showItems bool) error {
+func cmdList(ref, sourceRepo string, showItems bool) error {
 	fmt.Println(dim("Resolving source..."))
-	src, err := resolveSource(ref, "")
+	src, err := resolveSource(ref, sourceRepo)
 	if err != nil {
 		return err
 	}
@@ -379,11 +379,27 @@ func listAvailableItems(sourceDir string) error {
 		fmt.Println()
 	}
 
-	// Prompts
-	if entries, err := filepath.Glob(filepath.Join(ghDir, "prompts", "*.prompt.md")); err == nil && len(entries) > 0 {
-		fmt.Println(bold("Available prompts:"))
+	// Prompts — both flat files and directories
+	promptsDir := filepath.Join(ghDir, "prompts")
+	promptSeen := make(map[string]bool)
+	// Scan directories first
+	if entries, err := os.ReadDir(promptsDir); err == nil {
+		for _, e := range entries {
+			if e.IsDir() {
+				promptSeen[e.Name()] = true
+			}
+		}
+	}
+	// Scan flat files, skip if directory version exists
+	if entries, err := filepath.Glob(filepath.Join(promptsDir, "*.prompt.md")); err == nil {
 		for _, e := range entries {
 			name := strings.TrimSuffix(filepath.Base(e), ".prompt.md")
+			promptSeen[name] = true
+		}
+	}
+	if len(promptSeen) > 0 {
+		fmt.Println(bold("Available prompts:"))
+		for name := range promptSeen {
 			fmt.Printf("  %-30s %s\n", name, dim("nav-pilot add prompt "+name))
 		}
 		fmt.Println()
@@ -392,7 +408,7 @@ func listAvailableItems(sourceDir string) error {
 	return nil
 }
 
-func cmdInstall(collection, targetDir, ref string, dryRun, force bool) error {
+func cmdInstall(collection, targetDir, ref, sourceRepo string, dryRun, force bool) error {
 	if !dryRun {
 		if _, err := os.Stat(filepath.Join(targetDir, ".git")); os.IsNotExist(err) {
 			return fmt.Errorf("target %q does not appear to be a git repository (no .git directory)", targetDir)
@@ -400,7 +416,7 @@ func cmdInstall(collection, targetDir, ref string, dryRun, force bool) error {
 	}
 
 	fmt.Println(dim("Resolving source..."))
-	src, err := resolveSource(ref, "")
+	src, err := resolveSource(ref, sourceRepo)
 	if err != nil {
 		return err
 	}
@@ -411,13 +427,18 @@ func cmdInstall(collection, targetDir, ref string, dryRun, force bool) error {
 		return err
 	}
 
+	sourceLabel := "navikt/copilot"
+	if sourceRepo != "" {
+		sourceLabel = sourceRepo
+	}
+
 	fmt.Println()
 	if dryRun {
 		fmt.Println(bold(fmt.Sprintf("Dry run: %s", collection)))
 	} else {
 		fmt.Println(bold(fmt.Sprintf("Installing: %s", collection)))
 	}
-	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("navikt/copilot@%s", src.SHA)))
+	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("%s@%s", sourceLabel, src.SHA)))
 	fmt.Printf("%s %s\n", dim("Target:"), dim(targetDir))
 	fmt.Println()
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -832,5 +833,237 @@ func TestInstallItems(t *testing.T) {
 	}
 	if len(result.Files) != 2 {
 		t.Errorf("files = %d, want 2", len(result.Files))
+	}
+}
+
+// ─── Security tests (B1, B2) ───────────────────────────────────────────────
+
+func TestValidateStatePath(t *testing.T) {
+	tests := []struct {
+		path    string
+		wantErr bool
+	}{
+		{".github/agents/foo.agent.md", false},
+		{".github/skills/bar/", false},
+		{".github/instructions/baz.instructions.md", false},
+		{".github/copilot-instructions.md", false},
+		// Malicious paths
+		{"../../etc/passwd", true},
+		{"/etc/passwd", true},
+		{"etc/passwd", true},
+		{".github/../../../etc/passwd", true},
+		{"agents/foo.agent.md", true},         // not under .github/
+		{".githu/agents/foo.agent.md", true},  // typo, not .github/
+		{"", true},                            // empty path
+	}
+	for _, tt := range tests {
+		t.Run(tt.path, func(t *testing.T) {
+			err := validateStatePath(tt.path)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validateStatePath(%q) error = %v, wantErr %v", tt.path, err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestReadState_MaliciousPath(t *testing.T) {
+	dir := t.TempDir()
+	os.MkdirAll(filepath.Join(dir, ".github"), 0o755)
+
+	// Write a state file with a malicious path
+	state := `{
+		"collection": "evil",
+		"files": [{"path": "../../etc/passwd", "hash": "abc123"}]
+	}`
+	os.WriteFile(filepath.Join(dir, ".github", ".nav-pilot-state.json"), []byte(state), 0o644)
+
+	_, err := readState(dir)
+	if err == nil {
+		t.Fatal("expected error for malicious state path")
+	}
+	if !strings.Contains(err.Error(), "unsafe state file") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestCopyFile_RefusesSymlink(t *testing.T) {
+	srcDir := t.TempDir()
+	srcFile := filepath.Join(srcDir, "source.txt")
+	os.WriteFile(srcFile, []byte("source content"), 0o644)
+
+	dstDir := t.TempDir()
+	outsideFile := filepath.Join(t.TempDir(), "outside.txt")
+	os.WriteFile(outsideFile, []byte("should not change"), 0o644)
+
+	// Create a symlink at the destination pointing outside
+	symlink := filepath.Join(dstDir, "target.txt")
+	os.Symlink(outsideFile, symlink)
+
+	err := copyFile(srcFile, symlink)
+	if err == nil {
+		t.Fatal("expected error when destination is a symlink")
+	}
+	if !strings.Contains(err.Error(), "symlink") {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	// Verify the outside file was not modified
+	got, _ := os.ReadFile(outsideFile)
+	if string(got) != "should not change" {
+		t.Error("symlink target was modified despite protection")
+	}
+}
+
+func TestCopyFile_AtomicWrite(t *testing.T) {
+	srcDir := t.TempDir()
+	srcFile := filepath.Join(srcDir, "source.txt")
+	os.WriteFile(srcFile, []byte("new content"), 0o644)
+
+	dstDir := t.TempDir()
+	dstFile := filepath.Join(dstDir, "target.txt")
+	os.WriteFile(dstFile, []byte("old content"), 0o644)
+
+	err := copyFile(srcFile, dstFile)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, _ := os.ReadFile(dstFile)
+	if string(got) != "new content" {
+		t.Errorf("expected 'new content', got %q", string(got))
+	}
+}
+
+func TestCopyFile_RefusesSymlinkedParentDir(t *testing.T) {
+	srcDir := t.TempDir()
+	srcFile := filepath.Join(srcDir, "source.txt")
+	os.WriteFile(srcFile, []byte("payload"), 0o644)
+
+	outsideDir := t.TempDir()
+	os.WriteFile(filepath.Join(outsideDir, "target.txt"), []byte("original"), 0o644)
+
+	// Create a symlinked parent directory
+	repoDir := t.TempDir()
+	symlinkedParent := filepath.Join(repoDir, "agents")
+	os.Symlink(outsideDir, symlinkedParent)
+
+	dstFile := filepath.Join(symlinkedParent, "target.txt")
+	err := copyFile(srcFile, dstFile)
+	if err == nil {
+		t.Fatal("expected error when parent directory is a symlink")
+	}
+	if !strings.Contains(err.Error(), "symlink") {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	// Verify outside file was not modified
+	got, _ := os.ReadFile(filepath.Join(outsideDir, "target.txt"))
+	if string(got) != "original" {
+		t.Error("file behind symlinked parent was modified")
+	}
+}
+
+func TestWriteState_RefusesSymlink(t *testing.T) {
+	outsideDir := t.TempDir()
+	outsideFile := filepath.Join(outsideDir, "stolen.json")
+	os.WriteFile(outsideFile, []byte("original"), 0o644)
+
+	repoDir := t.TempDir()
+	stateDir := filepath.Join(repoDir, ".github")
+	os.MkdirAll(stateDir, 0o755)
+
+	// Create symlink at state file location pointing outside
+	os.Symlink(outsideFile, filepath.Join(stateDir, ".nav-pilot-state.json"))
+
+	state := &StateFile{Collection: "evil", Files: []InstalledFile{
+		{Path: ".github/agents/test.agent.md", Hash: "abc"},
+	}}
+
+	err := writeState(repoDir, state)
+	if err == nil {
+		t.Fatal("expected error when state file is a symlink")
+	}
+
+	got, _ := os.ReadFile(outsideFile)
+	if string(got) != "original" {
+		t.Error("symlink target was modified despite protection")
+	}
+}
+
+func TestUpdateStateHashes_OnlyUpdatesApplied(t *testing.T) {
+	dir := t.TempDir()
+
+	// Create two files
+	relA := filepath.Join(".github", "agents", "a.agent.md")
+	relB := filepath.Join(".github", "agents", "b.agent.md")
+	os.MkdirAll(filepath.Join(dir, ".github", "agents"), 0o755)
+	os.WriteFile(filepath.Join(dir, relA), []byte("updated-a"), 0o644)
+	os.WriteFile(filepath.Join(dir, relB), []byte("old-b"), 0o644)
+
+	// State with old hashes for both
+	state := &StateFile{
+		Collection: "test",
+		SourceSHA:  "old-sha",
+		Files: []InstalledFile{
+			{Path: relA, Hash: "oldhash-a"},
+			{Path: relB, Hash: "oldhash-b"},
+		},
+	}
+	writeState(dir, state)
+
+	// Only update A (simulating partial apply where B failed)
+	hashA, _ := fileHash(filepath.Join(dir, relA))
+	appliedUpdates := []syncUpdate{
+		{Path: relA, CurrentHash: "oldhash-a", SourceHash: hashA},
+	}
+
+	if err := updateStateHashes(dir, appliedUpdates); err != nil {
+		t.Fatal(err)
+	}
+
+	got, _ := readState(dir)
+	// A should have new hash
+	if got.Files[0].Hash != hashA {
+		t.Errorf("file A hash not updated: got %q, want %q", got.Files[0].Hash, hashA)
+	}
+	// B should keep old hash (was not in appliedUpdates)
+	if got.Files[1].Hash != "oldhash-b" {
+		t.Errorf("file B hash should be unchanged: got %q, want 'oldhash-b'", got.Files[1].Hash)
+	}
+}
+
+func TestListAvailableItems_PromptDirectories(t *testing.T) {
+	source := t.TempDir()
+	ghDir := filepath.Join(source, ".github")
+
+	// Create a prompt directory (not just flat file)
+	promptDir := filepath.Join(ghDir, "prompts", "my-prompt")
+	os.MkdirAll(promptDir, 0o755)
+	os.WriteFile(filepath.Join(promptDir, "my-prompt.prompt.md"), []byte("# Prompt"), 0o644)
+
+	// Also create a flat prompt file
+	os.WriteFile(filepath.Join(ghDir, "prompts", "flat.prompt.md"), []byte("# Flat"), 0o644)
+
+	// Capture stdout to verify both are listed
+	oldStdout := os.Stdout
+	r, w, _ := os.Pipe()
+	os.Stdout = w
+
+	err := listAvailableItems(source)
+
+	w.Close()
+	os.Stdout = oldStdout
+	captured, _ := io.ReadAll(r)
+
+	if err != nil {
+		t.Fatalf("listAvailableItems: %v", err)
+	}
+
+	output := string(captured)
+	if !strings.Contains(output, "my-prompt") {
+		t.Error("prompt directory 'my-prompt' not listed")
+	}
+	if !strings.Contains(output, "flat") {
+		t.Error("flat prompt 'flat' not listed")
 	}
 }

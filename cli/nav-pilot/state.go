@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const stateFilePath = ".github/.nav-pilot-state.json"
@@ -37,7 +38,28 @@ func readState(targetDir string) (*StateFile, error) {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return nil, fmt.Errorf("parsing state file: %w", err)
 	}
+	// B1: Validate all file paths to prevent path traversal attacks
+	for _, f := range s.Files {
+		if err := validateStatePath(f.Path); err != nil {
+			return nil, fmt.Errorf("unsafe state file: %w", err)
+		}
+	}
 	return &s, nil
+}
+
+// validateStatePath ensures a path from the state file is safe to use.
+// Rejects absolute paths, path traversal, and paths outside .github/.
+func validateStatePath(p string) error {
+	if filepath.IsAbs(p) {
+		return fmt.Errorf("absolute path not allowed: %s", p)
+	}
+	if strings.Contains(p, "..") {
+		return fmt.Errorf("path traversal not allowed: %s", p)
+	}
+	if !strings.HasPrefix(p, ".github/") {
+		return fmt.Errorf("path outside .github/ not allowed: %s", p)
+	}
+	return nil
 }
 
 func writeState(targetDir string, state *StateFile) error {
@@ -45,10 +67,28 @@ func writeState(targetDir string, state *StateFile) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
+	// B2: Refuse to overwrite symlinks
+	if info, err := os.Lstat(path); err == nil && info.Mode()&os.ModeSymlink != 0 {
+		return fmt.Errorf("refusing to overwrite symlink: %s", path)
+	}
 	data, err := json.MarshalIndent(state, "", "  ")
 	if err != nil {
 		return err
 	}
 	data = append(data, '\n')
-	return os.WriteFile(path, data, 0o644)
+	// I4: Atomic write via temp file + rename
+	tmp, err := os.CreateTemp(filepath.Dir(path), ".nav-pilot-state-*")
+	if err != nil {
+		return err
+	}
+	tmpPath := tmp.Name()
+	defer os.Remove(tmpPath)
+	if _, err := tmp.Write(data); err != nil {
+		tmp.Close()
+		return err
+	}
+	if err := tmp.Close(); err != nil {
+		return err
+	}
+	return os.Rename(tmpPath, path)
 }

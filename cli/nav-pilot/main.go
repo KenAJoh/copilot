@@ -140,16 +140,16 @@ func run(args []string) error {
 		if len(positional) == 0 {
 			return fmt.Errorf("install requires a collection name. Run 'nav-pilot list' to see available collections")
 		}
-		return cmdInstall(positional[0], targetDir, ref, dryRun, force)
+		return cmdInstall(positional[0], targetDir, ref, sourceRepo, dryRun, force)
 	case "add":
 		if len(positional) < 2 {
 			return fmt.Errorf("add requires a type and name.\n\nUsage: nav-pilot add <type> <name>\n\nTypes: agent, skill, instruction, prompt\n\nExamples:\n  nav-pilot add agent security-champion\n  nav-pilot add skill postgresql-review")
 		}
-		return cmdAdd(positional[0], positional[1], targetDir, ref, dryRun, force)
+		return cmdAdd(positional[0], positional[1], targetDir, ref, sourceRepo, dryRun, force)
 	case "sync":
 		return cmdSync(targetDir, ref, sourceRepo, apply, jsonOutput)
 	case "list":
-		return cmdList(ref, listItems)
+		return cmdList(ref, sourceRepo, listItems)
 	case "status":
 		return cmdStatus(targetDir)
 	case "uninstall":

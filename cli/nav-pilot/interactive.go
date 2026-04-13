@@ -26,9 +26,10 @@ func isGitRepo(dir string) bool {
 
 // cmdInteractive runs an interactive collection picker and installer.
 func cmdInteractive() error {
-	targetDir, err := filepath.Abs(".")
-	if err != nil {
-		return err
+	// I3: Use git root, not CWD (which could be a subdirectory)
+	targetDir := findGitRoot(".")
+	if targetDir == "" {
+		return fmt.Errorf("not in a git repository")
 	}
 
 	// If already installed, offer sync instead
@@ -146,5 +147,5 @@ func cmdInteractive() error {
 
 	// Install
 	fmt.Println()
-	return cmdInstall(selected.name, targetDir, "", false, false)
+	return cmdInstall(selected.name, targetDir, "", "", false, false)
 }

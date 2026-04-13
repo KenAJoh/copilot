@@ -30,7 +30,7 @@ func TestRun_AddOnlyType(t *testing.T) {
 }
 
 func TestCmdAdd_InvalidType(t *testing.T) {
-	err := cmdAdd("widget", "foo", t.TempDir(), "", true, false)
+	err := cmdAdd("widget", "foo", t.TempDir(), "", "", true, false)
 	if err == nil {
 		t.Fatal("expected error for invalid type")
 	}
@@ -40,7 +40,7 @@ func TestCmdAdd_InvalidType(t *testing.T) {
 }
 
 func TestCmdAdd_InvalidName(t *testing.T) {
-	err := cmdAdd("agent", "../etc/passwd", t.TempDir(), "", true, false)
+	err := cmdAdd("agent", "../etc/passwd", t.TempDir(), "", "", true, false)
 	if err == nil {
 		t.Fatal("expected error for path traversal name")
 	}

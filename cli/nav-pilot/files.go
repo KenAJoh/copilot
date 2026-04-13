@@ -47,27 +47,64 @@ func dirHash(dir string) (string, error) {
 	return hex.EncodeToString(h.Sum(nil))[:16], nil
 }
 
-// copyFile copies a single file, creating parent directories.
+// copyFile copies a single file atomically, creating parent directories.
+// Refuses to overwrite symlinks to prevent writing outside the repo.
 func copyFile(src, dst string) error {
 	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		return err
 	}
+	// B2: Refuse to write through symlinks (file or parent directory)
+	if err := checkSymlink(dst); err != nil {
+		return err
+	}
+
 	in, err := os.Open(src)
 	if err != nil {
 		return err
 	}
 	defer in.Close()
 
-	out, err := os.Create(dst)
+	// I4: Atomic write via temp file + rename
+	tmp, err := os.CreateTemp(filepath.Dir(dst), ".nav-pilot-*")
 	if err != nil {
 		return err
 	}
-	defer out.Close()
+	tmpPath := tmp.Name()
+	defer os.Remove(tmpPath)
 
-	if _, err := io.Copy(out, in); err != nil {
+	if _, err := io.Copy(tmp, in); err != nil {
+		tmp.Close()
 		return err
 	}
-	return out.Sync()
+	if err := tmp.Sync(); err != nil {
+		tmp.Close()
+		return err
+	}
+	tmp.Close()
+
+	return os.Rename(tmpPath, dst)
+}
+
+// checkSymlink detects symlinks in the path chain.
+// Checks both the target file and its parent directory.
+func checkSymlink(path string) error {
+	// Check the file itself if it exists
+	if info, err := os.Lstat(path); err == nil && info.Mode()&os.ModeSymlink != 0 {
+		return fmt.Errorf("refusing to overwrite symlink: %s", path)
+	}
+	// Check the parent directory
+	parent := filepath.Dir(path)
+	resolved, err := filepath.EvalSymlinks(parent)
+	if err != nil {
+		return nil // parent doesn't exist yet, will be created by MkdirAll
+	}
+	if resolved != parent {
+		absParent, _ := filepath.Abs(parent)
+		if resolved != absParent {
+			return fmt.Errorf("refusing to write through symlinked directory: %s -> %s", parent, resolved)
+		}
+	}
+	return nil
 }
 
 // copyDir copies a directory recursively, creating it fresh (removes stale files).

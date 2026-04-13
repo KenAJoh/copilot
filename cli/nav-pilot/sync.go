@@ -117,24 +117,30 @@ func cmdSync(targetDir, ref, sourceRepo string, apply, jsonOutput bool) error {
 
 	// Apply updates
 	applied := 0
+	var appliedUpdates []syncUpdate
+	var applyErrors int
 	for _, u := range updates {
 		if err := applySyncUpdate(targetDir, src.Dir, u); err != nil {
 			fmt.Fprintf(os.Stderr, "%s Could not update %s: %v\n", yellow("⚠"), u.Path, err)
+			applyErrors++
 			continue
 		}
 		fmt.Printf("  %s %s\n", green("✓"), u.Path)
 		applied++
+		appliedUpdates = append(appliedUpdates, u)
 	}
 	fmt.Printf("\n%s Updated %d file(s).\n", green("✓"), applied)
 
-	// Update state file if it exists
-	if err := updateStateHashes(targetDir, updates); err != nil {
+	// I1: Only update state for successfully applied files
+	if err := updateStateHashes(targetDir, appliedUpdates); err != nil {
 		fmt.Fprintf(os.Stderr, "%s Could not update state file: %v\n", yellow("⚠"), err)
 	}
 
-	// If state-based, also update the source SHA
+	// Only bump source SHA if ALL updates were applied successfully
 	if state, err := readState(targetDir); err == nil && state != nil {
-		state.SourceSHA = src.SHA
+		if applyErrors == 0 {
+			state.SourceSHA = src.SHA
+		}
 		if collection != "" {
 			// Reload manifest to get latest version
 			if m, err := loadManifest(src.Dir, collection); err == nil {
@@ -144,6 +150,10 @@ func cmdSync(targetDir, ref, sourceRepo string, apply, jsonOutput bool) error {
 		if err := writeState(targetDir, state); err != nil {
 			fmt.Fprintf(os.Stderr, "%s Could not update state: %v\n", yellow("⚠"), err)
 		}
+	}
+
+	if applyErrors > 0 {
+		return errSyncFailed
 	}
 
 	return nil
@@ -230,6 +240,26 @@ func autoDetectSyncFiles(targetDir, sourceDir string) ([]syncFile, string, error
 			}
 			sourceSkill := filepath.Join(sourceDir, ".github", "skills", e.Name())
 			if _, err := os.Stat(sourceSkill); os.IsNotExist(err) {
+				continue
+			}
+			seen[rel] = true
+			files = append(files, syncFile{localPath: rel, sourcePath: rel, isDir: true})
+		}
+	}
+
+	// Check prompt directories
+	promptsDir := filepath.Join(targetDir, ".github", "prompts")
+	if entries, err := os.ReadDir(promptsDir); err == nil {
+		for _, e := range entries {
+			if !e.IsDir() {
+				continue
+			}
+			rel := filepath.Join(".github", "prompts", e.Name()) + "/"
+			if seen[rel] {
+				continue
+			}
+			sourcePrompt := filepath.Join(sourceDir, ".github", "prompts", e.Name())
+			if _, err := os.Stat(sourcePrompt); os.IsNotExist(err) {
 				continue
 			}
 			seen[rel] = true
