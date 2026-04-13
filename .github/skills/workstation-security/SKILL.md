@@ -244,6 +244,40 @@ These checks are specific to Nav developer machines connected to the NAIS platfo
    ```
    Review for extensions from unknown publishers → **INFO**.
 
+## 8. Outdated Software
+
+Outdated tools can contain known vulnerabilities. Check each package manager for pending updates.
+
+1. **Homebrew formulae** — check for outdated packages:
+   ```bash
+   brew outdated 2>/dev/null
+   ```
+   Security-critical tools outdated (trivy, gitleaks, zizmor, git) → **MEDIUM**. Others → **INFO**. Fix: `brew upgrade`.
+
+2. **Homebrew casks** — check for outdated applications:
+   ```bash
+   brew outdated --cask 2>/dev/null
+   ```
+   Outdated browsers or naisdevice → **MEDIUM**. Others → **INFO**. Fix: `brew upgrade --cask`.
+
+3. **npm global packages**:
+   ```bash
+   npm outdated -g 2>/dev/null
+   ```
+   Outdated → **INFO**. Fix: `npm update -g`.
+
+4. **pip packages**:
+   ```bash
+   pip3 list --outdated 2>/dev/null | head -10
+   ```
+   Outdated → **INFO**. Fix: `pip3 install --upgrade <package>`.
+
+5. **mise/asdf runtimes**:
+   ```bash
+   mise outdated 2>/dev/null | head -10
+   ```
+   Outdated → **INFO**. Fix: `mise upgrade`.
+
 ## Report Format
 
 Summarize all findings in a table:
