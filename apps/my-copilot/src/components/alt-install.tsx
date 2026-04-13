@@ -30,16 +30,18 @@ export function AltInstall() {
       </button>
       {open && (
         <div
-          className="rounded-lg p-4 overflow-x-auto flex items-center gap-3 mt-2"
-          style={{ background: "#1e1e1e" }}
+          className="rounded-lg overflow-hidden border border-gray-200 shadow-sm flex items-center justify-between mt-2"
+          style={{ background: "#f1f5f9" }}
         >
           <code
-            className="font-mono whitespace-nowrap flex-1"
-            style={{ fontSize: "0.8rem", color: "#d4d4d4" }}
+            className="font-mono whitespace-nowrap flex-1 p-3"
+            style={{ fontSize: "0.75rem", color: "#334155" }}
           >
             {INSTALL_SCRIPT_COMMAND}
           </code>
-          <CopyButton copyText={INSTALL_SCRIPT_COMMAND} size="xsmall" style={{ color: "white" }} />
+          <div className="shrink-0 pr-3">
+            <CopyButton copyText={INSTALL_SCRIPT_COMMAND} size="xsmall" />
+          </div>
         </div>
       )}
     </div>

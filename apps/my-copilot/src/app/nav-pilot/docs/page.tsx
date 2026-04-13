@@ -1,5 +1,6 @@
 import { Heading, BodyShort, BodyLong, Box, HGrid, Label, VStack, Tag } from "@navikt/ds-react";
 import { CodeBlock } from "@/components/code-block";
+import { AltInstall } from "@/components/alt-install";
 import { LinkableHeading } from "@/components/linkable-heading";
 import { PageHero } from "@/components/page-hero";
 import { TableOfContents, type TocItem } from "@/components/table-of-contents";
@@ -531,6 +532,7 @@ function QuickStartSection() {
               </Label>
             </div>
             <CodeBlock compact>{`brew install navikt/tap/nav-pilot`}</CodeBlock>
+            <AltInstall />
           </div>
 
           <div className="mt-6">
@@ -1037,12 +1039,7 @@ function CliReferenceSection() {
           </LinkableHeading>
           <div className="mt-4">
             <CodeBlock compact>{`brew install navikt/tap/nav-pilot`}</CodeBlock>
-            <BodyShort size="small" className="mt-2" style={{ color: "#64748b" }}>
-              Linux / CI:{" "}
-              <code style={{ fontSize: "0.8em", background: "#f1f5f9", padding: "0.15em 0.4em", borderRadius: "4px" }}>
-                curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
-              </code>
-            </BodyShort>
+            <AltInstall />
           </div>
         </div>
 
