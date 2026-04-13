@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 import { BodyShort, Label } from "@navikt/ds-react";
-import {
-  FilesIcon,
-  PersonGroupIcon,
-  WrenchIcon,
-  DocPencilIcon,
-  ChatIcon,
-  FileTextIcon,
-} from "@navikt/aksel-icons";
+import { FilesIcon, PersonGroupIcon, WrenchIcon, DocPencilIcon, ChatIcon, FileTextIcon } from "@navikt/aksel-icons";
 
 type FileEntry = {
   name: string;
@@ -86,10 +79,7 @@ const FILE_TREE: FileEntry[] = [
   },
 ];
 
-const TYPE_META: Record<
-  FileEntry["type"],
-  { label: string; color: string; bg: string; Icon: typeof FilesIcon }
-> = {
+const TYPE_META: Record<FileEntry["type"], { label: string; color: string; bg: string; Icon: typeof FilesIcon }> = {
   agent: { label: "Agent", color: "#7c3aed", bg: "#f5f3ff", Icon: PersonGroupIcon },
   skill: { label: "Skill", color: "#059669", bg: "#ecfdf5", Icon: WrenchIcon },
   instruction: { label: "Instruksjon", color: "#3b82f6", bg: "#eff6ff", Icon: DocPencilIcon },
@@ -104,10 +94,7 @@ export function FileExplorer() {
   const meta = TYPE_META[entry.type];
 
   return (
-    <div
-      className="rounded-xl border overflow-hidden"
-      style={{ borderColor: "#e2e8f0" }}
-    >
+    <div className="rounded-xl border overflow-hidden" style={{ borderColor: "#e2e8f0" }}>
       {/* Header */}
       <div
         className="flex items-center gap-2 px-4 py-2"
@@ -125,10 +112,7 @@ export function FileExplorer() {
 
       <div className="flex" style={{ minHeight: "280px" }}>
         {/* File list (left) */}
-        <div
-          className="w-1/2 overflow-y-auto"
-          style={{ borderRight: "1px solid #e2e8f0", background: "#fafbfc" }}
-        >
+        <div className="w-1/2 overflow-y-auto" style={{ borderRight: "1px solid #e2e8f0", background: "#fafbfc" }}>
           {FILE_TREE.map((f, i) => {
             const m = TYPE_META[f.type];
             const isSelected = i === selected;
@@ -146,11 +130,7 @@ export function FileExplorer() {
                 }}
                 aria-current={isSelected ? "true" : undefined}
               >
-                <m.Icon
-                  aria-hidden
-                  fontSize="0.875rem"
-                  style={{ color: m.color, flexShrink: 0 }}
-                />
+                <m.Icon aria-hidden fontSize="0.875rem" style={{ color: m.color, flexShrink: 0 }} />
                 <span
                   style={{
                     fontFamily: "monospace",
@@ -187,14 +167,8 @@ export function FileExplorer() {
               {entry.detail}
             </BodyShort>
           </div>
-          <div
-            className="mt-auto rounded-lg px-3 py-2"
-            style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}
-          >
-            <BodyShort
-              size="small"
-              style={{ color: "#64748b", fontSize: "0.75rem" }}
-            >
+          <div className="mt-auto rounded-lg px-3 py-2" style={{ background: "#f8fafc", border: "1px solid #e2e8f0" }}>
+            <BodyShort size="small" style={{ color: "#64748b", fontSize: "0.75rem" }}>
               <strong>Aktiveres:</strong> {entry.when}
             </BodyShort>
           </div>

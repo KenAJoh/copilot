@@ -1174,8 +1174,8 @@ function HowItWorksSection() {
             Slik fungerer det
           </LinkableHeading>
           <BodyLong className="mt-3" style={{ color: "#475569" }}>
-            nav-pilot installerer markdown-filer i repoet ditt. GitHub Copilot leser filene og tilpasser
-            forslagene sine automatisk. Klikk på filene under for å se hva de gjør.
+            nav-pilot installerer markdown-filer i repoet ditt. GitHub Copilot leser filene og tilpasser forslagene sine
+            automatisk. Klikk på filene under for å se hva de gjør.
           </BodyLong>
         </div>
 
@@ -1185,7 +1185,11 @@ function HowItWorksSection() {
             Filstruktur
           </LinkableHeading>
           <BodyShort size="small" className="mt-2 mb-4" style={{ color: "#475569" }}>
-            Dette er filene som installeres i <code className="text-xs font-mono rounded px-1 py-0.5" style={{ background: "#f1f5f9" }}>.github/</code>-mappen din. Klikk for detaljer.
+            Dette er filene som installeres i{" "}
+            <code className="text-xs font-mono rounded px-1 py-0.5" style={{ background: "#f1f5f9" }}>
+              .github/
+            </code>
+            -mappen din. Klikk for detaljer.
           </BodyShort>
           <FileExplorer />
         </div>
@@ -1239,12 +1243,7 @@ function HowItWorksSection() {
                 style={{
                   padding: "1rem 1.25rem",
                   background: phase.bg,
-                  borderRadius:
-                    i === 0
-                      ? "10px 10px 0 0"
-                      : i === arr.length - 1
-                        ? "0 0 10px 10px"
-                        : "0",
+                  borderRadius: i === 0 ? "10px 10px 0 0" : i === arr.length - 1 ? "0 0 10px 10px" : "0",
                 }}
               >
                 <div
