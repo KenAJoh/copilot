@@ -26,6 +26,7 @@ safe-outputs:
   create-pull-request:
     title-prefix: "[news] "
     labels: [news, automated]
+    reviewers: [navikt/copilot]
     draft: true
     allowed-files:
       - docs/news/articles/**
