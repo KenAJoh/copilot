@@ -966,7 +966,7 @@ function GetStartedSection() {
                   <CopyButton copyText="nav-pilot" size="xsmall" style={{ color: "white" }} />
                 </div>
                 <p className="mt-2" style={{ color: "#64748b", fontSize: "0.8125rem", margin: "0.5rem 0 0" }}>
-                  Velger samling, installerer og starter cplt — alt interaktivt.
+                  Velger samling, installerer og starter Copilot-sandkassen (cplt) — alt interaktivt.
                 </p>
               </div>
 

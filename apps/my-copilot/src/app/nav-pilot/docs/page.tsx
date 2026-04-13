@@ -223,7 +223,7 @@ const PLANNING_SKILLS = [
 ];
 
 const CLI_COMMANDS = [
-  { command: "nav-pilot", description: "Interaktivt: installer, oppgrader eller start cplt" },
+  { command: "nav-pilot", description: "Interaktivt: installer, oppgrader eller start Copilot-sandkassen (cplt)" },
   { command: "nav-pilot install <collection>", description: "Installer en collection i repoet ditt" },
   { command: "nav-pilot install --dry-run <collection>", description: "Forhåndsvis hva som installeres" },
   { command: "nav-pilot install --force <collection>", description: "Overskriv lokalt endrede filer" },

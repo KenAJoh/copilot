@@ -64,7 +64,7 @@ Flags:
   -F, --feature           Submit a feature request (feedback only)
 
 Get started:
-  nav-pilot                              # Install, upgrade, or launch cplt
+  nav-pilot                              # Install, upgrade, or launch Copilot sandbox (cplt)
   nav-pilot list                         # See available collections
   nav-pilot install kotlin-backend       # Install a collection
   nav-pilot install --dry-run fullstack  # Preview before installing
