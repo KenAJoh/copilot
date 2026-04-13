@@ -81,7 +81,7 @@ func cloneRemote(ref, sourceRepo string) (*Source, error) {
 		repoURL = "https://github.com/" + sourceRepo + ".git"
 	}
 
-	args := []string{"clone", "--depth", "1", "--quiet"}
+	args := []string{"-c", "advice.detachedHead=false", "clone", "--depth", "1", "--quiet"}
 	if ref != "" {
 		args = append(args, "--branch", ref)
 	}

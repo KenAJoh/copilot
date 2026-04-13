@@ -83,9 +83,9 @@ jobs:
             SYNC_FLAGS="$SYNC_FLAGS --ref $SOURCE_REF"
           fi
 
-          # Run sync and capture exit code
+          # Run sync and capture exit code (stdout = JSON, stderr = log)
           set +e
-          nav-pilot sync $SYNC_FLAGS > sync-result.json 2>&1
+          nav-pilot sync $SYNC_FLAGS > sync-result.json
           EXIT_CODE=$?
           set -e
 
