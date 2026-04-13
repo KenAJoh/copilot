@@ -33,10 +33,7 @@ export function AltInstall() {
           className="rounded-lg overflow-hidden border border-gray-200 shadow-sm flex items-center justify-between mt-2"
           style={{ background: "#f1f5f9" }}
         >
-          <code
-            className="font-mono whitespace-nowrap flex-1 p-3"
-            style={{ fontSize: "0.75rem", color: "#334155" }}
-          >
+          <code className="font-mono whitespace-nowrap flex-1 p-3" style={{ fontSize: "0.75rem", color: "#334155" }}>
             {INSTALL_SCRIPT_COMMAND}
           </code>
           <div className="shrink-0 pr-3">
