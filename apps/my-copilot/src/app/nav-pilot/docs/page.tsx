@@ -213,6 +213,7 @@ const PLANNING_SKILLS = [
 ];
 
 const CLI_COMMANDS = [
+  { command: "nav-pilot", description: "Interaktiv collection-velger (i et git-repo)" },
   { command: "nav-pilot install <collection>", description: "Installer en collection i ditt repo" },
   { command: "nav-pilot install --dry-run <collection>", description: "Forhåndsvis hva som installeres" },
   { command: "nav-pilot install --force <collection>", description: "Overskriv lokalt endrede filer" },
@@ -224,6 +225,7 @@ const CLI_COMMANDS = [
   { command: "nav-pilot sync", description: "Sjekk om oppdateringer finnes (exit 1 hvis ja)" },
   { command: "nav-pilot sync --apply", description: "Oppdater filer direkte" },
   { command: "nav-pilot sync --json", description: "Maskinlesbar output for scripts" },
+  { command: "nav-pilot update", description: "Oppdater nav-pilot CLI til nyeste versjon" },
   { command: "nav-pilot version", description: "Vis versjonsinformasjon" },
 ];
 

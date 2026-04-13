@@ -32,7 +32,10 @@ func cmdInteractive() error {
 	}
 
 	// If already installed, offer sync instead
-	state, _ := readState(targetDir)
+	state, err := readState(targetDir)
+	if err != nil {
+		return fmt.Errorf("reading install state: %w", err)
+	}
 	if state != nil {
 		fmt.Printf("%s is already installed %s\n\n",
 			bold(state.Collection), dim(fmt.Sprintf("(v%s, %s)", state.Version, state.SourceSHA)))
@@ -95,7 +98,8 @@ func cmdInteractive() error {
 	fmt.Printf("Select collection [1-%d]: ", len(collections))
 	input, err := reader.ReadString('\n')
 	if err != nil {
-		return fmt.Errorf("reading input: %w", err)
+		fmt.Println()
+		return nil // EOF or closed stdin — exit gracefully
 	}
 	input = strings.TrimSpace(input)
 	choice, err := strconv.Atoi(input)
@@ -131,7 +135,8 @@ func cmdInteractive() error {
 	fmt.Printf("Install %s? [Y/n]: ", bold(selected.name))
 	confirm, err := reader.ReadString('\n')
 	if err != nil {
-		return fmt.Errorf("reading input: %w", err)
+		fmt.Println()
+		return nil
 	}
 	confirm = strings.TrimSpace(strings.ToLower(confirm))
 	if confirm != "" && confirm != "y" && confirm != "yes" {

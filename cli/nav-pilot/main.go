@@ -49,6 +49,7 @@ Commands:
   list                    List available collections and items
   status                  Show what's currently installed
   uninstall               Remove installed collection files
+  update                  Update nav-pilot CLI to the latest version
   version                 Show version information
 
 Flags:
@@ -73,7 +74,7 @@ After installing, use @nav-pilot in GitHub Copilot Chat.
 // It returns an error instead of calling os.Exit, making it testable.
 func run(args []string) error {
 	if len(args) < 1 {
-		if isInteractive() && isGitRepo(".") {
+		if isInteractive() && findGitRoot(".") != "" {
 			return cmdInteractive()
 		}
 		usage()
@@ -153,6 +154,8 @@ func run(args []string) error {
 		return cmdStatus(targetDir)
 	case "uninstall":
 		return cmdUninstall(targetDir, dryRun)
+	case "update":
+		return cmdUpdate()
 	case "version", "--version", "-v":
 		fmt.Printf("nav-pilot %s (commit: %s, built: %s)\n", version, commit, buildDate)
 		return nil

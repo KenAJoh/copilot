@@ -17,7 +17,11 @@ brew install navikt/tap/nav-pilot
 
 # Installer en samling i repoet ditt
 cd /path/to/your/repo
-nav-pilot install kotlin-backend
+nav-pilot                        # interaktiv velger
+nav-pilot install kotlin-backend # eller direkte
+
+# Oppdater nav-pilot
+nav-pilot update
 
 # Bruk i Copilot
 @nav-pilot Jeg trenger en ny tjeneste som behandler dagpengesøknader
