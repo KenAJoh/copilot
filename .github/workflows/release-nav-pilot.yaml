@@ -132,26 +132,29 @@ jobs:
 
       - name: Build release body
         id: notes
+        env:
+          CHANGELOG: ${{ steps.changelog.outputs.content }}
         run: |
           {
             echo "body<<RELEASE_EOF"
-            echo "## nav-pilot"
-            echo ""
-            echo "Nav's institutional AI developer toolkit installer."
-            echo ""
-            echo "### Installation"
-            echo ""
-            echo '```bash'
-            echo "brew install navikt/tap/nav-pilot"
-            echo '```'
-            echo ""
-            echo "Or on Linux / CI:"
-            echo ""
-            echo '```bash'
-            echo "curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash"
-            echo '```'
-            echo ""
-            echo '${{ steps.changelog.outputs.content }}'
+            printf '%s\n' \
+              "## nav-pilot" \
+              "" \
+              "Nav's institutional AI developer toolkit installer." \
+              "" \
+              "### Installation" \
+              "" \
+              '```bash' \
+              "brew install navikt/tap/nav-pilot" \
+              '```' \
+              "" \
+              "Or on Linux / CI:" \
+              "" \
+              '```bash' \
+              "curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash" \
+              '```' \
+              ""
+            echo "$CHANGELOG"
             echo ""
             echo "RELEASE_EOF"
           } >> "$GITHUB_OUTPUT"
