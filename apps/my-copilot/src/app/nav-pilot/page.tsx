@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { Box, VStack, HGrid, Heading, CopyButton } from "@navikt/ds-react";
 import NextLink from "next/link";
+import { AltInstall } from "@/components/alt-install";
 import {
   TerminalIcon,
   PaletteIcon,
@@ -948,6 +949,7 @@ function GetStartedSection() {
                   </code>
                   <CopyButton copyText={INSTALL_COMMAND} size="xsmall" style={{ color: "white" }} />
                 </div>
+                <AltInstall />
               </div>
 
               <div>
