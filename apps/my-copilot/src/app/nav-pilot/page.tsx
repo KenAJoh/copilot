@@ -297,10 +297,7 @@ val pool = HikariConfig().apply {
                 border: "1px solid rgba(255,255,255,0.08)",
               }}
             >
-              <code
-                className="font-mono"
-                style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.7)" }}
-              >
+              <code className="font-mono" style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.7)" }}>
                 {QUICKSTART_COMMAND}
               </code>
               <CopyButton copyText={QUICKSTART_COMMAND} size="xsmall" style={{ color: "white" }} />

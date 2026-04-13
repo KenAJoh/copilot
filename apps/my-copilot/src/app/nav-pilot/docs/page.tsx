@@ -528,9 +528,7 @@ function QuickStartSection() {
                 Installer nav-pilot CLI
               </Label>
             </div>
-            <CodeBlock compact>
-              {`brew install navikt/tap/nav-pilot`}
-            </CodeBlock>
+            <CodeBlock compact>{`brew install navikt/tap/nav-pilot`}</CodeBlock>
           </div>
 
           <div className="mt-6">
@@ -1036,11 +1034,12 @@ function CliReferenceSection() {
             Installer CLI
           </LinkableHeading>
           <div className="mt-4">
-            <CodeBlock compact>
-              {`brew install navikt/tap/nav-pilot`}
-            </CodeBlock>
+            <CodeBlock compact>{`brew install navikt/tap/nav-pilot`}</CodeBlock>
             <BodyShort size="small" className="mt-2" style={{ color: "#64748b" }}>
-              Linux / CI: <code style={{ fontSize: "0.8em", background: "#f1f5f9", padding: "0.15em 0.4em", borderRadius: "4px" }}>curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash</code>
+              Linux / CI:{" "}
+              <code style={{ fontSize: "0.8em", background: "#f1f5f9", padding: "0.15em 0.4em", borderRadius: "4px" }}>
+                curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
+              </code>
             </BodyShort>
           </div>
         </div>
