@@ -123,9 +123,15 @@ jobs:
           cat SHA256SUMS
 
       - name: Generate release notes
+        id: changelog
+        uses: orhun/git-cliff-action@c93ef52f3d0ddcdcc9bd5447d98d458a11cd4f72 # v4
+        with:
+          config: cli/nav-pilot/cliff.toml
+          args: --unreleased --tag ${{ needs.prepare.outputs.tag }} --include-path "cli/nav-pilot/*" --include-path ".github/skills/*" --include-path ".github/agents/*" --include-path ".github/collections/*" --include-path "scripts/install.sh"
+
+      - name: Build release body
         id: notes
         run: |
-          PREV_TAG=$(git tag --list 'nav-pilot/*' --sort=-version:refname | head -1 || echo "")
           {
             echo "body<<RELEASE_EOF"
             echo "## nav-pilot"
@@ -144,13 +150,7 @@ jobs:
             echo "curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash"
             echo '```'
             echo ""
-            if [ -n "$PREV_TAG" ]; then
-              echo "### Changes since ${PREV_TAG##*/}"
-              echo ""
-              git log --oneline "${PREV_TAG}..HEAD" -- cli/nav-pilot/ scripts/install.sh .github/skills/ .github/agents/ .github/collections/ | head -20
-            else
-              echo "### Initial release"
-            fi
+            echo '${{ steps.changelog.outputs.content }}'
             echo ""
             echo "RELEASE_EOF"
           } >> "$GITHUB_OUTPUT"
