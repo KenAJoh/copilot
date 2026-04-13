@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -256,5 +258,57 @@ func TestSyncResultJSON(t *testing.T) {
 	}
 	if len(got.Updates) != 1 {
 		t.Errorf("updates count = %d, want 1", len(got.Updates))
+	}
+}
+
+// TestSyncJSON_StdoutIsCleanJSON is a regression test for the sync workflow
+// failure where git's detached HEAD advice polluted the JSON output.
+// It verifies that outputJSON writes only valid JSON to stdout.
+func TestSyncJSON_StdoutIsCleanJSON(t *testing.T) {
+	result := syncResult{
+		UpToDate: false,
+		Source:   "abc1234",
+		Updates: []syncUpdate{
+			{Path: ".github/agents/test.agent.md", CurrentHash: "aaa", SourceHash: "bbb"},
+			{Path: ".github/skills/test-skill/", CurrentHash: "ccc", SourceHash: "ddd"},
+		},
+	}
+
+	// Capture stdout
+	oldStdout := os.Stdout
+	r, w, err := os.Pipe()
+	if err != nil {
+		t.Fatal(err)
+	}
+	os.Stdout = w
+
+	if err := outputJSON(result); err != nil {
+		w.Close()
+		os.Stdout = oldStdout
+		t.Fatal(err)
+	}
+
+	w.Close()
+	os.Stdout = oldStdout
+	captured, err := io.ReadAll(r)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// stdout must be valid JSON — no git advice, no progress messages
+	output := strings.TrimSpace(string(captured))
+	var got syncResult
+	if err := json.Unmarshal([]byte(output), &got); err != nil {
+		t.Fatalf("stdout is not valid JSON:\n---\n%s\n---\nerror: %v", output, err)
+	}
+
+	if got.UpToDate {
+		t.Error("expected up_to_date=false")
+	}
+	if len(got.Updates) != 2 {
+		t.Errorf("expected 2 updates, got %d", len(got.Updates))
+	}
+	if got.Source != "abc1234" {
+		t.Errorf("expected source abc1234, got %s", got.Source)
 	}
 }

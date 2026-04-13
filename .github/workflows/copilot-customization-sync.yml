@@ -97,7 +97,7 @@ jobs:
             exit 1
           elif [[ $EXIT_CODE -eq 1 ]]; then
             # Verify we got valid JSON before treating as "updates available"
-            if ! jq -e '.up_to_date' sync-result.json &>/dev/null; then
+            if ! jq empty sync-result.json &>/dev/null; then
               echo "::error::nav-pilot sync failed (no valid JSON output)"
               cat sync-result.json
               exit 1

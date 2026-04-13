@@ -44,7 +44,7 @@ func resolveSource(ref, sourceRepo string) (*Source, error) {
 			candidate := filepath.Join(gitRoot, ".github", "collections")
 			if info, err := os.Stat(candidate); err == nil && info.IsDir() {
 				sha := getGitSHA(gitRoot)
-				fmt.Printf("%s Using local source (%s)\n", dim("→"), dim(gitRoot))
+				fmt.Fprintf(os.Stderr, "%s Using local source (%s)\n", dim("→"), dim(gitRoot))
 				return &Source{Dir: gitRoot, SHA: sha}, nil
 			}
 		}
