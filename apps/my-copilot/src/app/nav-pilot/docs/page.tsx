@@ -224,7 +224,7 @@ const PLANNING_SKILLS = [
 
 const CLI_COMMANDS = [
   { command: "nav-pilot", description: "Interaktivt: installer, oppgrader eller start cplt" },
-  { command: "nav-pilot install <collection>", description: "Installer en collection i ditt repo" },
+  { command: "nav-pilot install <collection>", description: "Installer en collection i repoet ditt" },
   { command: "nav-pilot install --dry-run <collection>", description: "Forhåndsvis hva som installeres" },
   { command: "nav-pilot install --force <collection>", description: "Overskriv lokalt endrede filer" },
   { command: "nav-pilot list", description: "Vis tilgjengelige collections" },
@@ -556,7 +556,7 @@ function QuickStartSection() {
                 2
               </span>
               <Label size="small" style={{ color: "#334155" }}>
-                Installer en collection i ditt repo
+                Installer en collection i repoet ditt
               </Label>
             </div>
             <CodeBlock compact>
@@ -890,7 +890,7 @@ function SyncSection() {
               </Heading>
             </div>
             <BodyShort size="small" className="mb-4" style={{ color: "#475569" }}>
-              GitHub Actions-workflow som åpner PRs automatisk — som Dependabot, men for Copilot-tilpasninger. PR-en
+              GitHub Actions-workflow som åpner PR-er automatisk — som Dependabot, men for Copilot-tilpasninger. PR-en
               viser hvilke filer som er oppdatert med lenker til kilderepoet.
             </BodyShort>
             <Label size="small" className="mb-1" style={{ color: "#64748b" }}>
@@ -986,7 +986,7 @@ jobs:
               },
               {
                 q: "Hva om jeg har tilpasset en fil lokalt?",
-                a: "PR-en viser diff. Du kan gjennomgå, merge selektivt, eller lukke den. Workflow-en tvinger aldri oppdateringer.",
+                a: "PR-en viser diff. Du kan gjennomgå, merge selektivt, eller lukke den. Workflowen tvinger aldri oppdateringer.",
               },
               {
                 q: "Kan jeg sjekke oppdateringer lokalt uten CI?",
