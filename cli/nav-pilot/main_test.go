@@ -12,8 +12,8 @@ import (
 
 func TestRun_NoArgs(t *testing.T) {
 	err := run([]string{})
-	if err == nil {
-		t.Fatal("expected error for no args")
+	if err != nil {
+		t.Fatalf("expected no error for no args (shows usage), got: %v", err)
 	}
 }
 
@@ -72,6 +72,23 @@ func TestRun_RefMissingValue(t *testing.T) {
 	err := run([]string{"install", "--ref"})
 	if err == nil {
 		t.Fatal("expected error for --ref without value")
+	}
+}
+
+func TestIsGitRepo(t *testing.T) {
+	// Temp dir with .git
+	dir := t.TempDir()
+	if err := os.Mkdir(filepath.Join(dir, ".git"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if !isGitRepo(dir) {
+		t.Error("expected true for dir with .git")
+	}
+
+	// Temp dir without .git
+	dir2 := t.TempDir()
+	if isGitRepo(dir2) {
+		t.Error("expected false for dir without .git")
 	}
 }
 

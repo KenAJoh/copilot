@@ -9,8 +9,11 @@ nav-pilot gjør GitHub Copilot til en Nav-ekspert. Én agent med en 4-fase model
 ## Kom i gang
 
 ```bash
-# Installer nav-pilot CLI
-curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
+# Installer nav-pilot CLI (macOS)
+brew install navikt/tap/nav-pilot
+
+# Alternativt (Linux / CI)
+# curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
 
 # Installer en samling i repoet ditt
 cd /path/to/your/repo

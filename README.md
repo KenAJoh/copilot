@@ -24,7 +24,7 @@ Alle tilpasninger finnes på **[verktøysida](https://min-copilot.ansatt.nav.no/
 
 ```bash
 # Installer nav-pilot CLI
-curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
+brew install navikt/tap/nav-pilot
 
 # Installer Kotlin-backend-samlingen i repoet ditt
 cd /path/to/your/repo

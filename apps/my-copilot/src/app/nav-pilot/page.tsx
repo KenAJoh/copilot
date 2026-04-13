@@ -40,7 +40,8 @@ export const metadata: Metadata = {
 
 /* ---------- Data ---------- */
 
-const INSTALL_COMMAND = "curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash";
+const INSTALL_COMMAND = "brew install navikt/tap/nav-pilot";
+const QUICKSTART_COMMAND = "brew install navikt/tap/nav-pilot && nav-pilot";
 
 const COLLECTIONS = [
   {
@@ -297,12 +298,12 @@ val pool = HikariConfig().apply {
               }}
             >
               <code
-                className="font-mono whitespace-nowrap"
+                className="font-mono"
                 style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.7)" }}
               >
-                {INSTALL_COMMAND}
+                {QUICKSTART_COMMAND}
               </code>
-              <CopyButton copyText={INSTALL_COMMAND} size="xsmall" style={{ color: "white" }} />
+              <CopyButton copyText={QUICKSTART_COMMAND} size="xsmall" style={{ color: "white" }} />
             </div>
           </div>
         </VStack>

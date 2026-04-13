@@ -1,17 +1,22 @@
 #!/bin/bash
 set -euo pipefail
 
-# nav-pilot installer — downloads the latest release binary from GitHub.
+# nav-pilot installer — installs the nav-pilot CLI.
+#
+# On macOS: uses Homebrew (brew install navikt/tap/nav-pilot) when available.
+# On Linux / CI: downloads the latest release binary from GitHub.
 #
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash
 #   curl -fsSL ... | bash -s -- --version nav-pilot/2026.04.12-abc1234
 #   curl -fsSL ... | bash -s -- --dir /usr/local/bin
+#   curl -fsSL ... | bash -s -- --no-brew
 
 REPO="navikt/copilot"
 BINARY="nav-pilot"
 VERSION=""
 INSTALL_DIR=""
+NO_BREW=false
 
 # ─── Parse arguments ─────────────────────────────────────────────────────────
 
@@ -23,16 +28,37 @@ while [[ $# -gt 0 ]]; do
     --dir|-d)
       if [[ $# -lt 2 ]]; then echo "Error: --dir requires a value"; exit 1; fi
       INSTALL_DIR="$2"; shift 2 ;;
+    --no-brew)
+      NO_BREW=true; shift ;;
     --help|-h)
-      echo "Usage: install.sh [--version <tag>] [--dir <path>]"
+      echo "Usage: install.sh [--version <tag>] [--dir <path>] [--no-brew]"
       echo ""
       echo "  --version  Install a specific version (default: latest release)"
       echo "  --dir      Install directory (default: auto-detect from PATH)"
+      echo "  --no-brew  Skip Homebrew even if available (use direct download)"
       exit 0
       ;;
     *) echo "Unknown option: $1"; exit 1 ;;
   esac
 done
+
+# ─── Homebrew install (macOS) ────────────────────────────────────────────────
+
+if [[ "$NO_BREW" == false && -z "$VERSION" && -z "$INSTALL_DIR" ]] && command -v brew &>/dev/null; then
+  echo "→ Installing via Homebrew..."
+  brew install navikt/tap/nav-pilot
+  echo ""
+  INSTALLED_VERSION=$(nav-pilot version 2>/dev/null || echo "unknown")
+  echo "✓ nav-pilot is ready! (${INSTALLED_VERSION})"
+  echo ""
+  echo "Get started:"
+  echo "  nav-pilot list                    # See available collections"
+  echo "  nav-pilot install kotlin-backend  # Install a collection"
+  echo "  nav-pilot install --dry-run fullstack  # Preview first"
+  echo ""
+  echo "Upgrade later with: brew upgrade nav-pilot"
+  exit 0
+fi
 
 # ─── Detect platform ─────────────────────────────────────────────────────────
 

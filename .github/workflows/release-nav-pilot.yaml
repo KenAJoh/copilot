@@ -135,6 +135,12 @@ jobs:
             echo "### Installation"
             echo ""
             echo '```bash'
+            echo "brew install navikt/tap/nav-pilot"
+            echo '```'
+            echo ""
+            echo "Or on Linux / CI:"
+            echo ""
+            echo '```bash'
             echo "curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash"
             echo '```'
             echo ""

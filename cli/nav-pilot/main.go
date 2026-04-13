@@ -34,7 +34,10 @@ var timeNow = time.Now
 // ─── CLI ────────────────────────────────────────────────────────────────────
 
 func usage() {
-	fmt.Fprintf(os.Stderr, `nav-pilot — manage Nav's Copilot toolkit
+	fmt.Fprintf(os.Stderr, `nav-pilot — Nav's Copilot toolkit for developers
+
+Installs curated agents, skills, instructions, and prompts that teach
+GitHub Copilot Nav's platform, patterns, and conventions.
 
 Usage:
   nav-pilot <command> [flags]
@@ -57,12 +60,12 @@ Flags:
   --apply                 Apply available updates (sync only)
   --json                  Output results as JSON (sync only)
 
-Examples:
-  nav-pilot install kotlin-backend
-  nav-pilot add agent security-champion
-  nav-pilot add skill postgresql-review
-  nav-pilot sync --apply
-  nav-pilot list --items
+Get started:
+  nav-pilot list                         # See available collections
+  nav-pilot install kotlin-backend       # Install a collection
+  nav-pilot install --dry-run fullstack  # Preview before installing
+
+After installing, use @nav-pilot in GitHub Copilot Chat.
 `)
 }
 
@@ -70,8 +73,11 @@ Examples:
 // It returns an error instead of calling os.Exit, making it testable.
 func run(args []string) error {
 	if len(args) < 1 {
+		if isInteractive() && isGitRepo(".") {
+			return cmdInteractive()
+		}
 		usage()
-		return fmt.Errorf("no command specified")
+		return nil
 	}
 
 	command := args[0]
