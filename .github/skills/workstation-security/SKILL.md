@@ -59,6 +59,8 @@ spctl --status 2>/dev/null
 
 These checks are specific to Nav developer machines connected to the NAIS platform.
 
+> **Note:** Only check the tools listed below. Missing optional developer tools (Copilot CLI, nav-pilot, etc.) are not security findings and should not be reported.
+
 1. **naisdevice** — must be installed and healthy:
    ```bash
    ls /Applications/naisdevice.app 2>/dev/null && echo "INSTALLED" || echo "NOT INSTALLED"
