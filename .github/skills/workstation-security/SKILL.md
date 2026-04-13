@@ -244,7 +244,7 @@ These checks are specific to Nav developer machines connected to the NAIS platfo
    ```
    Review for extensions from unknown publishers → **INFO**.
 
-## 8. Outdated Software
+## 9. Outdated Software
 
 Outdated tools can contain known vulnerabilities. Check each package manager for pending updates.
 
@@ -268,15 +268,21 @@ Outdated tools can contain known vulnerabilities. Check each package manager for
 
 4. **pip packages**:
    ```bash
-   pip3 list --outdated 2>/dev/null | head -10
+   pip3 list --outdated 2>/dev/null
    ```
    Outdated → **INFO**. Fix: `pip3 install --upgrade <package>`.
 
 5. **mise/asdf runtimes**:
    ```bash
-   mise outdated 2>/dev/null | head -10
+   mise outdated 2>/dev/null
    ```
    Outdated → **INFO**. Fix: `mise upgrade`.
+
+6. **macOS system updates**:
+   ```bash
+   softwareupdate -l 2>/dev/null
+   ```
+   Pending security updates → **MEDIUM**. Other updates → **INFO**. Fix: `softwareupdate -ia`.
 
 ## Report Format
 

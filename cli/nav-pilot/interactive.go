@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -147,5 +148,55 @@ func cmdInteractive() error {
 
 	// Install
 	fmt.Println()
-	return cmdInstall(selected.name, targetDir, "", "", false, false)
+	if err := cmdInstall(selected.name, targetDir, "", "", false, false); err != nil {
+		return err
+	}
+
+	// Offer to launch Copilot CLI
+	offerLaunchCopilot(reader)
+	return nil
+}
+
+// findCopilotCLI returns the path to cplt if available.
+// We only auto-launch cplt (unambiguous). "copilot" could be AWS Copilot,
+// so we just hint at it instead of launching blindly.
+func findCopilotCLI() (path, name string) {
+	if p, err := exec.LookPath("cplt"); err == nil {
+		return p, "cplt"
+	}
+	return "", ""
+}
+
+// offerLaunchCopilot prompts the user to launch the Copilot CLI after install.
+func offerLaunchCopilot(reader *bufio.Reader) {
+	cliPath, cliName := findCopilotCLI()
+	if cliPath == "" {
+		// Hint if copilot exists but don't auto-launch (could be AWS Copilot)
+		if _, err := exec.LookPath("copilot"); err == nil {
+			fmt.Println()
+			fmt.Printf(dim("Tip: run %s to start coding with your new setup.\n"), bold("copilot"))
+		}
+		return
+	}
+
+	fmt.Println()
+	fmt.Printf("Launch %s now? [Y/n]: ", bold(cliName))
+	answer, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println()
+		return
+	}
+	answer = strings.TrimSpace(strings.ToLower(answer))
+	if answer != "" && answer != "y" && answer != "yes" {
+		return
+	}
+
+	fmt.Println()
+	cmd := exec.Command(cliPath)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Fprintf(os.Stderr, "%s Could not launch %s: %v\n", yellow("⚠"), cliName, err)
+	}
 }
