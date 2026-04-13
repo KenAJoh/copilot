@@ -50,7 +50,7 @@ func TestCmdInteractive_InstalledUpToDate(t *testing.T) {
 
 	state := &StateFile{
 		Collection: "test-collection",
-		Version:    "2026.04.13.17.00.00-abc1234",
+		Version:    "2026.04.13-170000-abc1234",
 		SourceSHA:  "abc1234",
 	}
 	if err := writeState(dir, state); err != nil {
@@ -60,7 +60,7 @@ func TestCmdInteractive_InstalledUpToDate(t *testing.T) {
 	// Mock GitHub API returning same version (up-to-date)
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode([]ghRelease{
-			{TagName: "nav-pilot/2026.04.13.17.00.00-abc1234"},
+			{TagName: "nav-pilot/2026.04.13-170000-abc1234"},
 		})
 	}))
 	defer srv.Close()

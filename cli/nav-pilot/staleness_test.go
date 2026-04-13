@@ -31,7 +31,7 @@ func TestCheckStaleness_DetectsUpdate(t *testing.T) {
 	// Mock GitHub API
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode([]ghRelease{
-			{TagName: "nav-pilot/2026.04.13.17.01.38-abc1234"},
+			{TagName: "nav-pilot/2026.04.13-170138-abc1234"},
 		})
 	}))
 	defer srv.Close()
@@ -40,8 +40,8 @@ func TestCheckStaleness_DetectsUpdate(t *testing.T) {
 	releasesAPI = srv.URL
 	defer func() { releasesAPI = origAPI }()
 
-	result := checkStaleness("2026.01.01.08.00.00-old1234")
-	if result != "2026.04.13.17.01.38-abc1234" {
+	result := checkStaleness("2026.01.01-080000-old1234")
+	if result != "2026.04.13-170138-abc1234" {
 		t.Errorf("expected update version, got %q", result)
 	}
 }
@@ -51,7 +51,7 @@ func TestCheckStaleness_UpToDate(t *testing.T) {
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode([]ghRelease{
-			{TagName: "nav-pilot/2026.04.13.17.01.38-abc1234"},
+			{TagName: "nav-pilot/2026.04.13-170138-abc1234"},
 		})
 	}))
 	defer srv.Close()
@@ -60,7 +60,7 @@ func TestCheckStaleness_UpToDate(t *testing.T) {
 	releasesAPI = srv.URL
 	defer func() { releasesAPI = origAPI }()
 
-	result := checkStaleness("2026.04.13.17.01.38-abc1234")
+	result := checkStaleness("2026.04.13-170138-abc1234")
 	if result != "" {
 		t.Errorf("expected empty for up-to-date version, got %q", result)
 	}
@@ -72,7 +72,7 @@ func TestCheckStaleness_UsesCachedResult(t *testing.T) {
 	// Write a recent cache entry
 	writeCache(&stalenessCache{
 		LastChecked:   time.Now().UTC().Format(time.RFC3339),
-		LatestVersion: "2026.05.01.12.00.00-new1234",
+		LatestVersion: "2026.05.01-120000-new1234",
 	})
 
 	// Server should NOT be hit (cache is fresh)
@@ -80,7 +80,7 @@ func TestCheckStaleness_UsesCachedResult(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		called = true
 		json.NewEncoder(w).Encode([]ghRelease{
-			{TagName: "nav-pilot/2026.05.01.12.00.00-new1234"},
+			{TagName: "nav-pilot/2026.05.01-120000-new1234"},
 		})
 	}))
 	defer srv.Close()
@@ -89,11 +89,11 @@ func TestCheckStaleness_UsesCachedResult(t *testing.T) {
 	releasesAPI = srv.URL
 	defer func() { releasesAPI = origAPI }()
 
-	result := checkStaleness("2026.01.01.08.00.00-old1234")
+	result := checkStaleness("2026.01.01-080000-old1234")
 	if called {
 		t.Error("expected cache hit, but server was called")
 	}
-	if result != "2026.05.01.12.00.00-new1234" {
+	if result != "2026.05.01-120000-new1234" {
 		t.Errorf("expected cached version, got %q", result)
 	}
 }
@@ -104,12 +104,12 @@ func TestCheckStaleness_ExpiredCacheRefetches(t *testing.T) {
 	// Write an expired cache entry
 	writeCache(&stalenessCache{
 		LastChecked:   time.Now().Add(-25 * time.Hour).UTC().Format(time.RFC3339),
-		LatestVersion: "2026.03.01.06.00.00-old",
+		LatestVersion: "2026.03.01-060000-old",
 	})
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode([]ghRelease{
-			{TagName: "nav-pilot/2026.05.01.12.00.00-new1234"},
+			{TagName: "nav-pilot/2026.05.01-120000-new1234"},
 		})
 	}))
 	defer srv.Close()
@@ -118,8 +118,8 @@ func TestCheckStaleness_ExpiredCacheRefetches(t *testing.T) {
 	releasesAPI = srv.URL
 	defer func() { releasesAPI = origAPI }()
 
-	result := checkStaleness("2026.01.01.08.00.00-old1234")
-	if result != "2026.05.01.12.00.00-new1234" {
+	result := checkStaleness("2026.01.01-080000-old1234")
+	if result != "2026.05.01-120000-new1234" {
 		t.Errorf("expected new version from API, got %q", result)
 	}
 }
@@ -131,7 +131,7 @@ func TestCheckStaleness_NetworkErrorSkips(t *testing.T) {
 	releasesAPI = "http://127.0.0.1:1" // connection refused
 	defer func() { releasesAPI = origAPI }()
 
-	result := checkStaleness("2026.01.01.08.00.00-old1234")
+	result := checkStaleness("2026.01.01-080000-old1234")
 	if result != "" {
 		t.Errorf("expected empty on network error, got %q", result)
 	}
