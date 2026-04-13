@@ -223,7 +223,7 @@ const PLANNING_SKILLS = [
 ];
 
 const CLI_COMMANDS = [
-  { command: "nav-pilot", description: "Interaktiv collection-velger (i et git-repo)" },
+  { command: "nav-pilot", description: "Interaktivt: installer, oppgrader eller start cplt" },
   { command: "nav-pilot install <collection>", description: "Installer en collection i ditt repo" },
   { command: "nav-pilot install --dry-run <collection>", description: "Forhåndsvis hva som installeres" },
   { command: "nav-pilot install --force <collection>", description: "Overskriv lokalt endrede filer" },
