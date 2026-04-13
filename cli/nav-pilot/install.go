@@ -264,31 +264,6 @@ func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result
 	return nil
 }
 
-func installGlobalInstructions(src *Source, targetDir string, result *installResult) {
-	globalSrc := filepath.Join(src.Dir, ".github", "copilot-instructions.md")
-	globalDst := filepath.Join(targetDir, ".github", "copilot-instructions.md")
-	if _, err := os.Stat(globalSrc); err != nil {
-		return
-	}
-	if _, err := os.Stat(globalDst); !os.IsNotExist(err) {
-		return // already exists
-	}
-	if err := copyFile(globalSrc, globalDst); err != nil {
-		fmt.Fprintf(os.Stderr, "%s Could not copy copilot-instructions.md: %v\n", yellow("⚠"), err)
-		return
-	}
-	hash, err := fileHash(globalDst)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "%s Could not hash copilot-instructions.md: %v\n", yellow("⚠"), err)
-		return
-	}
-	result.Files = append(result.Files, InstalledFile{
-		Path: ".github/copilot-instructions.md",
-		Hash: hash,
-	})
-	fmt.Printf("%s Copied global copilot-instructions.md\n", green("✓"))
-}
-
 // removeEmptyGitHubDirs cleans up empty .github subdirectories after uninstall.
 func removeEmptyGitHubDirs(targetDir string) {
 	for _, sub := range []string{"agents", "skills", "instructions", "prompts"} {
@@ -445,10 +420,6 @@ func cmdInstall(collection, targetDir, ref, sourceRepo string, dryRun, force boo
 	result, err := installItems(src.Dir, targetDir, manifest, dryRun, force)
 	if err != nil {
 		return err
-	}
-
-	if !dryRun {
-		installGlobalInstructions(src, targetDir, result)
 	}
 
 	if result.Conflicts > 0 {
