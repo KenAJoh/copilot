@@ -227,6 +227,8 @@ const CLI_COMMANDS = [
   { command: "nav-pilot sync --apply", description: "Oppdater filer direkte" },
   { command: "nav-pilot sync --json", description: "Maskinlesbar output for scripts" },
   { command: "nav-pilot update", description: "Oppdater nav-pilot CLI til nyeste versjon" },
+  { command: "nav-pilot feedback", description: "Rapporter feil — åpner GitHub issue med diagnostikk" },
+  { command: "nav-pilot feedback --feature", description: "Foreslå ny funksjonalitet" },
   { command: "nav-pilot version", description: "Vis versjonsinformasjon" },
 ];
 
@@ -587,6 +589,7 @@ nav-pilot`}
                 cmd: "nav-pilot add agent security-champion\nnav-pilot add skill postgresql-review",
               },
               { label: "Sjekk om det finnes oppdateringer", cmd: "nav-pilot sync" },
+              { label: "Rapporter feil eller foreslå forbedringer", cmd: "nav-pilot feedback" },
             ].map((item) => (
               <div key={item.label}>
                 <Label size="small" style={{ color: "#64748b" }}>
