@@ -119,7 +119,7 @@ const COLLECTIONS = [
     description: "Kotlin/Ktor og Spring Boot på Nais",
     agents: 6,
     skills: 10,
-    bestFor: "Backend API og hendelsekonsumenter",
+    bestFor: "Backend-API-er og hendelseskonsumenter",
     details: {
       agents: "auth, kafka, nais, observability, security-champion, nav-pilot",
       skills:
@@ -184,7 +184,7 @@ const PLANNING_SKILLS = [
       "Observerbarhet — forretningsmetrikker, varsling, on-call",
       "Team og prosess — avhengigheter, deadlines, erfaring",
     ],
-    refs: "data-classification.md, blind-spots.md (25+ vanlige oversikter fra ekte Nav-repoer)",
+    refs: "data-classification.md, blind-spots.md (25+ vanlige blinde flekker fra ekte Nav-repoer)",
   },
   {
     name: "$nav-plan",
@@ -471,7 +471,7 @@ function IntroductionSection() {
           </BodyShort>
           <VStack gap="space-4" className="mt-4">
             {[
-              "At innbyggere bruker ID-porten men saksbehandlere bruker Azure AD",
+              "At innbyggere bruker ID-porten, men saksbehandlere bruker Azure AD",
               <>
                 At du trenger <code className="font-mono text-xs">accessPolicy.inbound</code> i Nais-manifestet, ellers
                 kan ingen kalle tjenesten din
@@ -986,7 +986,7 @@ jobs:
               },
               {
                 q: "Hva om jeg har tilpasset en fil lokalt?",
-                a: "PR-en viser diff. Du kan gjennomgå, merge selektivt, eller lukke den. Workflowen tvinger aldri oppdateringer.",
+                a: "PR-en viser diff. Du kan gjennomgå, merge selektivt, eller lukke den. Workflow-en tvinger aldri oppdateringer.",
               },
               {
                 q: "Kan jeg sjekke oppdateringer lokalt uten CI?",
@@ -994,7 +994,7 @@ jobs:
               },
               {
                 q: "Hvordan er dette forskjellig fra Dependabot?",
-                a: "Samme konsept — automatiske oppdaterings-PRs — men for Copilot-tilpasningsfiler. Sammenligner SHA-256-hasher i stedet for semantisk versjonering.",
+                a: "Samme konsept — automatiske oppdaterings-PR-er — men for Copilot-tilpasningsfiler. Sammenligner SHA-256-hasher i stedet for semantisk versjonering.",
               },
             ].map((faq) => (
               <div
@@ -1041,7 +1041,7 @@ function CliReferenceSection() {
           </LinkableHeading>
           <BodyLong className="mt-2" style={{ color: "#475569" }}>
             <code className="font-mono text-sm">nav-pilot</code> er et rent installasjonsverktøy skrevet i Go uten
-            avhengigheter. All AI-funksjonalitet er markdown kjørt av GitHub Copilot.
+            avhengigheter. All AI-funksjonalitet ligger i markdown-filer som kjøres av GitHub Copilot.
           </BodyLong>
         </div>
 
@@ -1174,8 +1174,8 @@ function HowItWorksSection() {
             Slik fungerer det
           </LinkableHeading>
           <BodyLong className="mt-3" style={{ color: "#475569" }}>
-            nav-pilot installerer markdown-filer i repoet ditt. GitHub Copilot leser disse filene automatisk og
-            tilpasser seg deretter. Klikk på filene under for å se hva de gjør.
+            nav-pilot installerer markdown-filer i repoet ditt. GitHub Copilot leser filene og tilpasser
+            forslagene sine automatisk. Klikk på filene under for å se hva de gjør.
           </BodyLong>
         </div>
 
@@ -1227,7 +1227,7 @@ function HowItWorksSection() {
               {
                 step: "4",
                 title: "Hold oppdatert",
-                desc: "nav-pilot sjekker automatisk for nye versjoner. Bruk sync for å oppdatere filene når nye skills eller forbedringer er tilgjengelig.",
+                desc: "nav-pilot sjekker automatisk for nye versjoner. Bruk sync for å oppdatere filene når nye skills eller forbedringer er tilgjengelige.",
                 cmd: "nav-pilot sync --apply",
                 accent: "#d97706",
                 bg: "#fffbeb",

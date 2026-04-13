@@ -74,7 +74,7 @@ const FILE_TREE: FileEntry[] = [
     description: "Generer Nais-manifest fra mal",
     detail:
       "En forhåndsdefinert prompt du kan kjøre fra Copilot. Stiller spørsmål om appen din og genererer et komplett .nais/nais.yaml-manifest.",
-    when: "Når du velger prompten fra Copilot sin prompt-meny",
+    when: "Når du velger prompten i Copilots prompt-meny",
   },
   {
     name: ".nav-pilot-state.json",
