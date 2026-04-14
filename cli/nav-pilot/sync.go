@@ -99,6 +99,7 @@ func cmdSync(scope *InstallScope, ref, sourceRepo string, apply, jsonOutput bool
 	if result.UpToDate {
 		fmt.Printf("%s All %d files up to date (source: %s)\n",
 			green("✓"), len(files), src.SHA)
+		reportNewItems(scope, src.Dir)
 		return nil
 	}
 
@@ -155,6 +156,7 @@ func cmdSync(scope *InstallScope, ref, sourceRepo string, apply, jsonOutput bool
 		return errSyncFailed
 	}
 
+	reportNewItems(scope, src.Dir)
 	return nil
 }
 
@@ -199,6 +201,40 @@ func resolveSyncFiles(scope *InstallScope, sourceDir string) ([]syncFile, string
 
 	// Auto-detect: scan for customization files that also exist in source
 	return autoDetectSyncFiles(scope.RootDir, sourceDir)
+}
+
+// detectNewItems checks if the source has agents/skills not in the state file.
+// Only relevant for "(all)" user-scope installs where new items may appear.
+func detectNewItems(scope *InstallScope, sourceDir string) []string {
+	state, err := readScopedState(scope)
+	if err != nil || state == nil || state.Collection != CollectionAll || !scope.IsUser() {
+		return nil
+	}
+
+	allItems, err := collectAllItems(sourceDir)
+	if err != nil {
+		return nil
+	}
+
+	installed := make(map[string]bool)
+	for _, f := range state.Files {
+		installed[f.Path] = true
+	}
+
+	var newItems []string
+	for _, agent := range allItems.Agents {
+		path := "agents/" + agent + ".agent.md"
+		if !installed[path] {
+			newItems = append(newItems, "agent: "+agent)
+		}
+	}
+	for _, skill := range allItems.Skills {
+		path := "skills/" + skill + "/"
+		if !installed[path] {
+			newItems = append(newItems, "skill: "+skill)
+		}
+	}
+	return newItems
 }
 
 // autoDetectSyncFiles finds customization files in the target that also exist in source.
@@ -370,4 +406,18 @@ func outputJSON(v interface{}) error {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
 	return enc.Encode(v)
+}
+
+// reportNewItems prints a notice if the source has new items not yet installed.
+func reportNewItems(scope *InstallScope, sourceDir string) {
+	newItems := detectNewItems(scope, sourceDir)
+	if len(newItems) == 0 {
+		return
+	}
+	fmt.Println()
+	fmt.Printf("%s %d new item(s) in source not yet installed:\n", dim("ℹ"), len(newItems))
+	for _, item := range newItems {
+		fmt.Printf("    %s\n", item)
+	}
+	fmt.Printf("  Run %s to add them.\n", bold("nav-pilot install --user"))
 }

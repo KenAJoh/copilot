@@ -84,6 +84,52 @@ func listCollectionDirs(sourceDir string) ([]string, error) {
 	return names, nil
 }
 
+// collectAllItems scans the source directory for all agents and skills,
+// returning a synthetic manifest. Used for user-scope "install everything".
+func collectAllItems(sourceDir string) (*Manifest, error) {
+	m := &Manifest{
+		Name:        "(all)",
+		Description: "All agents and skills",
+	}
+
+	// Scan agents
+	agentFiles, err := filepath.Glob(filepath.Join(sourceDir, ".github", "agents", "*.agent.md"))
+	if err != nil {
+		return nil, fmt.Errorf("scanning agents: %w", err)
+	}
+	for _, f := range agentFiles {
+		name := strings.TrimSuffix(filepath.Base(f), ".agent.md")
+		if validateName(name) == nil {
+			m.Agents = append(m.Agents, name)
+		}
+	}
+	sort.Strings(m.Agents)
+
+	// Scan skills
+	skillsDir := filepath.Join(sourceDir, ".github", "skills")
+	entries, err := os.ReadDir(skillsDir)
+	if err != nil && !os.IsNotExist(err) {
+		return nil, fmt.Errorf("scanning skills: %w", err)
+	}
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		skillFile := filepath.Join(skillsDir, e.Name(), "SKILL.md")
+		if _, statErr := os.Stat(skillFile); statErr == nil {
+			if validateName(e.Name()) == nil {
+				m.Skills = append(m.Skills, e.Name())
+			}
+		}
+	}
+	sort.Strings(m.Skills)
+
+	return m, nil
+}
+
+// CollectionAll is the collection name used in state files for "install everything".
+const CollectionAll = "(all)"
+
 // validateName checks that a manifest entry name is safe for use in file paths.
 func validateName(name string) error {
 	if name == "" {

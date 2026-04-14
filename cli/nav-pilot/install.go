@@ -275,6 +275,7 @@ func cmdList(ref, sourceRepo string, showItems bool) error {
 	}
 	fmt.Println()
 	fmt.Printf("Install with: %s\n", bold("nav-pilot install <collection>"))
+	fmt.Printf("Install everything to user home: %s\n", bold("nav-pilot install --user"))
 
 	if showItems {
 		fmt.Println()
@@ -351,6 +352,86 @@ func listAvailableItems(sourceDir string) error {
 		}
 		fmt.Println()
 	}
+
+	return nil
+}
+
+// cmdInstallAll installs all agents and skills to user scope by scanning the source.
+// Used when `nav-pilot install --user` is run without a collection name.
+func cmdInstallAll(scope *InstallScope, ref, sourceRepo string, dryRun, force bool) error {
+	fmt.Println(dim("Resolving source..."))
+	src, err := resolveSource(ref, sourceRepo)
+	if err != nil {
+		return err
+	}
+	defer src.Cleanup()
+
+	return installAllFromSource(scope, src, nil, dryRun, force)
+}
+
+// installAllFromSource installs all agents+skills from source.
+// If manifest is nil, it scans the source directory to discover items.
+// Extracted so both cmdInstallAll and the interactive flow can share this.
+func installAllFromSource(scope *InstallScope, src *Source, manifest *Manifest, dryRun, force bool) error {
+	if manifest == nil {
+		var err error
+		manifest, err = collectAllItems(src.Dir)
+		if err != nil {
+			return err
+		}
+	}
+
+	total := len(manifest.Agents) + len(manifest.Skills)
+	if total == 0 {
+		return fmt.Errorf("no agents or skills found in source")
+	}
+
+	sourceLabel := "navikt/copilot"
+
+	fmt.Println()
+	if dryRun {
+		fmt.Println(bold(fmt.Sprintf("Dry run: all agents & skills (%d items)", total)))
+	} else {
+		fmt.Println(bold(fmt.Sprintf("Installing: all agents & skills (%d items)", total)))
+	}
+	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("%s@%s", sourceLabel, src.SHA)))
+	fmt.Printf("%s %s\n", dim("Target:"), dim(scope.Label()))
+	fmt.Println()
+
+	result, err := installItems(src.Dir, scope, manifest, dryRun, force)
+	if err != nil {
+		return err
+	}
+
+	if result.Conflicts > 0 {
+		fmt.Printf("%s %d file(s) skipped due to conflicts. Use %s to overwrite.\n",
+			yellow("⚠"), result.Conflicts, bold("--force"))
+	}
+
+	if dryRun {
+		fmt.Printf("%s Would install %d items.\n", dim("→"), result.Installed)
+		return nil
+	}
+
+	stateVersion := src.Version
+
+	state := &StateFile{
+		Collection:  CollectionAll,
+		Version:     stateVersion,
+		Scope:       scope.Name,
+		SourceSHA:   src.SHA,
+		InstalledAt: timeNow().UTC().Format("2006-01-02T15:04:05Z07:00"),
+		Files:       result.Files,
+	}
+	if err := writeScopedState(scope, state); err != nil {
+		fmt.Fprintf(os.Stderr, "%s Could not write state file: %v\n", yellow("⚠"), err)
+	}
+
+	fmt.Printf("%s Installed %d items to %s (v%s, %s).\n",
+		green("✓"), result.Installed, scope.Label(), stateVersion, src.SHA)
+	fmt.Println()
+	fmt.Println(dim("Agents and skills are now available across all your repos."))
+	fmt.Println(dim("Use @nav-pilot in Copilot Chat or copilot --agent nav-pilot"))
 
 	return nil
 }

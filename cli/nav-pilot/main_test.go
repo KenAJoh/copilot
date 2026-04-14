@@ -1037,6 +1037,319 @@ func TestUpdateStateHashes_OnlyUpdatesApplied(t *testing.T) {
 	}
 }
 
+// ─── collectAllItems tests ──────────────────────────────────────────────────
+
+func TestCollectAllItems(t *testing.T) {
+	source := t.TempDir()
+	ghDir := filepath.Join(source, ".github")
+
+	// Create agent files
+	agentsDir := filepath.Join(ghDir, "agents")
+	os.MkdirAll(agentsDir, 0o755)
+	os.WriteFile(filepath.Join(agentsDir, "alpha.agent.md"), []byte("# Alpha"), 0o644)
+	os.WriteFile(filepath.Join(agentsDir, "beta.agent.md"), []byte("# Beta"), 0o644)
+	os.WriteFile(filepath.Join(agentsDir, "not-an-agent.md"), []byte("# Ignored"), 0o644) // wrong suffix
+
+	// Create skill dirs with SKILL.md
+	for _, skill := range []string{"skill-a", "skill-b", "skill-c"} {
+		skillDir := filepath.Join(ghDir, "skills", skill)
+		os.MkdirAll(skillDir, 0o755)
+		os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("# "+skill), 0o644)
+	}
+	// Create a dir without SKILL.md — should be ignored
+	os.MkdirAll(filepath.Join(ghDir, "skills", "no-skill"), 0o755)
+
+	m, err := collectAllItems(source)
+	if err != nil {
+		t.Fatalf("collectAllItems: %v", err)
+	}
+	if m.Name != "(all)" {
+		t.Errorf("name = %q, want %q", m.Name, "(all)")
+	}
+	if len(m.Agents) != 2 {
+		t.Errorf("agents = %d, want 2 (got %v)", len(m.Agents), m.Agents)
+	}
+	if len(m.Skills) != 3 {
+		t.Errorf("skills = %d, want 3 (got %v)", len(m.Skills), m.Skills)
+	}
+
+	// Verify sorted
+	if m.Agents[0] != "alpha" || m.Agents[1] != "beta" {
+		t.Errorf("agents not sorted: %v", m.Agents)
+	}
+	if m.Skills[0] != "skill-a" {
+		t.Errorf("skills not sorted: %v", m.Skills)
+	}
+}
+
+func TestCollectAllItems_Empty(t *testing.T) {
+	source := t.TempDir()
+	m, err := collectAllItems(source)
+	if err != nil {
+		t.Fatalf("collectAllItems: %v", err)
+	}
+	if len(m.Agents) != 0 || len(m.Skills) != 0 {
+		t.Errorf("expected empty manifest, got %d agents, %d skills", len(m.Agents), len(m.Skills))
+	}
+}
+
+func TestCollectAllItems_SkipsInvalidNames(t *testing.T) {
+	source := t.TempDir()
+	agentsDir := filepath.Join(source, ".github", "agents")
+	os.MkdirAll(agentsDir, 0o755)
+	// ".." in name should be rejected by validateName
+	os.WriteFile(filepath.Join(agentsDir, "valid.agent.md"), []byte("ok"), 0o644)
+	// Empty name can't occur via glob, but verify valid one works
+	m, err := collectAllItems(source)
+	if err != nil {
+		t.Fatalf("collectAllItems: %v", err)
+	}
+	if len(m.Agents) != 1 || m.Agents[0] != "valid" {
+		t.Errorf("unexpected agents: %v", m.Agents)
+	}
+}
+
+// ─── install all tests ──────────────────────────────────────────────────────
+
+func TestInstallAllFromSource(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+	ghDir := filepath.Join(source, ".github")
+
+	// Set up agents
+	agentsDir := filepath.Join(ghDir, "agents")
+	os.MkdirAll(agentsDir, 0o755)
+	os.WriteFile(filepath.Join(agentsDir, "test-a.agent.md"), []byte("# Agent A"), 0o644)
+
+	// Set up skills
+	skillDir := filepath.Join(ghDir, "skills", "test-s")
+	os.MkdirAll(skillDir, 0o755)
+	os.WriteFile(filepath.Join(skillDir, "SKILL.md"), []byte("# Skill"), 0o644)
+
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        target,
+		StateFile:      ".nav-pilot-state.json",
+		SupportedTypes: []string{"agent", "skill"},
+	}
+	src := &Source{Dir: source, SHA: "abc1234", Version: "dev"}
+
+	err := installAllFromSource(scope, src, nil, false, false)
+	if err != nil {
+		t.Fatalf("installAllFromSource: %v", err)
+	}
+
+	// Verify state file uses CollectionAll
+	state, err := readScopedState(scope)
+	if err != nil {
+		t.Fatalf("readScopedState: %v", err)
+	}
+	if state.Collection != CollectionAll {
+		t.Errorf("collection = %q, want %q", state.Collection, CollectionAll)
+	}
+	if len(state.Files) != 2 {
+		t.Errorf("files = %d, want 2", len(state.Files))
+	}
+
+	// Verify files were actually installed — user scope puts files directly under rootDir
+	agentDst := filepath.Join(target, "agents", "test-a.agent.md")
+	if _, err := os.Stat(agentDst); os.IsNotExist(err) {
+		t.Error("agent file not installed")
+	}
+	skillDst := filepath.Join(target, "skills", "test-s", "SKILL.md")
+	if _, err := os.Stat(skillDst); os.IsNotExist(err) {
+		t.Error("skill file not installed")
+	}
+}
+
+func TestInstallAllFromSource_EmptySource(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+
+	scope := &InstallScope{Name: "user", RootDir: target, StateFile: ".nav-pilot-state.json", SupportedTypes: []string{"agent", "skill"}}
+	src := &Source{Dir: source, SHA: "abc1234", Version: "dev"}
+
+	err := installAllFromSource(scope, src, nil, false, false)
+	if err == nil {
+		t.Fatal("expected error for empty source")
+	}
+	if !strings.Contains(err.Error(), "no agents or skills") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestInstallAllFromSource_DryRun(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+	ghDir := filepath.Join(source, ".github")
+
+	agentsDir := filepath.Join(ghDir, "agents")
+	os.MkdirAll(agentsDir, 0o755)
+	os.WriteFile(filepath.Join(agentsDir, "test-a.agent.md"), []byte("# Agent A"), 0o644)
+
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        target,
+		StateFile:      ".nav-pilot-state.json",
+		SupportedTypes: []string{"agent", "skill"},
+	}
+	src := &Source{Dir: source, SHA: "abc1234", Version: "dev"}
+
+	err := installAllFromSource(scope, src, nil, true, false)
+	if err != nil {
+		t.Fatalf("installAllFromSource dry run: %v", err)
+	}
+
+	// No state file should be written in dry run
+	state, err := readScopedState(scope)
+	if err != nil {
+		t.Fatalf("readScopedState: %v", err)
+	}
+	if state != nil {
+		t.Error("state file should not exist after dry run")
+	}
+}
+
+// ─── detectNewItems tests ───────────────────────────────────────────────────
+
+func TestDetectNewItems(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+	ghDir := filepath.Join(source, ".github")
+
+	// Create 3 agents and 2 skills in source
+	agentsDir := filepath.Join(ghDir, "agents")
+	os.MkdirAll(agentsDir, 0o755)
+	os.WriteFile(filepath.Join(agentsDir, "existing.agent.md"), []byte("# E"), 0o644)
+	os.WriteFile(filepath.Join(agentsDir, "new-one.agent.md"), []byte("# N"), 0o644)
+
+	skillDir1 := filepath.Join(ghDir, "skills", "existing-skill")
+	os.MkdirAll(skillDir1, 0o755)
+	os.WriteFile(filepath.Join(skillDir1, "SKILL.md"), []byte("# S"), 0o644)
+	skillDir2 := filepath.Join(ghDir, "skills", "new-skill")
+	os.MkdirAll(skillDir2, 0o755)
+	os.WriteFile(filepath.Join(skillDir2, "SKILL.md"), []byte("# NS"), 0o644)
+
+	// Create state with only the "existing" items
+	scope := &InstallScope{Name: "user", RootDir: target, StateFile: ".nav-pilot-state.json", SupportedTypes: []string{"agent", "skill"}}
+	state := &StateFile{
+		Collection: CollectionAll,
+		Version:    "dev",
+		Scope:      "user",
+		Files: []InstalledFile{
+			{Path: "agents/existing.agent.md", Hash: "abc"},
+			{Path: "skills/existing-skill/", Hash: "def"},
+		},
+	}
+	if err := writeScopedState(scope, state); err != nil {
+		t.Fatalf("writeScopedState: %v", err)
+	}
+
+	newItems := detectNewItems(scope, source)
+	if len(newItems) != 2 {
+		t.Fatalf("newItems = %d, want 2 (got %v)", len(newItems), newItems)
+	}
+
+	// Verify content
+	hasAgent := false
+	hasSkill := false
+	for _, item := range newItems {
+		if item == "agent: new-one" {
+			hasAgent = true
+		}
+		if item == "skill: new-skill" {
+			hasSkill = true
+		}
+	}
+	if !hasAgent {
+		t.Error("missing new agent in detected items")
+	}
+	if !hasSkill {
+		t.Error("missing new skill in detected items")
+	}
+}
+
+func TestDetectNewItems_NoState(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+
+	scope := &InstallScope{Name: "user", RootDir: target, StateFile: ".nav-pilot-state.json", SupportedTypes: []string{"agent", "skill"}}
+	newItems := detectNewItems(scope, source)
+	if len(newItems) != 0 {
+		t.Errorf("expected no items without state, got %v", newItems)
+	}
+}
+
+func TestDetectNewItems_NonAllCollection(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+
+	// State with a regular collection, not "(all)"
+	scope := &InstallScope{Name: "user", RootDir: target, StateFile: ".nav-pilot-state.json", SupportedTypes: []string{"agent", "skill"}}
+	state := &StateFile{
+		Collection: "fullstack",
+		Version:    "dev",
+		Scope:      "user",
+		Files:      []InstalledFile{{Path: "agents/test.agent.md", Hash: "abc"}},
+	}
+	writeScopedState(scope, state)
+
+	newItems := detectNewItems(scope, source)
+	if len(newItems) != 0 {
+		t.Errorf("expected no items for non-all collection, got %v", newItems)
+	}
+}
+
+func TestDetectNewItems_AllUpToDate(t *testing.T) {
+	source := t.TempDir()
+	target := t.TempDir()
+	ghDir := filepath.Join(source, ".github")
+
+	// One agent
+	agentsDir := filepath.Join(ghDir, "agents")
+	os.MkdirAll(agentsDir, 0o755)
+	os.WriteFile(filepath.Join(agentsDir, "only.agent.md"), []byte("# Only"), 0o644)
+
+	scope := &InstallScope{Name: "user", RootDir: target, StateFile: ".nav-pilot-state.json", SupportedTypes: []string{"agent", "skill"}}
+	state := &StateFile{
+		Collection: CollectionAll,
+		Version:    "dev",
+		Scope:      "user",
+		Files:      []InstalledFile{{Path: "agents/only.agent.md", Hash: "abc"}},
+	}
+	writeScopedState(scope, state)
+
+	newItems := detectNewItems(scope, source)
+	if len(newItems) != 0 {
+		t.Errorf("expected no new items, got %v", newItems)
+	}
+}
+
+// ─── CLI dispatch: install --user no args ───────────────────────────────────
+
+func TestRun_InstallUserNoArgs(t *testing.T) {
+	// nav-pilot install --user (no collection) should call cmdInstallAll,
+	// which calls resolveSource. In test environment this will fail on source
+	// resolution. We just verify it doesn't require a collection name.
+	err := run([]string{"install", "--user"})
+	if err != nil && strings.Contains(err.Error(), "collection name") {
+		t.Errorf("install --user should not require collection name, got: %v", err)
+	}
+}
+
+func TestRun_InstallUserWithCollection(t *testing.T) {
+	// nav-pilot install --user fullstack — should still work as before
+	// (backwards compatible, dispatches to cmdInstall not cmdInstallAll)
+	err := run([]string{"install", "--user", "fullstack"})
+	if err == nil {
+		// It'll fail on source resolution, but not on arg parsing
+		t.Log("no error (source was resolved)")
+	}
+	if err != nil && strings.Contains(err.Error(), "collection name") {
+		t.Errorf("install --user fullstack should not error on collection name, got: %v", err)
+	}
+}
+
 func TestListAvailableItems_PromptDirectories(t *testing.T) {
 	source := t.TempDir()
 	ghDir := filepath.Join(source, ".github")

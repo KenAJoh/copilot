@@ -83,12 +83,13 @@ func cmdInteractive() error {
 		return interactiveSyncAndLaunch(repoScope, repoState, userScope, userState)
 	}
 
-	// Fresh install requires a git repo
-	if targetDir == "" {
-		return fmt.Errorf("not in a git repository (run from a repo to install, or use --user)")
+	// Fresh install — git repo determines available scopes
+	if targetDir != "" {
+		return interactiveFreshInstall(targetDir)
 	}
 
-	return interactiveFreshInstall(targetDir)
+	// Not in a git repo — only user-home scope is possible
+	return interactiveUserOnlyInstall()
 }
 
 // interactiveSyncAndLaunch handles the case where at least one scope has an install.
@@ -100,7 +101,11 @@ func interactiveSyncAndLaunch(repoScope *InstallScope, repoState *StateFile, use
 		scopeParts = append(scopeParts, fmt.Sprintf("repo: %s", repoState.Collection))
 	}
 	if userState != nil {
-		scopeParts = append(scopeParts, fmt.Sprintf("user: %s", userState.Collection))
+		label := userState.Collection
+		if label == CollectionAll {
+			label = "all"
+		}
+		scopeParts = append(scopeParts, fmt.Sprintf("user: %s", label))
 	}
 	fmt.Printf("%s  %s\n", bold("🧭 nav-pilot"), dim(strings.Join(scopeParts, "  ·  ")))
 
@@ -165,8 +170,8 @@ func interactiveSyncAndLaunch(repoScope *InstallScope, repoState *StateFile, use
 	return nil
 }
 
-// interactiveFreshInstall handles the case where no install exists.
-// Prompts for collection and install scope.
+// interactiveFreshInstall handles the case where no install exists and we're in a git repo.
+// Prompts for scope first, then collection (repo) or installs everything (user).
 func interactiveFreshInstall(targetDir string) error {
 	fmt.Println(bold("nav-pilot") + dim(" — Nav's Copilot toolkit"))
 	fmt.Println()
@@ -178,6 +183,88 @@ func interactiveFreshInstall(targetDir string) error {
 	}
 	defer src.Cleanup()
 
+	// Scope-first: ask where to install
+	scope, err := promptInstallScope(targetDir)
+	if err != nil {
+		return err
+	}
+	if scope == nil {
+		fmt.Println(dim("Cancelled."))
+		return nil
+	}
+
+	if scope.IsUser() {
+		return interactiveUserInstall(src)
+	}
+
+	// Repo scope: pick a collection
+	return interactiveRepoInstall(src, scope)
+}
+
+// interactiveUserOnlyInstall handles fresh install when not in a git repo.
+// Skips the scope picker and goes straight to user-home install.
+func interactiveUserOnlyInstall() error {
+	fmt.Println(bold("nav-pilot") + dim(" — Nav's Copilot toolkit"))
+	fmt.Println()
+	fmt.Println(dim("Not in a git repository — installing to user home."))
+	fmt.Println(dim("Resolving source..."))
+
+	src, err := resolveSource("", "")
+	if err != nil {
+		return err
+	}
+	defer src.Cleanup()
+
+	return interactiveUserInstall(src)
+}
+
+// interactiveUserInstall installs all agents & skills to user home.
+// Called from both interactiveFreshInstall (user scope selected) and interactiveUserOnlyInstall.
+func interactiveUserInstall(src *Source) error {
+	manifest, err := collectAllItems(src.Dir)
+	if err != nil {
+		return err
+	}
+
+	total := len(manifest.Agents) + len(manifest.Skills)
+	if total == 0 {
+		return fmt.Errorf("no agents or skills found in source")
+	}
+
+	if isInteractive() {
+		fmt.Println()
+		var installChoice string
+		err = huh.NewSelect[string]().
+			Title(fmt.Sprintf("Install all %d agents & skills to ~/.copilot?", total)).
+			Options(
+				huh.NewOption("Yes", "yes"),
+				huh.NewOption("No", "no"),
+			).
+			Value(&installChoice).
+			WithTheme(navTheme()).
+			Run()
+		if err != nil || installChoice != "yes" {
+			fmt.Println(dim("Cancelled."))
+			return nil
+		}
+	}
+
+	scope, err := ScopeUser()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println()
+	if err := installAllFromSource(scope, src, manifest, false, false); err != nil {
+		return err
+	}
+
+	offerLaunchCopilot()
+	return nil
+}
+
+// interactiveRepoInstall handles repo-scope collection picker flow.
+func interactiveRepoInstall(src *Source, scope *InstallScope) error {
 	names, err := listCollectionDirs(src.Dir)
 	if err != nil {
 		return err
@@ -211,7 +298,7 @@ func interactiveFreshInstall(targetDir string) error {
 		WithTheme(navTheme()).
 		Run()
 	if err != nil {
-		return nil // user cancelled (Ctrl+C / Esc)
+		return nil // user cancelled
 	}
 
 	// Show preview
@@ -236,16 +323,6 @@ func interactiveFreshInstall(targetDir string) error {
 	}
 	fmt.Printf("  %s\n", dim(strings.Join(parts, ", ")))
 	fmt.Println()
-
-	// Select install scope
-	scope, err := promptInstallScope(targetDir)
-	if err != nil {
-		return err
-	}
-	if scope == nil {
-		fmt.Println(dim("Cancelled."))
-		return nil
-	}
 
 	// Confirm install
 	var installChoice string

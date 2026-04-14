@@ -32,15 +32,20 @@ func TestCmdInteractive_NotGitRepo(t *testing.T) {
 	os.Chdir(dir)
 	defer os.Chdir(origDir)
 
-	// Override HOME so ScopeUser() finds no existing user-home installs
+	// Override HOME so ScopeUser() uses the temp dir
 	t.Setenv("HOME", dir)
 
+	// Non-interactive: interactiveUserInstall skips the prompt and installs directly
+	forceNonInteractive = true
+	defer func() { forceNonInteractive = false }()
+
+	// Since we're not in a git repo, cmdInteractive goes to interactiveUserOnlyInstall,
+	// which calls resolveSource. resolveSource will try to clone from remote (version=dev).
+	// This may succeed or fail depending on environment; we just verify the flow doesn't
+	// produce the old "not in a git repository" error.
 	err := cmdInteractive()
-	if err == nil {
-		t.Fatal("expected error for non-git directory")
-	}
-	if !strings.Contains(err.Error(), "not in a git repository") {
-		t.Errorf("unexpected error: %v", err)
+	if err != nil && strings.Contains(err.Error(), "not in a git repository") {
+		t.Errorf("should not get git repo error anymore, got: %v", err)
 	}
 }
 

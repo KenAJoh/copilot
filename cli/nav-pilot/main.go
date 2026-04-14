@@ -44,6 +44,7 @@ Usage:
 
 Commands:
   install <collection>    Install a curated collection into the current repo
+  install --user          Install all agents & skills to ~/.copilot (user-wide)
   add <type> <name>       Install a single agent, skill, instruction, or prompt
   sync                    Check for updates and optionally apply them
   list                    List available collections and items
@@ -87,19 +88,7 @@ func run(args []string) error {
 
 	if len(args) < 1 {
 		if isInteractive() {
-			// Allow interactive mode if in a git repo or if user-scope install exists
-			hasGitRepo := findGitRoot(".") != ""
-			hasUserInstall := false
-			if s, err := ScopeUser(); err == nil {
-				// Check file existence (not parse success) so corrupted state
-				// still reaches cmdInteractive() which can show a warning.
-				if _, statErr := os.Stat(s.StatePath()); statErr == nil {
-					hasUserInstall = true
-				}
-			}
-			if hasGitRepo || hasUserInstall {
-				return cmdInteractive()
-			}
+			return cmdInteractive()
 		}
 		usage()
 		return nil
@@ -192,6 +181,9 @@ func run(args []string) error {
 
 	switch command {
 	case "install":
+		if userScope && len(positional) == 0 {
+			return cmdInstallAll(scope, ref, sourceRepo, dryRun, force)
+		}
 		if len(positional) == 0 {
 			return fmt.Errorf("install requires a collection name. Run 'nav-pilot list' to see available collections")
 		}
