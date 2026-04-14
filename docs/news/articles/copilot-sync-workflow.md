@@ -1,6 +1,6 @@
 ---
 title: "Automatisk synkronisering av Copilot-tilpasninger"
-date: 2026-04-06
+date: 2026-04-14
 category: nav
 excerpt: "Ny reusable workflow holder agents, instructions, prompts og skills i repoet ditt oppdatert mot navikt/copilot. Åtte linjer YAML, ingen secrets."
 tags:
@@ -73,6 +73,40 @@ Uten denne fila sjekkes alt som finnes i repoet.
 ## Hva om jeg har gjort lokale endringer?
 
 PR-en viser diffen. Du kan merge selektivt, redigere PR-en, eller lukke den. Workflowen tvinger ingenting — den åpner bare PR-er.
+
+Hvis teamet ditt bevisst vedlikeholder egne versjoner av bestemte filer, kan du markere dem som *overrides*. Da hopper sync over dem helt — ingen hashsjekk, ingen PR-diff:
+
+```json
+{
+  "overrides": [
+    ".github/agents/nais.agent.md",
+    ".github/instructions/security.instructions.md"
+  ]
+}
+```
+
+Legg dette i `.github/copilot-sync.json`. Filer i `overrides` vil aldri dukke opp i sync-PR-er.
+
+## Synkroniser mot et annet repo
+
+Du kan synkronisere mot et team-repo i stedet for `navikt/copilot`:
+
+```yaml
+jobs:
+  sync:
+    uses: navikt/copilot/.github/workflows/copilot-customization-sync.yml@main
+    with:
+      source_repo: navikt/my-team-copilot
+    permissions:
+      contents: write
+      pull-requests: write
+```
+
+Dette lar teamet ha et eget sett med Copilot-tilpasninger som synkroniseres ned til alle team-repoene.
+
+## Formatering og whitespace
+
+Sync-workflowen er tolerant for formatforskjeller i markdown-filer (`.md`). Forskjeller i linjeskift (CRLF vs LF), trailing whitespace og antall blanke linjer utløser ikke falske oppdateringer. JSON-filer sjekkes fortsatt byte for byte.
 
 ## Oppdateringer kommer automatisk
 

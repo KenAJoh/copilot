@@ -10,10 +10,11 @@ import (
 
 // syncResult holds the outcome of a sync check for machine-readable output.
 type syncResult struct {
-	UpToDate bool         `json:"up_to_date"`
-	Source   string       `json:"source"`
-	Updates  []syncUpdate `json:"updates,omitempty"`
-	Errors   []string     `json:"errors,omitempty"`
+	UpToDate  bool         `json:"up_to_date"`
+	Source    string       `json:"source"`
+	Updates   []syncUpdate `json:"updates,omitempty"`
+	Errors    []string     `json:"errors,omitempty"`
+	Overrides []string     `json:"overrides,omitempty"`
 }
 
 type syncUpdate struct {
@@ -58,6 +59,31 @@ func cmdSync(scope *InstallScope, ref, sourceRepo string, apply, jsonOutput bool
 		return nil
 	}
 
+	// Read sync config and filter out overridden files
+	cfg, err := readSyncConfig(scope.RootDir)
+	if err != nil {
+		return fmt.Errorf("reading %s: %w", syncConfigPath, err)
+	}
+	overrides := overrideSet(cfg)
+	var filtered []syncFile
+	var overriddenPaths []string
+	for _, sf := range files {
+		key := filepath.ToSlash(filepath.Clean(sf.localPath))
+		if overrides[key] {
+			overriddenPaths = append(overriddenPaths, sf.localPath)
+			continue
+		}
+		filtered = append(filtered, sf)
+	}
+	files = filtered
+
+	if !jsonOutput && len(overriddenPaths) > 0 {
+		for _, p := range overriddenPaths {
+			fmt.Printf("  %s %s (override)\n", dim("⊘"), p)
+		}
+		fmt.Println()
+	}
+
 	// Compare each file against source
 	var updates []syncUpdate
 	var syncErrors []string
@@ -76,10 +102,11 @@ func cmdSync(scope *InstallScope, ref, sourceRepo string, apply, jsonOutput bool
 	}
 
 	result := syncResult{
-		UpToDate: len(updates) == 0 && len(syncErrors) == 0,
-		Source:   src.SHA,
-		Updates:  updates,
-		Errors:   syncErrors,
+		UpToDate:  len(updates) == 0 && len(syncErrors) == 0,
+		Source:    src.SHA,
+		Updates:   updates,
+		Errors:    syncErrors,
+		Overrides: overriddenPaths,
 	}
 
 	if jsonOutput {
@@ -343,11 +370,11 @@ func checkSyncFile(targetDir, sourceDir string, sf syncFile) (*syncUpdate, error
 		return &syncUpdate{Path: sf.localPath, CurrentHash: localHash, SourceHash: sourceHash}, nil
 	}
 
-	localHash, err := fileHash(localFull)
+	localHash, err := normalizedFileHash(localFull)
 	if err != nil {
 		return nil, fmt.Errorf("hashing local: %w", err)
 	}
-	sourceHash, err := fileHash(sourceFull)
+	sourceHash, err := normalizedFileHash(sourceFull)
 	if err != nil {
 		return nil, fmt.Errorf("hashing source: %w", err)
 	}
@@ -360,8 +387,9 @@ func checkSyncFile(targetDir, sourceDir string, sf syncFile) (*syncUpdate, error
 // applySyncUpdate copies a single file/dir from source to target.
 func applySyncUpdate(scope *InstallScope, sourceDir string, u syncUpdate) error {
 	// Source path: for user scope, prepend .github/ to get source location
+	// unless it already has .github/ prefix (e.g. instructions).
 	sp := u.Path
-	if scope.IsUser() {
+	if scope.IsUser() && !strings.HasPrefix(u.Path, ".github/") {
 		sp = filepath.Join(".github", u.Path)
 	}
 	sourceFull := filepath.Join(sourceDir, sp)

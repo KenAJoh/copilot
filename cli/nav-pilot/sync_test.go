@@ -439,6 +439,36 @@ func TestApplySyncUpdate_UserScope_PathRemapping(t *testing.T) {
 	}
 }
 
+func TestApplySyncUpdate_UserScope_InstructionNotDoubled(t *testing.T) {
+	homeDir := t.TempDir()
+	sourceDir := t.TempDir()
+
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        homeDir,
+		SupportedTypes: []string{"agent", "skill", "instruction"},
+	}
+
+	// Source has instruction at .github/instructions/
+	instrRel := filepath.Join(".github", "instructions", "go-nais.instructions.md")
+	os.MkdirAll(filepath.Join(sourceDir, ".github", "instructions"), 0o755)
+	os.WriteFile(filepath.Join(sourceDir, instrRel), []byte("new instruction"), 0o644)
+
+	// Target (user home) also has .github/instructions/ prefix
+	os.MkdirAll(filepath.Join(homeDir, ".github", "instructions"), 0o755)
+	os.WriteFile(filepath.Join(homeDir, instrRel), []byte("old instruction"), 0o644)
+
+	u := syncUpdate{Path: instrRel, CurrentHash: "a", SourceHash: "b"}
+	if err := applySyncUpdate(scope, sourceDir, u); err != nil {
+		t.Fatalf("applySyncUpdate failed (double .github/ prefix?): %v", err)
+	}
+
+	got, _ := os.ReadFile(filepath.Join(homeDir, instrRel))
+	if string(got) != "new instruction" {
+		t.Errorf("instruction not updated, got %q", string(got))
+	}
+}
+
 func TestUpdateScopedStateHashes(t *testing.T) {
 	dir := t.TempDir()
 	scope := ScopeRepo(dir)
@@ -485,5 +515,161 @@ func TestResolveSyncFiles_UserScope_NoState_ReturnsEmpty(t *testing.T) {
 	}
 	if len(files) != 0 {
 		t.Errorf("expected 0 files for user scope without state, got %d", len(files))
+	}
+}
+
+// ─── Override tests ─────────────────────────────────────────────────────────
+
+func TestOverrideSet_FiltersMatchingFiles(t *testing.T) {
+	targetDir := t.TempDir()
+	sourceDir := t.TempDir()
+
+	// Create two files in both target and source with different content
+	agentRel := filepath.Join(".github", "agents", "nais.agent.md")
+	instrRel := filepath.Join(".github", "instructions", "security.instructions.md")
+	for _, dir := range []string{targetDir, sourceDir} {
+		os.MkdirAll(filepath.Join(dir, ".github", "agents"), 0o755)
+		os.MkdirAll(filepath.Join(dir, ".github", "instructions"), 0o755)
+	}
+	os.WriteFile(filepath.Join(targetDir, agentRel), []byte("local agent"), 0o644)
+	os.WriteFile(filepath.Join(sourceDir, agentRel), []byte("source agent"), 0o644)
+	os.WriteFile(filepath.Join(targetDir, instrRel), []byte("local instr"), 0o644)
+	os.WriteFile(filepath.Join(sourceDir, instrRel), []byte("source instr"), 0o644)
+
+	// Mark agent as overridden
+	cfg := &SyncConfig{Overrides: []string{agentRel}}
+	overrides := overrideSet(cfg)
+
+	files := []syncFile{
+		{localPath: agentRel, sourcePath: agentRel},
+		{localPath: instrRel, sourcePath: instrRel},
+	}
+
+	var filtered []syncFile
+	for _, sf := range files {
+		if !overrides[sf.localPath] {
+			filtered = append(filtered, sf)
+		}
+	}
+
+	if len(filtered) != 1 {
+		t.Fatalf("filtered count = %d, want 1", len(filtered))
+	}
+	if filtered[0].localPath != instrRel {
+		t.Errorf("expected instruction file, got %q", filtered[0].localPath)
+	}
+}
+
+func TestOverrideSet_DirPath(t *testing.T) {
+	cfg := &SyncConfig{Overrides: []string{".github/skills/api-design/"}}
+	overrides := overrideSet(cfg)
+
+	files := []syncFile{
+		{localPath: ".github/skills/api-design/", sourcePath: ".github/skills/api-design/", isDir: true},
+		{localPath: ".github/skills/other/", sourcePath: ".github/skills/other/", isDir: true},
+	}
+
+	var filtered []syncFile
+	for _, sf := range files {
+		if !overrides[sf.localPath] {
+			filtered = append(filtered, sf)
+		}
+	}
+
+	if len(filtered) != 1 {
+		t.Fatalf("filtered count = %d, want 1", len(filtered))
+	}
+	if filtered[0].localPath != ".github/skills/other/" {
+		t.Errorf("expected other skill, got %q", filtered[0].localPath)
+	}
+}
+
+func TestSyncResultJSON_WithOverrides(t *testing.T) {
+	result := syncResult{
+		UpToDate:  true,
+		Source:    "abc1234",
+		Overrides: []string{".github/agents/custom.agent.md"},
+	}
+	data, err := json.Marshal(result)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got syncResult
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Overrides) != 1 {
+		t.Errorf("overrides count = %d, want 1", len(got.Overrides))
+	}
+	if got.Overrides[0] != ".github/agents/custom.agent.md" {
+		t.Errorf("overrides[0] = %q", got.Overrides[0])
+	}
+}
+
+// ─── Formatting-tolerant comparison tests ───────────────────────────────────
+
+func TestCheckSyncFile_FormattingTolerant_MD(t *testing.T) {
+	targetDir := t.TempDir()
+	sourceDir := t.TempDir()
+
+	rel := filepath.Join(".github", "agents", "x.agent.md")
+	os.MkdirAll(filepath.Join(targetDir, ".github", "agents"), 0o755)
+	os.MkdirAll(filepath.Join(sourceDir, ".github", "agents"), 0o755)
+
+	// Same content but different formatting (trailing whitespace, CRLF)
+	os.WriteFile(filepath.Join(targetDir, rel), []byte("# Agent\nDo stuff\n"), 0o644)
+	os.WriteFile(filepath.Join(sourceDir, rel), []byte("# Agent  \r\nDo stuff   \r\n"), 0o644)
+
+	sf := syncFile{localPath: rel, sourcePath: rel}
+	u, err := checkSyncFile(targetDir, sourceDir, sf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u != nil {
+		t.Error("expected no update for formatting-only difference in .md file")
+	}
+}
+
+func TestCheckSyncFile_RealDiff_MD(t *testing.T) {
+	targetDir := t.TempDir()
+	sourceDir := t.TempDir()
+
+	rel := filepath.Join(".github", "agents", "x.agent.md")
+	os.MkdirAll(filepath.Join(targetDir, ".github", "agents"), 0o755)
+	os.MkdirAll(filepath.Join(sourceDir, ".github", "agents"), 0o755)
+
+	// Actual content difference
+	os.WriteFile(filepath.Join(targetDir, rel), []byte("# Agent v1\nOld content\n"), 0o644)
+	os.WriteFile(filepath.Join(sourceDir, rel), []byte("# Agent v2\nNew content\n"), 0o644)
+
+	sf := syncFile{localPath: rel, sourcePath: rel}
+	u, err := checkSyncFile(targetDir, sourceDir, sf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u == nil {
+		t.Error("expected update for real content difference")
+	}
+}
+
+func TestCheckSyncFile_JSON_ByteExact(t *testing.T) {
+	targetDir := t.TempDir()
+	sourceDir := t.TempDir()
+
+	rel := filepath.Join(".github", "agents", "x.metadata.json")
+	os.MkdirAll(filepath.Join(targetDir, ".github", "agents"), 0o755)
+	os.MkdirAll(filepath.Join(sourceDir, ".github", "agents"), 0o755)
+
+	// JSON with whitespace difference — should still trigger update (byte-exact)
+	os.WriteFile(filepath.Join(targetDir, rel), []byte(`{"key":"value"}`), 0o644)
+	os.WriteFile(filepath.Join(sourceDir, rel), []byte(`{"key": "value"}`), 0o644)
+
+	sf := syncFile{localPath: rel, sourcePath: rel}
+	u, err := checkSyncFile(targetDir, sourceDir, sf)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u == nil {
+		t.Error("expected update for JSON whitespace difference (byte-exact)")
 	}
 }

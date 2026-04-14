@@ -11,6 +11,7 @@ nav-pilot sync              # Check for updates (exit 1 if available)
 nav-pilot sync --apply      # Apply updates directly
 nav-pilot sync --json       # Machine-readable output
 nav-pilot sync --user       # Sync user-scope install (~/.copilot/)
+nav-pilot sync --source navikt/my-team-copilot  # Sync from different source repo
 ```
 
 ## Automated Sync (GitHub Actions)
@@ -31,6 +32,21 @@ jobs:
       pull-requests: write
 ```
 
+### Sync from a team repo
+
+To sync from a different source repository instead of `navikt/copilot`:
+
+```yaml
+jobs:
+  sync:
+    uses: navikt/copilot/.github/workflows/copilot-customization-sync.yml@main
+    with:
+      source_repo: navikt/my-team-copilot
+    permissions:
+      contents: write
+      pull-requests: write
+```
+
 ## How Detection Works
 
 **State-based repos** (used `nav-pilot install`): The state file (`.github/.nav-pilot-state.json`) tracks exactly which files were installed.
@@ -44,6 +60,33 @@ jobs:
 - `.github/skills/*/` (entire directories)
 
 > `AGENTS.md` and `.github/copilot-instructions.md` are never synced — they are always repo-specific.
+
+## Overrides
+
+Teams that intentionally maintain their own versions of specific files can mark them as overrides. Overridden files are skipped during sync — no hash comparison, no PR diff.
+
+Create `.github/copilot-sync.json` in your repo:
+
+```json
+{
+  "overrides": [
+    ".github/agents/nais.agent.md",
+    ".github/instructions/security.instructions.md",
+    ".github/skills/api-design/"
+  ]
+}
+```
+
+This works with both state-based and auto-detected repos.
+
+## Formatting Tolerance
+
+Markdown files (`.md`) are compared with formatting tolerance. The following differences are ignored:
+- Line endings: CRLF vs LF
+- Trailing whitespace per line
+- Consecutive blank lines (collapsed to single blank line)
+
+This means teams can run their own formatters (e.g. Prettier with different settings) without getting false-positive update PRs. JSON files (`.json`) are still compared byte-for-byte.
 
 ## Staleness Tracking
 

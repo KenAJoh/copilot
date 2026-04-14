@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func fileHash(path string) (string, error) {
@@ -23,6 +25,47 @@ func fileHash(path string) (string, error) {
 	return hex.EncodeToString(h.Sum(nil))[:16], nil
 }
 
+// normalizeMarkdown normalizes markdown content for comparison:
+//   - CRLF → LF
+//   - Trim trailing whitespace per line
+//   - Collapse consecutive blank lines to a single blank line
+func normalizeMarkdown(data []byte) []byte {
+	// CRLF → LF
+	data = bytes.ReplaceAll(data, []byte("\r\n"), []byte("\n"))
+
+	lines := bytes.Split(data, []byte("\n"))
+	var out [][]byte
+	prevBlank := false
+	for _, line := range lines {
+		trimmed := bytes.TrimRight(line, " \t")
+		blank := len(trimmed) == 0
+		if blank && prevBlank {
+			continue
+		}
+		out = append(out, trimmed)
+		prevBlank = blank
+	}
+	return bytes.Join(out, []byte("\n"))
+}
+
+// normalizedFileHash hashes a file after normalizing markdown content.
+// For non-.md files, falls back to raw fileHash.
+func normalizedFileHash(path string) (string, error) {
+	if !strings.HasSuffix(strings.ToLower(path), ".md") {
+		return fileHash(path)
+	}
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	normalized := normalizeMarkdown(data)
+	h := sha256.New()
+	h.Write(normalized)
+	return hex.EncodeToString(h.Sum(nil))[:16], nil
+}
+
+// dirHash hashes all files in a directory recursively.
+// Markdown files (.md) are normalized before hashing for formatting tolerance.
 func dirHash(dir string) (string, error) {
 	h := sha256.New()
 	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
@@ -31,13 +74,22 @@ func dirHash(dir string) (string, error) {
 		}
 		rel, _ := filepath.Rel(dir, path)
 		h.Write([]byte(rel))
-		f, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-		if _, err := io.Copy(h, f); err != nil {
-			return err
+
+		if strings.HasSuffix(strings.ToLower(rel), ".md") {
+			data, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			h.Write(normalizeMarkdown(data))
+		} else {
+			f, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			if _, err := io.Copy(h, f); err != nil {
+				return err
+			}
 		}
 		return nil
 	})
