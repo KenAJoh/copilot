@@ -77,6 +77,14 @@ After installing, use @nav-pilot in GitHub Copilot Chat.
 // run parses args and dispatches to the appropriate command.
 // It returns an error instead of calling os.Exit, making it testable.
 func run(args []string) error {
+	// Self-check: warn if nav-pilot binary is outdated (fast, cached)
+	if version != "dev" {
+		if latest := checkStaleness(version); latest != "" {
+			fmt.Fprintf(os.Stderr, "%s nav-pilot %s available (current: %s) — run %s to upgrade\n",
+				yellow("⚠"), latest, version, bold("nav-pilot update"))
+		}
+	}
+
 	if len(args) < 1 {
 		if isInteractive() {
 			// Allow interactive mode if in a git repo or if user-scope install exists
