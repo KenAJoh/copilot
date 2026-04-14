@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-13T14:08:40.300Z",
+  "generatedAt": "2026-04-14T06:24:04.641Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -181,7 +181,7 @@
       "domain": "general",
       "filePath": ".github/agents/forfatter.agent.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md",
-      "contentHash": "acc16aca57ed5f3056dcd8a53260ffc17e1b599c92085cb444cccd9e2afa77c9",
+      "contentHash": "42eb060eeeaef4cfaabc6846f120ea079e8660ee9e7ec1d0de5adf133945755a",
       "installUrl": "/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fforfatter.agent.md",
       "insidersInstallUrl": "/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fforfatter.agent.md",
       "tools": [
@@ -314,7 +314,7 @@
       "domain": "general",
       "filePath": ".github/agents/nav-pilot.agent.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/nav-pilot.agent.md",
-      "contentHash": "a27c3d1ffee76b0a02742d9665cdafe0b366f9bf889c903f83fa2cd4b71ccc83",
+      "contentHash": "3eac438b61ab279a77bfeb3213b6547028e0c2a25b8d99fc7fff59af369645c2",
       "installUrl": "/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fnav-pilot.agent.md",
       "insidersInstallUrl": "/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fnav-pilot.agent.md",
       "tools": [
@@ -497,7 +497,7 @@
       "domain": "general",
       "filePath": ".github/agents/security-champion.agent.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/security-champion.agent.md",
-      "contentHash": "d3fd3160fc2152c9e5209f2dccb538582c238b44d036c16e84739b897b6e7265",
+      "contentHash": "3081dcf0ddde695d7f92488ddffd55bc785b8f0f94565449ccdf17d609248846",
       "installUrl": "/install/agent?url=vscode%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fsecurity-champion.agent.md",
       "insidersInstallUrl": "/install/agent?url=vscode-insiders%3Achat-agent%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fagents%2Fsecurity-champion.agent.md",
       "tools": [
@@ -545,7 +545,7 @@
       "domain": "frontend",
       "filePath": ".github/instructions/accessibility.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/accessibility.instructions.md",
-      "contentHash": "aba24163f0a00c7565bdb5b34cf294edd7a7cef20f02cefd9ad5f8cb0d2149fa",
+      "contentHash": "3f682e93474bfdd8da4c2ff34ab126fa0972d5f5c58853db514f77fc4a7ab4cb",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Faccessibility.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Faccessibility.instructions.md",
       "applyTo": "src/**/*.{tsx,jsx}",
@@ -560,7 +560,7 @@
       "domain": "backend",
       "filePath": ".github/instructions/database.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/database.instructions.md",
-      "contentHash": "aa0f7bd2de1e3d6495cb15a75e1e652f76fc1e0f49ee98dae032b7b50fd922ad",
+      "contentHash": "a45c76e4a947a91fedc27365a7151a56a5c3618aa1ed8d7bc53585512cba3abf",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "applyTo": "**/db/migration/**/*.sql",
@@ -598,6 +598,24 @@
       "examples": ["Lag en GitHub Actions workflow som bygger og deployer til Nais"]
     },
     {
+      "id": "golang",
+      "name": "Go on NAIS",
+      "description": "Go-mønstre for Nav-tjenester på Nais: pgx, sqlc, slog, stdlib HTTP og Chainguard Docker",
+      "type": "instruction",
+      "domain": "backend",
+      "filePath": ".github/instructions/golang.instructions.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/golang.instructions.md",
+      "contentHash": "68b80af9d00ccf92fb29494cebe1b8aa824c27148b274b900704099591b41f60",
+      "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fgolang.instructions.md",
+      "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fgolang.instructions.md",
+      "applyTo": "**/*.go",
+      "tags": ["go", "nais", "pgx", "sqlc", "slog"],
+      "examples": [
+        "Lag en Go HTTP-tjeneste med pgx og sqlc for dp-inntekt",
+        "Sett opp slog med strukturert logging og OpenTelemetry-integrasjon"
+      ]
+    },
+    {
       "id": "kotlin-ktor",
       "name": "Kotlin/Ktor Development",
       "description": "ApplicationBuilder pattern, sealed classes, kotliquery/HikariCP, Rapids & Rivers.",
@@ -605,7 +623,7 @@
       "domain": "backend",
       "filePath": ".github/instructions/kotlin-ktor.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/kotlin-ktor.instructions.md",
-      "contentHash": "32ca1c5ff40db124ff81e56977aff2491cb80031c6730cfb3b89e97bd78c59bf",
+      "contentHash": "7eaa6e7c6e5cfe25df006c33c5273f27357ae4c851bd1de1729a7dd9226b5d21",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "applyTo": "**/*.kt",
@@ -620,7 +638,7 @@
       "domain": "backend",
       "filePath": ".github/instructions/kotlin-spring.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/kotlin-spring.instructions.md",
-      "contentHash": "7b7d55ac22e314cc2f0644fa66c112df466438cac8c7122cf40acd9eaebf293c",
+      "contentHash": "75458689164c6c1b386b348ccd4b76cbca0c47339318ba8ac4055770d85a98c7",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-spring.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-spring.instructions.md",
       "applyTo": "**/*.kt",
@@ -635,12 +653,48 @@
       "domain": "frontend",
       "filePath": ".github/instructions/nextjs-aksel.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/nextjs-aksel.instructions.md",
-      "contentHash": "3fe8feeb1459e76011cc94937a62f34dcdbf1b807f4942875a207bc95e69718c",
+      "contentHash": "6aa56ec320c72809636122ce2f4d3d7f72491881592739554ac5ba258fe968ca",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fnextjs-aksel.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fnextjs-aksel.instructions.md",
       "applyTo": "src/**/*.{tsx,ts}",
       "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
       "examples": ["Lag en responsiv søknadsoversikt med Aksel Box og VStack"]
+    },
+    {
+      "id": "performance",
+      "name": "Performance Optimization",
+      "description": "Core Web Vitals, Next.js-ytelse, bildeoptimalisering og bundle-analyse for Nav-applikasjoner",
+      "type": "instruction",
+      "domain": "frontend",
+      "filePath": ".github/instructions/performance.instructions.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/performance.instructions.md",
+      "contentHash": "23b58fe157ef8f0e5fabceab2ff5cd11da0467e6be552d777d3b0bf89f5b44e4",
+      "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fperformance.instructions.md",
+      "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fperformance.instructions.md",
+      "applyTo": "src/**/*.{tsx,ts}",
+      "tags": ["performance", "nextjs", "typescript", "core-web-vitals"],
+      "examples": [
+        "Optimaliser lasting av bilder og fonter i Next.js-appen",
+        "Analyser og reduser bundle-størrelsen for dp-soknad"
+      ]
+    },
+    {
+      "id": "security-owasp",
+      "name": "OWASP Top 10:2025",
+      "description": "OWASP Top 10:2025 kodenivå-mønstre for Kotlin og Go — injeksjon, tilgangskontroll, kryptografi og logging",
+      "type": "instruction",
+      "domain": "auth",
+      "filePath": ".github/instructions/security-owasp.instructions.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/security-owasp.instructions.md",
+      "contentHash": "6d2de01195174566927e5eb71149deada4b6e4029f5b7195183dfef03a8f6c36",
+      "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fsecurity-owasp.instructions.md",
+      "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fsecurity-owasp.instructions.md",
+      "applyTo": "**/*.{kt,go}",
+      "tags": ["security", "owasp", "kotlin", "go"],
+      "examples": [
+        "Forebygg SQL- og kommandoinjeksjon med parameteriserte spørringer og trygg inputvalidering",
+        "Verifiser tilgangskontroll eksplisitt og unngå logging av hemmeligheter"
+      ]
     },
     {
       "id": "testing-kotlin",
@@ -699,6 +753,19 @@
       "examples": ["#aksel-component Lag en varslingsbanner med ikon og lukkeknapp"]
     },
     {
+      "id": "golang-service",
+      "name": "golang-service",
+      "description": "Scaffold ein Go HTTP-teneste med NAIS-mønster, pgx, sqlc og slog",
+      "type": "prompt",
+      "domain": "general",
+      "filePath": ".github/prompts/golang-service.prompt.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/golang-service.prompt.md",
+      "contentHash": "b3c85da75dc6b19cb733ca238b626af4234c430dc695165db8ed82bce2eea560",
+      "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fgolang-service.prompt.md",
+      "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fgolang-service.prompt.md",
+      "invocation": "#golang-service"
+    },
+    {
       "id": "kafka-topic",
       "name": "kafka-topic",
       "description": "Legg til Kafka-topic-konfigurasjon i Nais-manifest og lag Rapids & Rivers event handler",
@@ -712,6 +779,19 @@
       "invocation": "#kafka-topic",
       "tags": ["nais", "kafka", "rapids-rivers", "infrastructure"],
       "examples": ["#kafka-topic Legg til et topic for sykmeldingshendelser"]
+    },
+    {
+      "id": "ktor-endpoint",
+      "name": "ktor-endpoint",
+      "description": "Generer ein Ktor-rute med autentisering, validering og feilhåndtering",
+      "type": "prompt",
+      "domain": "general",
+      "filePath": ".github/prompts/ktor-endpoint.prompt.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/ktor-endpoint.prompt.md",
+      "contentHash": "81e78e842e5b973b53b9e487f2f95acf269221c5ab67dc4c30f85a7212471a22",
+      "installUrl": "/install/prompt?url=vscode%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fktor-endpoint.prompt.md",
+      "insidersInstallUrl": "/install/prompt?url=vscode-insiders%3Achat-prompt%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Fprompts%2Fktor-endpoint.prompt.md",
+      "invocation": "#ktor-endpoint"
     },
     {
       "id": "nais-manifest",
@@ -853,6 +933,29 @@
       "examples": ["Lag en Flyway-migrasjon som legger til en indeks på fødselsnummer"]
     },
     {
+      "id": "java-to-kotlin",
+      "name": "java-to-kotlin",
+      "description": "Trinnvis Java-til-Kotlin-migrering med rammeverk-bevisste transformasjoner for Spring, Ktor og Nav-mønstre",
+      "type": "skill",
+      "domain": "backend",
+      "filePath": ".github/skills/java-to-kotlin/SKILL.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/java-to-kotlin/SKILL.md",
+      "contentHash": "90e83d6f2020164f14ee0744f17d140f54ee0c37e35d07841b316027b571d8e0",
+      "installUrl": null,
+      "insidersInstallUrl": null,
+      "tags": ["kotlin", "java", "migration", "refactoring", "ktor", "spring"],
+      "examples": [
+        {
+          "prompt": "Konverter UserService.java til idiomatic Kotlin med Ktor-mønstre",
+          "scenario": "Migrering av enkeltfil"
+        },
+        {
+          "prompt": "Lag en plan for å migrere dp-arena fra Java til Kotlin",
+          "scenario": "Fullstendig migrasjonsplanlegging"
+        }
+      ]
+    },
+    {
       "id": "kotlin-app-config",
       "name": "kotlin-app-config",
       "description": "Sealed class-konfigurasjon for Kotlin-applikasjoner med miljøspesifikke innstillinger",
@@ -865,6 +968,29 @@
       "insidersInstallUrl": null,
       "tags": ["kotlin", "configuration", "sealed-class", "environment"],
       "examples": ["Sett opp miljøkonfigurasjon med sealed classes i fp-sak for dev, prod og local"]
+    },
+    {
+      "id": "ktor-scaffold",
+      "name": "ktor-scaffold",
+      "description": "Scaffold eit nytt Ktor-prosjekt med Kotliquery, Flyway, Koin og Nais-konfigurasjon",
+      "type": "skill",
+      "domain": "backend",
+      "filePath": ".github/skills/ktor-scaffold/SKILL.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/ktor-scaffold/SKILL.md",
+      "contentHash": "5b0d551ada08e15686332b05a42a2a5bfecdd0f1790811f1d2c24e7ca5256e36",
+      "installUrl": null,
+      "insidersInstallUrl": null,
+      "tags": ["kotlin", "ktor", "scaffold", "nais", "kotliquery"],
+      "examples": [
+        {
+          "prompt": "Scaffold en ny Ktor-tjeneste for dp-behandling med database og Kafka",
+          "scenario": "Ny tjeneste med full stack"
+        },
+        {
+          "prompt": "Lag boilerplate for en Ktor API med Kotliquery og Flyway",
+          "scenario": "API-tjeneste med database"
+        }
+      ]
     },
     {
       "id": "nav-architecture-review",
@@ -1190,6 +1316,35 @@
         {
           "scenario": "Prosjektstruktur",
           "prompt": "Generer prosjektstruktur for ny backend-tjeneste"
+        }
+      ]
+    },
+    {
+      "id": "threat-model",
+      "name": "threat-model",
+      "description": "STRIDE-A trusselmodellering for Nais-mikrotjenester — dataflyt, tillitsgrenser og risikovurdering",
+      "type": "skill",
+      "domain": "auth",
+      "filePath": ".github/skills/threat-model/SKILL.md",
+      "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/threat-model/SKILL.md",
+      "contentHash": "7e5b1c300433363fa0ff7163ca92af6b59624399b3a64d6197d3571b84ee615d",
+      "installUrl": null,
+      "insidersInstallUrl": null,
+      "tags": ["threat-modeling", "stride", "security", "nais", "architecture"],
+      "examples": [
+        {
+          "prompt": "Lag en trusselmodell for dp-soknad som behandler søknader om dagpenger",
+          "scenario": "Trusselmodellering av ny tjeneste"
+        },
+        {
+          "prompt": "Analyser trusselbildet for API-et som eksponeres mot eksterne partnere",
+          "scenario": "Trusselmodellering av ekstern integrasjon"
+        }
+      ],
+      "references": [
+        {
+          "path": "references/nav-mitigations.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/threat-model/references/nav-mitigations.md"
         }
       ]
     },

@@ -1,0 +1,10 @@
+{
+  "displayName": "Performance Optimization",
+  "description": "Core Web Vitals, Next.js-ytelse, bildeoptimalisering og bundle-analyse for Nav-applikasjoner",
+  "domain": "frontend",
+  "tags": ["performance", "nextjs", "typescript", "core-web-vitals"],
+  "examples": [
+    "Optimaliser lasting av bilder og fonter i Next.js-appen",
+    "Analyser og reduser bundle-størrelsen for dp-soknad"
+  ]
+}

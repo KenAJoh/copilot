@@ -18,10 +18,13 @@
     "aksel-spacing",
     "api-design",
     "flyway-migration",
+    "java-to-kotlin",
     "kotlin-app-config",
+    "ktor-scaffold",
     "observability-setup",
     "playwright-testing",
     "security-review",
+    "threat-model",
     "tokenx-auth",
     "web-design-reviewer",
     "nav-plan",
@@ -32,7 +35,10 @@
   "instructions": [
     "kotlin-ktor",
     "kotlin-spring",
+    "golang",
     "nextjs-aksel",
+    "performance",
+    "security-owasp",
     "testing",
     "testing-kotlin",
     "testing-typescript",
@@ -42,10 +48,12 @@
     "database"
   ],
   "prompts": [
+    "ktor-endpoint",
     "spring-boot-endpoint",
     "kafka-topic",
     "nais-manifest",
     "aksel-component",
-    "nextjs-api-route"
+    "nextjs-api-route",
+    "golang-service"
   ]
 }
