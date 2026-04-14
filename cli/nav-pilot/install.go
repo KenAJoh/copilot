@@ -8,31 +8,37 @@ import (
 )
 
 type installResult struct {
-	Installed int
-	Skipped   int
-	Conflicts int
-	Files     []InstalledFile
+	Installed   int
+	Skipped     int
+	Conflicts   int
+	Unsupported []string
+	Files       []InstalledFile
 }
 
-func installItems(sourceDir, targetDir string, manifest *Manifest, dryRun, force bool) (*installResult, error) {
+func installItems(sourceDir string, scope *InstallScope, manifest *Manifest, dryRun, force bool) (*installResult, error) {
 	result := &installResult{}
 
 	for _, group := range []struct {
 		label   string
 		names   []string
-		install func(string, string, string, bool, bool, *installResult) error
+		itemType string
+		install func(string, *InstallScope, string, bool, bool, *installResult) error
 	}{
-		{"Agents", manifest.Agents, installAgent},
-		{"Skills", manifest.Skills, installSkill},
-		{"Instructions", manifest.Instructions, installInstruction},
-		{"Prompts", manifest.Prompts, installPrompt},
+		{"Agents", manifest.Agents, "agent", installAgent},
+		{"Skills", manifest.Skills, "skill", installSkill},
+		{"Instructions", manifest.Instructions, "instruction", installInstruction},
+		{"Prompts", manifest.Prompts, "prompt", installPrompt},
 	} {
 		if len(group.names) == 0 {
 			continue
 		}
+		if !scope.SupportsType(group.itemType) {
+			result.Unsupported = append(result.Unsupported, fmt.Sprintf("%d %s", len(group.names), group.label))
+			continue
+		}
 		fmt.Println(bold(fmt.Sprintf("%s (%d):", group.label, len(group.names))))
 		for _, name := range group.names {
-			if err := group.install(sourceDir, targetDir, name, dryRun, force, result); err != nil {
+			if err := group.install(sourceDir, scope, name, dryRun, force, result); err != nil {
 				return result, err
 			}
 		}
@@ -42,68 +48,82 @@ func installItems(sourceDir, targetDir string, manifest *Manifest, dryRun, force
 	return result, nil
 }
 
-func installAgent(sourceDir, targetDir, name string, dryRun, force bool, result *installResult) error {
+// installSingleFile handles the common install pattern for single-file artifacts
+// (agents, instructions). Returns true if the file was actually written to disk.
+func installSingleFile(sourceDir string, scope *InstallScope, dir, extension, label, name string, dryRun, force bool, result *installResult) (bool, error) {
 	if err := validateName(name); err != nil {
-		return fmt.Errorf("invalid agent name: %w", err)
+		return false, fmt.Errorf("invalid %s name: %w", strings.ToLower(label), err)
 	}
-	srcFile := filepath.Join(sourceDir, ".github", "agents", name+".agent.md")
-	srcMeta := filepath.Join(sourceDir, ".github", "agents", name+".metadata.json")
-	dstFile := filepath.Join(targetDir, ".github", "agents", name+".agent.md")
-	dstMeta := filepath.Join(targetDir, ".github", "agents", name+".metadata.json")
+	fileName := name + extension
+	srcFile := filepath.Join(sourceDir, ".github", dir, fileName)
+	dstFile := scope.DstPath(dir, fileName)
 
 	if _, err := os.Stat(srcFile); os.IsNotExist(err) {
-		fmt.Printf("  %s Agent not found: %s\n", yellow("⚠"), name)
+		fmt.Printf("  %s %s not found: %s\n", yellow("⚠"), label, name)
 		result.Skipped++
-		return nil
+		return false, nil
 	}
 
 	if c, err := checkConflict(dstFile, srcFile, false); err != nil {
-		return err
+		return false, err
 	} else if c != nil && !force {
 		fmt.Printf("  %s %s (exists, differs — use --force to overwrite)\n", yellow("⚠"), name)
 		result.Conflicts++
-		return nil
+		return false, nil
 	}
 
-	relPath := filepath.Join(".github", "agents", name+".agent.md")
+	relPath := scope.RelPath(dir, fileName)
 	if dryRun {
 		fmt.Printf("  %s %s\n", dim("→"), relPath)
 		result.Installed++
-		return nil
+		return false, nil
 	}
 
 	if err := copyFile(srcFile, dstFile); err != nil {
-		return fmt.Errorf("copying agent %s: %w", name, err)
+		return false, fmt.Errorf("copying %s %s: %w", strings.ToLower(label), name, err)
 	}
 	hash, err := fileHash(dstFile)
 	if err != nil {
-		return fmt.Errorf("hashing installed agent %s: %w", name, err)
+		return false, fmt.Errorf("hashing installed %s %s: %w", strings.ToLower(label), name, err)
 	}
 	result.Files = append(result.Files, InstalledFile{Path: relPath, Hash: hash})
 
-	if _, err := os.Stat(srcMeta); err == nil {
-		if err := copyFile(srcMeta, dstMeta); err != nil {
-			return fmt.Errorf("copying agent metadata %s: %w", name, err)
-		}
-		metaRel := filepath.Join(".github", "agents", name+".metadata.json")
-		metaHash, err := fileHash(dstMeta)
-		if err != nil {
-			return fmt.Errorf("hashing agent metadata %s: %w", name, err)
-		}
-		result.Files = append(result.Files, InstalledFile{Path: metaRel, Hash: metaHash})
-	}
-
 	fmt.Printf("  %s %s\n", green("✓"), name)
 	result.Installed++
+	return true, nil
+}
+
+func installAgent(sourceDir string, scope *InstallScope, name string, dryRun, force bool, result *installResult) error {
+	written, err := installSingleFile(sourceDir, scope, "agents", ".agent.md", "Agent", name, dryRun, force, result)
+	if err != nil || !written {
+		return err
+	}
+
+	// Copy metadata if the scope supports it
+	if scope.ShouldInstallMetadata() {
+		srcMeta := filepath.Join(sourceDir, ".github", "agents", name+".metadata.json")
+		dstMeta := scope.DstPath("agents", name+".metadata.json")
+		if _, err := os.Stat(srcMeta); err == nil {
+			if err := copyFile(srcMeta, dstMeta); err != nil {
+				return fmt.Errorf("copying agent metadata %s: %w", name, err)
+			}
+			metaRel := scope.RelPath("agents", name+".metadata.json")
+			metaHash, err := fileHash(dstMeta)
+			if err != nil {
+				return fmt.Errorf("hashing agent metadata %s: %w", name, err)
+			}
+			result.Files = append(result.Files, InstalledFile{Path: metaRel, Hash: metaHash})
+		}
+	}
 	return nil
 }
 
-func installSkill(sourceDir, targetDir, name string, dryRun, force bool, result *installResult) error {
+func installSkill(sourceDir string, scope *InstallScope, name string, dryRun, force bool, result *installResult) error {
 	if err := validateName(name); err != nil {
 		return fmt.Errorf("invalid skill name: %w", err)
 	}
 	srcDir := filepath.Join(sourceDir, ".github", "skills", name)
-	dstDir := filepath.Join(targetDir, ".github", "skills", name)
+	dstDir := scope.DstPath("skills", name)
 
 	if _, err := os.Stat(srcDir); os.IsNotExist(err) {
 		fmt.Printf("  %s Skill not found: %s\n", yellow("⚠"), name)
@@ -119,7 +139,7 @@ func installSkill(sourceDir, targetDir, name string, dryRun, force bool, result 
 		return nil
 	}
 
-	relPath := filepath.Join(".github", "skills", name) + "/"
+	relPath := scope.RelPath("skills", name) + "/"
 	if dryRun {
 		refCount := countDirFiles(filepath.Join(srcDir, "references"))
 		extra := ""
@@ -146,49 +166,12 @@ func installSkill(sourceDir, targetDir, name string, dryRun, force bool, result 
 	return nil
 }
 
-func installInstruction(sourceDir, targetDir, name string, dryRun, force bool, result *installResult) error {
-	if err := validateName(name); err != nil {
-		return fmt.Errorf("invalid instruction name: %w", err)
-	}
-	srcFile := filepath.Join(sourceDir, ".github", "instructions", name+".instructions.md")
-	dstFile := filepath.Join(targetDir, ".github", "instructions", name+".instructions.md")
-
-	if _, err := os.Stat(srcFile); os.IsNotExist(err) {
-		fmt.Printf("  %s Instruction not found: %s\n", yellow("⚠"), name)
-		result.Skipped++
-		return nil
-	}
-
-	if c, err := checkConflict(dstFile, srcFile, false); err != nil {
-		return err
-	} else if c != nil && !force {
-		fmt.Printf("  %s %s (exists, differs — use --force to overwrite)\n", yellow("⚠"), name)
-		result.Conflicts++
-		return nil
-	}
-
-	relPath := filepath.Join(".github", "instructions", name+".instructions.md")
-	if dryRun {
-		fmt.Printf("  %s %s\n", dim("→"), relPath)
-		result.Installed++
-		return nil
-	}
-
-	if err := copyFile(srcFile, dstFile); err != nil {
-		return fmt.Errorf("copying instruction %s: %w", name, err)
-	}
-	hash, err := fileHash(dstFile)
-	if err != nil {
-		return fmt.Errorf("hashing installed instruction %s: %w", name, err)
-	}
-	result.Files = append(result.Files, InstalledFile{Path: relPath, Hash: hash})
-
-	fmt.Printf("  %s %s\n", green("✓"), name)
-	result.Installed++
-	return nil
+func installInstruction(sourceDir string, scope *InstallScope, name string, dryRun, force bool, result *installResult) error {
+	_, err := installSingleFile(sourceDir, scope, "instructions", ".instructions.md", "Instruction", name, dryRun, force, result)
+	return err
 }
 
-func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result *installResult) error {
+func installPrompt(sourceDir string, scope *InstallScope, name string, dryRun, force bool, result *installResult) error {
 	if err := validateName(name); err != nil {
 		return fmt.Errorf("invalid prompt name: %w", err)
 	}
@@ -197,7 +180,7 @@ func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result
 
 	// Try directory first, then flat file
 	if info, err := os.Stat(srcDir); err == nil && info.IsDir() {
-		dstDir := filepath.Join(targetDir, ".github", "prompts", name)
+		dstDir := scope.DstPath("prompts", name)
 
 		if c, err := checkConflict(dstDir, srcDir, true); err != nil {
 			return err
@@ -207,7 +190,7 @@ func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result
 			return nil
 		}
 
-		relPath := filepath.Join(".github", "prompts", name) + "/"
+		relPath := scope.RelPath("prompts", name) + "/"
 		if dryRun {
 			fmt.Printf("  %s %s\n", dim("→"), relPath)
 			result.Installed++
@@ -228,7 +211,7 @@ func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result
 	}
 
 	// Flat file
-	dstFile := filepath.Join(targetDir, ".github", "prompts", name+".prompt.md")
+	dstFile := scope.DstPath("prompts", name+".prompt.md")
 
 	if _, err := os.Stat(srcFile); os.IsNotExist(err) {
 		fmt.Printf("  %s Prompt not found: %s\n", yellow("⚠"), name)
@@ -244,7 +227,7 @@ func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result
 		return nil
 	}
 
-	relPath := filepath.Join(".github", "prompts", name+".prompt.md")
+	relPath := scope.RelPath("prompts", name+".prompt.md")
 	if dryRun {
 		fmt.Printf("  %s %s\n", dim("→"), relPath)
 		result.Installed++
@@ -262,17 +245,6 @@ func installPrompt(sourceDir, targetDir, name string, dryRun, force bool, result
 	fmt.Printf("  %s %s\n", green("✓"), name)
 	result.Installed++
 	return nil
-}
-
-// removeEmptyGitHubDirs cleans up empty .github subdirectories after uninstall.
-func removeEmptyGitHubDirs(targetDir string) {
-	for _, sub := range []string{"agents", "skills", "instructions", "prompts"} {
-		dir := filepath.Join(targetDir, ".github", sub)
-		entries, err := os.ReadDir(dir)
-		if err == nil && len(entries) == 0 {
-			os.Remove(dir)
-		}
-	}
 }
 
 // ─── Commands ───────────────────────────────────────────────────────────────
@@ -383,10 +355,10 @@ func listAvailableItems(sourceDir string) error {
 	return nil
 }
 
-func cmdInstall(collection, targetDir, ref, sourceRepo string, dryRun, force bool) error {
-	if !dryRun {
-		if _, err := os.Stat(filepath.Join(targetDir, ".git")); os.IsNotExist(err) {
-			return fmt.Errorf("target %q does not appear to be a git repository (no .git directory)", targetDir)
+func cmdInstall(collection string, scope *InstallScope, ref, sourceRepo string, dryRun, force bool) error {
+	if !dryRun && !scope.IsUser() {
+		if _, err := os.Stat(filepath.Join(scope.RootDir, ".git")); os.IsNotExist(err) {
+			return fmt.Errorf("target %q does not appear to be a git repository (no .git directory)", scope.RootDir)
 		}
 	}
 
@@ -414,10 +386,10 @@ func cmdInstall(collection, targetDir, ref, sourceRepo string, dryRun, force boo
 		fmt.Println(bold(fmt.Sprintf("Installing: %s", collection)))
 	}
 	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("%s@%s", sourceLabel, src.SHA)))
-	fmt.Printf("%s %s\n", dim("Target:"), dim(targetDir))
+	fmt.Printf("%s %s\n", dim("Target:"), dim(scope.Label()))
 	fmt.Println()
 
-	result, err := installItems(src.Dir, targetDir, manifest, dryRun, force)
+	result, err := installItems(src.Dir, scope, manifest, dryRun, force)
 	if err != nil {
 		return err
 	}
@@ -427,41 +399,60 @@ func cmdInstall(collection, targetDir, ref, sourceRepo string, dryRun, force boo
 			yellow("⚠"), result.Conflicts, bold("--force"))
 	}
 
+	if len(result.Unsupported) > 0 {
+		fmt.Printf("%s Skipped (not supported in %s scope): %s\n",
+			yellow("⚠"), scope.Name, strings.Join(result.Unsupported, ", "))
+	}
+
 	if dryRun {
 		fmt.Printf("%s Would install %d items from %q.\n",
 			dim("→"), result.Installed, collection)
 		return nil
 	}
 
+	// Use the binary's release version directly.
+	// "dev" means local/unreleased build — checkStaleness() skips it.
+	stateVersion := src.Version
+
 	state := &StateFile{
 		Collection:  collection,
-		Version:     manifest.Version,
+		Version:     stateVersion,
+		Scope:       scope.Name,
 		SourceSHA:   src.SHA,
 		InstalledAt: timeNow().UTC().Format("2006-01-02T15:04:05Z07:00"),
 		Files:       result.Files,
 	}
-	if err := writeState(targetDir, state); err != nil {
+	if err := writeScopedState(scope, state); err != nil {
 		fmt.Fprintf(os.Stderr, "%s Could not write state file: %v\n", yellow("⚠"), err)
 	}
 
 	fmt.Printf("%s Installed %d items from %q (v%s, %s).\n",
-		green("✓"), result.Installed, collection, manifest.Version, src.SHA)
+		green("✓"), result.Installed, collection, stateVersion, src.SHA)
 	fmt.Println()
-	fmt.Println(dim("Next steps:"))
-	fmt.Println(dim("  1. Review the installed files in .github/"))
-	fmt.Println(dim("  2. Commit and push to enable Copilot customization"))
-	fmt.Println(dim("  3. Use @nav-pilot in Copilot to start planning"))
+	if scope.IsUser() {
+		fmt.Println(dim("Agents and skills are now available across all your repos."))
+		fmt.Println(dim("Use @nav-pilot in Copilot Chat or copilot --agent nav-pilot"))
+	} else {
+		fmt.Println(dim("Next steps:"))
+		fmt.Println(dim("  1. Review the installed files in .github/"))
+		fmt.Println(dim("  2. Commit and push to enable Copilot customization"))
+		fmt.Println(dim("  3. Use @nav-pilot in Copilot to start planning"))
+	}
 
 	return nil
 }
 
-func cmdStatus(targetDir string) error {
-	state, err := readState(targetDir)
+func cmdStatus(scope *InstallScope) error {
+	state, err := readScopedState(scope)
 	if err != nil {
 		return fmt.Errorf("reading state: %w", err)
 	}
 	if state == nil {
-		fmt.Println("No nav-pilot collection installed.")
+		if scope.IsUser() {
+			fmt.Println("No nav-pilot collection installed in user home (~/.copilot).")
+		} else {
+			fmt.Println("No nav-pilot collection installed.")
+		}
 		fmt.Printf("Install with: %s\n", bold("nav-pilot install <collection>"))
 		return nil
 	}
@@ -470,33 +461,15 @@ func cmdStatus(targetDir string) error {
 	fmt.Println()
 	fmt.Printf("  Collection:  %s\n", bold(state.Collection))
 	fmt.Printf("  Version:     %s\n", state.Version)
+	fmt.Printf("  Scope:       %s\n", scope.Name)
 	fmt.Printf("  Source:      %s\n", state.SourceSHA)
 	fmt.Printf("  Installed:   %s\n", state.InstalledAt)
 	fmt.Printf("  Files:       %d\n", len(state.Files))
 	fmt.Println()
 
-	missing := 0
-	modified := 0
-	ok := 0
-	for _, f := range state.Files {
-		path := filepath.Join(targetDir, f.Path)
-		var currentHash string
-		var hashErr error
-		if strings.HasSuffix(f.Path, "/") {
-			currentHash, hashErr = dirHash(path)
-		} else {
-			currentHash, hashErr = fileHash(path)
-		}
-		if hashErr != nil {
-			missing++
-			continue
-		}
-		if currentHash != f.Hash {
-			modified++
-			fmt.Printf("  %s %s (modified locally)\n", yellow("~"), f.Path)
-		} else {
-			ok++
-		}
+	ok, modified, missing, modifiedPaths := countFileIntegrity(scope.RootDir, state)
+	for _, p := range modifiedPaths {
+		fmt.Printf("  %s %s (modified locally)\n", yellow("~"), p)
 	}
 
 	fmt.Printf("\n  %s %d ok, %s %d modified, %s %d missing\n",
@@ -504,8 +477,8 @@ func cmdStatus(targetDir string) error {
 	return nil
 }
 
-func cmdUninstall(targetDir string, dryRun bool) error {
-	state, err := readState(targetDir)
+func cmdUninstall(scope *InstallScope, dryRun bool) error {
+	state, err := readScopedState(scope)
 	if err != nil {
 		return fmt.Errorf("reading state: %w", err)
 	}
@@ -523,7 +496,7 @@ func cmdUninstall(targetDir string, dryRun bool) error {
 
 	removed := 0
 	for _, f := range state.Files {
-		path := filepath.Join(targetDir, f.Path)
+		path := filepath.Join(scope.RootDir, f.Path)
 
 		if dryRun {
 			fmt.Printf("  %s %s\n", dim("×"), f.Path)
@@ -547,9 +520,8 @@ func cmdUninstall(targetDir string, dryRun bool) error {
 	}
 
 	if !dryRun {
-		stPath := filepath.Join(targetDir, stateFilePath)
-		os.Remove(stPath)
-		removeEmptyGitHubDirs(targetDir)
+		os.Remove(scope.StatePath())
+		scope.CleanupDirs()
 	}
 
 	fmt.Println()

@@ -1,23 +1,38 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
+
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
 )
 
 // isInteractive returns true when stdin is a terminal (not piped).
 func isInteractive() bool {
+	if forceNonInteractive {
+		return false
+	}
 	fi, err := os.Stdin.Stat()
 	if err != nil {
 		return false
 	}
 	return fi.Mode()&os.ModeCharDevice != 0
+}
+
+// forceNonInteractive can be set in tests to prevent huh from blocking.
+var forceNonInteractive bool
+
+// navTheme returns a huh theme with radio-button-style indicators (● / blank)
+// instead of the default "> " cursor.
+func navTheme() *huh.Theme {
+	t := huh.ThemeBase()
+	t.Focused.SelectSelector = lipgloss.NewStyle().SetString("● ").Foreground(lipgloss.Color("6"))
+	return t
 }
 
 // isGitRepo returns true if dir contains a .git directory.
@@ -27,48 +42,132 @@ func isGitRepo(dir string) bool {
 }
 
 // cmdInteractive runs an interactive flow based on current state:
-//  1. Not installed → prompt to pick and install a collection
-//  2. Installed but outdated → prompt to sync/upgrade
-//  3. Installed and up-to-date → launch cplt/copilot
+//  1. Not installed → prompt to pick and install a collection (repo or user home)
+//  2. Installed but outdated → sync all detected scopes
+//  3. Installed and up-to-date → launch Copilot Sandbox / copilot
+//
+// Safety: huh prompts are guarded by isInteractive() at each call site.
+// In tests, forceNonInteractive=true causes isInteractive() to return false,
+// which makes prompt-guarded functions (offerLaunchCopilot, etc.) return early.
+// The run() entry point also gates cmdInteractive behind isInteractive().
 func cmdInteractive() error {
-	// I3: Use git root, not CWD (which could be a subdirectory)
+	// Check user-scope state (always available regardless of git repo)
+	var userScope *InstallScope
+	var userState *StateFile
+	if s, err := ScopeUser(); err == nil {
+		userScope = s
+		var readErr error
+		userState, readErr = readScopedState(userScope)
+		if readErr != nil {
+			fmt.Fprintf(os.Stderr, "⚠  Warning: user-scope state may be corrupted: %v\n", readErr)
+		}
+	}
+
+	// Check repo-scope state (only if in a git repo)
 	targetDir := findGitRoot(".")
+	var repoScope *InstallScope
+	var repoState *StateFile
+	if targetDir != "" {
+		repoScope = ScopeRepo(targetDir)
+		var err error
+		repoState, err = readScopedState(repoScope)
+		if err != nil {
+			return fmt.Errorf("reading repo state: %w", err)
+		}
+	}
+
+	hasRepo := repoState != nil
+	hasUser := userState != nil
+
+	if hasRepo || hasUser {
+		return interactiveSyncAndLaunch(repoScope, repoState, userScope, userState)
+	}
+
+	// Fresh install requires a git repo
 	if targetDir == "" {
-		return fmt.Errorf("not in a git repository")
+		return fmt.Errorf("not in a git repository (run from a repo to install, or use --user)")
 	}
 
-	// If already installed, check for updates or launch Copilot
-	state, err := readState(targetDir)
-	if err != nil {
-		return fmt.Errorf("reading install state: %w", err)
-	}
-	if state != nil {
-		reader := bufio.NewReader(os.Stdin)
+	return interactiveFreshInstall(targetDir)
+}
 
-		// Fast staleness check (cached, 2s timeout)
-		if latest := checkStaleness(state.Version); latest != "" {
-			fmt.Printf("%s Update available for %s: %s → %s\n",
-				yellow("⚠"), bold(state.Collection), state.Version, latest)
-			fmt.Println()
-			fmt.Printf("Sync now? [Y/n]: ")
-			answer, err := reader.ReadString('\n')
-			if err != nil {
-				fmt.Println()
-				return nil
-			}
-			answer = strings.TrimSpace(strings.ToLower(answer))
-			if answer == "" || answer == "y" || answer == "yes" {
-				fmt.Println()
-				return cmdSync(targetDir, "", "", true, false)
-			}
+// interactiveSyncAndLaunch handles the case where at least one scope has an install.
+// Checks for staleness in all scopes and offers to sync, then launches Copilot.
+func interactiveSyncAndLaunch(repoScope *InstallScope, repoState *StateFile, userScope *InstallScope, userState *StateFile) error {
+	// Single-line greeting with discovered scopes
+	var scopeParts []string
+	if repoState != nil {
+		scopeParts = append(scopeParts, fmt.Sprintf("repo: %s", repoState.Collection))
+	}
+	if userState != nil {
+		scopeParts = append(scopeParts, fmt.Sprintf("user: %s", userState.Collection))
+	}
+	fmt.Printf("%s  %s\n", bold("🧭 nav-pilot"), dim(strings.Join(scopeParts, "  ·  ")))
+
+	type staleScope struct {
+		scope  *InstallScope
+		state  *StateFile
+		latest string
+	}
+	var stale []staleScope
+	var allAgents []string
+
+	if repoState != nil {
+		if latest := checkStaleness(repoState.Version); latest != "" {
+			stale = append(stale, staleScope{repoScope, repoState, latest})
+		}
+		allAgents = append(allAgents, installedAgents(repoState)...)
+	}
+	if userState != nil {
+		if latest := checkStaleness(userState.Version); latest != "" {
+			stale = append(stale, staleScope{userScope, userState, latest})
+		}
+		allAgents = append(allAgents, installedAgents(userState)...)
+	}
+	allAgents = uniqueStrings(allAgents)
+
+	if len(stale) > 0 {
+		for _, s := range stale {
+			fmt.Printf("%s Update available for %s (%s): %s → %s\n",
+				yellow("⚠"), bold(s.state.Collection), s.scope.Name, s.state.Version, s.latest)
+		}
+		fmt.Println()
+
+		label := "Sync now?"
+		if len(stale) > 1 {
+			label = "Sync all?"
 		}
 
-		// Up-to-date (or user skipped sync) — offer to launch with agent selection
-		agents := installedAgents(state)
-		offerLaunchCopilotWithAgents(reader, agents)
-		return nil
+		var choice string
+		err := huh.NewSelect[string]().
+			Title(label).
+			Options(
+				huh.NewOption("Yes", "yes"),
+				huh.NewOption("No", "no"),
+			).
+			Value(&choice).
+			WithTheme(navTheme()).
+			Run()
+		if err != nil || choice != "yes" {
+			return nil
+		}
+
+		for _, s := range stale {
+			fmt.Println()
+			fmt.Printf("%s Syncing %s scope...\n", dim("→"), s.scope.Name)
+			if err := cmdSync(s.scope, "", "", true, false); err != nil {
+				fmt.Fprintf(os.Stderr, "%s Sync failed for %s scope: %v\n", yellow("⚠"), s.scope.Name, err)
+			}
+		}
 	}
 
+	offerLaunchCopilotWithAgents(allAgents)
+	return nil
+}
+
+// interactiveFreshInstall handles the case where no install exists.
+// Prompts for collection and install scope.
+func interactiveFreshInstall(targetDir string) error {
 	fmt.Println(bold("nav-pilot") + dim(" — Nav's Copilot toolkit"))
 	fmt.Println()
 	fmt.Println(dim("Resolving source..."))
@@ -87,60 +186,41 @@ func cmdInteractive() error {
 		return fmt.Errorf("no collections found")
 	}
 
-	// Display collections
-	type collectionInfo struct {
-		name  string
-		desc  string
-		total int
-	}
-	var collections []collectionInfo
+	// Build collection options
+	var options []huh.Option[string]
 	for _, name := range names {
 		m, err := loadManifest(src.Dir, name)
 		if err != nil {
 			continue
 		}
 		total := len(m.Agents) + len(m.Skills) + len(m.Instructions) + len(m.Prompts)
-		collections = append(collections, collectionInfo{name: name, desc: m.Description, total: total})
+		label := fmt.Sprintf("%-20s %s (%d items)", name, m.Description, total)
+		options = append(options, huh.NewOption(label, name))
 	}
 
-	if len(collections) == 0 {
+	if len(options) == 0 {
 		return fmt.Errorf("no valid collections found")
 	}
 
-	fmt.Println()
-	fmt.Println(bold("Available collections:"))
-	fmt.Println()
-	for i, c := range collections {
-		fmt.Printf("  %s  %-20s %s %s\n",
-			bold(fmt.Sprintf("%d.", i+1)),
-			c.name,
-			c.desc,
-			dim(fmt.Sprintf("(%d items)", c.total)))
-	}
-	fmt.Println()
-
-	// Prompt for selection
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Printf("Select collection [1-%d]: ", len(collections))
-	input, err := reader.ReadString('\n')
+	// Select collection
+	var selected string
+	err = huh.NewSelect[string]().
+		Title("Choose collection").
+		Options(options...).
+		Value(&selected).
+		WithTheme(navTheme()).
+		Run()
 	if err != nil {
-		fmt.Println()
-		return nil // EOF or closed stdin — exit gracefully
+		return nil // user cancelled (Ctrl+C / Esc)
 	}
-	input = strings.TrimSpace(input)
-	choice, err := strconv.Atoi(input)
-	if err != nil || choice < 1 || choice > len(collections) {
-		return fmt.Errorf("invalid selection: %q", input)
-	}
-	selected := collections[choice-1]
 
 	// Show preview
-	fmt.Println()
-	m, err := loadManifest(src.Dir, selected.name)
+	m, err := loadManifest(src.Dir, selected)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s %s — %s\n", dim("→"), bold(selected.name), m.Description)
+	fmt.Println()
+	fmt.Printf("%s %s — %s\n", dim("→"), bold(selected), m.Description)
 	parts := []string{}
 	if len(m.Agents) > 0 {
 		parts = append(parts, fmt.Sprintf("%d agents", len(m.Agents)))
@@ -157,28 +237,81 @@ func cmdInteractive() error {
 	fmt.Printf("  %s\n", dim(strings.Join(parts, ", ")))
 	fmt.Println()
 
-	// Confirm
-	fmt.Printf("Install %s? [Y/n]: ", bold(selected.name))
-	confirm, err := reader.ReadString('\n')
+	// Select install scope
+	scope, err := promptInstallScope(targetDir)
 	if err != nil {
-		fmt.Println()
+		return err
+	}
+	if scope == nil {
+		fmt.Println(dim("Cancelled."))
 		return nil
 	}
-	confirm = strings.TrimSpace(strings.ToLower(confirm))
-	if confirm != "" && confirm != "y" && confirm != "yes" {
+
+	// Confirm install
+	var installChoice string
+	err = huh.NewSelect[string]().
+		Title(fmt.Sprintf("Install %s to %s?", selected, scope.Label())).
+		Options(
+			huh.NewOption("Yes", "yes"),
+			huh.NewOption("No", "no"),
+		).
+		Value(&installChoice).
+		WithTheme(navTheme()).
+		Run()
+	if err != nil || installChoice != "yes" {
 		fmt.Println(dim("Cancelled."))
 		return nil
 	}
 
 	// Install
 	fmt.Println()
-	if err := cmdInstall(selected.name, targetDir, "", "", false, false); err != nil {
+	if err := cmdInstall(selected, scope, "", "", false, false); err != nil {
 		return err
 	}
 
-	// Offer to launch Copilot CLI
-	offerLaunchCopilot(reader)
+	offerLaunchCopilot()
 	return nil
+}
+
+// promptInstallScope asks the user where to install: repo or user home.
+// Returns nil if the user cancels.
+func promptInstallScope(targetDir string) (*InstallScope, error) {
+	var choice string
+	err := huh.NewSelect[string]().
+		Title("Where to install?").
+		Options(
+			huh.NewOption("This repo (.github/) — full collection", "repo"),
+			huh.NewOption("User home (~/.copilot/) — agents & skills only, works across all repos", "user"),
+		).
+		Value(&choice).
+		WithTheme(navTheme()).
+		Run()
+	if err != nil {
+		return nil, nil // user cancelled
+	}
+
+	switch choice {
+	case "repo":
+		return ScopeRepo(targetDir), nil
+	case "user":
+		return ScopeUser()
+	default:
+		return nil, fmt.Errorf("invalid selection: %q", choice)
+	}
+}
+
+// uniqueStrings returns a sorted slice with duplicates removed.
+func uniqueStrings(s []string) []string {
+	seen := make(map[string]bool)
+	var result []string
+	for _, v := range s {
+		if !seen[v] {
+			seen[v] = true
+			result = append(result, v)
+		}
+	}
+	sort.Strings(result)
+	return result
 }
 
 // installedAgents extracts agent names from the state file's installed files.
@@ -186,9 +319,13 @@ func cmdInteractive() error {
 func installedAgents(state *StateFile) []string {
 	var agents []string
 	for _, f := range state.Files {
-		if strings.HasPrefix(f.Path, ".github/agents/") && strings.HasSuffix(f.Path, ".agent.md") {
-			name := filepath.Base(f.Path)
-			name = strings.TrimSuffix(name, ".agent.md")
+		base := filepath.Base(f.Path)
+		if !strings.HasSuffix(base, ".agent.md") {
+			continue
+		}
+		dir := filepath.Dir(f.Path)
+		if dir == filepath.Join(".github", "agents") || dir == "agents" {
+			name := strings.TrimSuffix(base, ".agent.md")
 			agents = append(agents, name)
 		}
 	}
@@ -208,6 +345,14 @@ func findCopilotCLI() (path, name string) {
 	return "", ""
 }
 
+// cliDisplayName returns a user-friendly name for the CLI binary.
+func cliDisplayName(name string) string {
+	if name == "cplt" {
+		return "Copilot Sandbox (cplt)"
+	}
+	return name
+}
+
 // launchCopilotWithAgent launches the Copilot CLI with an optional --agent flag.
 func launchCopilotWithAgent(agent string) {
 	cliPath, cliName := findCopilotCLI()
@@ -217,84 +362,84 @@ func launchCopilotWithAgent(agent string) {
 
 	args := []string{}
 	if agent != "" {
-		args = append(args, "--agent", agent)
+		if cliName == "cplt" {
+			// cplt requires "--" to forward flags to the underlying Copilot CLI
+			args = append(args, "--", "--agent", agent)
+		} else {
+			// copilot CLI accepts --agent directly
+			args = append(args, "--agent", agent)
+		}
 	}
 
+	displayName := cliDisplayName(cliName)
 	if agent != "" {
-		fmt.Printf("Launching %s with agent %s...\n\n", bold(cliName), bold(agent))
+		fmt.Printf("Launching %s with agent %s...\n\n", bold(displayName), bold(agent))
 	} else {
-		fmt.Printf("Launching %s...\n\n", bold(cliName))
+		fmt.Printf("Launching %s...\n\n", bold(displayName))
 	}
 	cmd := exec.Command(cliPath, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		fmt.Fprintf(os.Stderr, "%s Could not launch %s: %v\n", yellow("⚠"), cliName, err)
+		fmt.Fprintf(os.Stderr, "%s Could not launch %s: %v\n", yellow("⚠"), displayName, err)
 	}
 }
 
 // offerLaunchCopilot prompts the user to launch the Copilot CLI after install.
-// If agents are available in the collection, offers to spawn with --agent.
-func offerLaunchCopilot(reader *bufio.Reader) {
+func offerLaunchCopilot() {
 	cliPath, cliName := findCopilotCLI()
-	if cliPath == "" {
+	if cliPath == "" || !isInteractive() {
 		return
 	}
 
 	fmt.Println()
-	fmt.Printf("Launch %s now? [Y/n]: ", bold(cliName))
-	answer, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println()
+	var choice string
+	err := huh.NewSelect[string]().
+		Title(fmt.Sprintf("Launch %s now?", cliDisplayName(cliName))).
+		Options(
+			huh.NewOption("Yes", "yes"),
+			huh.NewOption("No", "no"),
+		).
+		Value(&choice).
+		WithTheme(navTheme()).
+		Run()
+	if err != nil || choice != "yes" {
 		return
 	}
-	answer = strings.TrimSpace(strings.ToLower(answer))
-	if answer != "" && answer != "y" && answer != "yes" {
-		return
-	}
-
 	fmt.Println()
 	launchCopilotWithAgent("nav-pilot")
 }
 
 // offerLaunchCopilotWithAgents prompts the user to launch the Copilot CLI
-// and lets them pick an agent from the installed collection.
-func offerLaunchCopilotWithAgents(reader *bufio.Reader, agents []string) {
+// with the nav-pilot agent if it's among the installed agents.
+func offerLaunchCopilotWithAgents(agents []string) {
 	cliPath, cliName := findCopilotCLI()
-	if cliPath == "" {
+	if cliPath == "" || !isInteractive() {
 		return
 	}
 
 	fmt.Println()
-	fmt.Printf("Launch %s now? [Y/n]: ", bold(cliName))
-	answer, err := reader.ReadString('\n')
-	if err != nil {
-		fmt.Println()
-		return
-	}
-	answer = strings.TrimSpace(strings.ToLower(answer))
-	if answer != "" && answer != "y" && answer != "yes" {
+	var choice string
+	err := huh.NewSelect[string]().
+		Title(fmt.Sprintf("Launch %s now?", cliDisplayName(cliName))).
+		Options(
+			huh.NewOption("Yes", "yes"),
+			huh.NewOption("No", "no"),
+		).
+		Value(&choice).
+		WithTheme(navTheme()).
+		Run()
+	if err != nil || choice != "yes" {
 		return
 	}
 
+	// Launch with nav-pilot agent if installed, otherwise plain launch
 	agent := ""
-	if len(agents) > 0 {
-		fmt.Println()
-		fmt.Println(bold("Available agents:"))
-		fmt.Println()
-		for i, a := range agents {
-			fmt.Printf("  %s  %s\n", bold(fmt.Sprintf("%d.", i+1)), a)
-		}
-		fmt.Printf("  %s  %s\n", bold(fmt.Sprintf("%d.", len(agents)+1)), dim("(no agent — default mode)"))
-		fmt.Println()
-		fmt.Printf("Select agent [1-%d]: ", len(agents)+1)
-		input, err := reader.ReadString('\n')
-		if err == nil {
-			input = strings.TrimSpace(input)
-			if choice, err := strconv.Atoi(input); err == nil && choice >= 1 && choice <= len(agents) {
-				agent = agents[choice-1]
-			}
+	for _, a := range agents {
+		if a == "nav-pilot" {
+			agent = "nav-pilot"
+			break
 		}
 	}
 

@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -31,11 +32,14 @@ func TestCmdInteractive_NotGitRepo(t *testing.T) {
 	os.Chdir(dir)
 	defer os.Chdir(origDir)
 
+	// Override HOME so ScopeUser() finds no existing user-home installs
+	t.Setenv("HOME", dir)
+
 	err := cmdInteractive()
 	if err == nil {
 		t.Fatal("expected error for non-git directory")
 	}
-	if err.Error() != "not in a git repository" {
+	if !strings.Contains(err.Error(), "not in a git repository") {
 		t.Errorf("unexpected error: %v", err)
 	}
 }
@@ -47,6 +51,13 @@ func TestCmdInteractive_InstalledUpToDate(t *testing.T) {
 	os.MkdirAll(filepath.Join(dir, ".github"), 0o755)
 	os.Chdir(dir)
 	defer os.Chdir(origDir)
+
+	// Isolate HOME so user-scope installs don't leak into the test
+	t.Setenv("HOME", dir)
+
+	// Prevent huh TUI prompts from blocking in tests
+	forceNonInteractive = true
+	defer func() { forceNonInteractive = false }()
 
 	state := &StateFile{
 		Collection: "test-collection",
@@ -96,6 +107,30 @@ func TestInstalledAgents(t *testing.T) {
 	for i, a := range agents {
 		if a != expected[i] {
 			t.Errorf("agent[%d]: expected %q, got %q", i, expected[i], a)
+		}
+	}
+}
+
+func TestUniqueStrings(t *testing.T) {
+	tests := []struct {
+		input []string
+		want  []string
+	}{
+		{[]string{"b", "a", "a", "c"}, []string{"a", "b", "c"}},
+		{[]string{"x"}, []string{"x"}},
+		{nil, nil},
+		{[]string{"a", "a", "a"}, []string{"a"}},
+	}
+	for _, tt := range tests {
+		got := uniqueStrings(tt.input)
+		if len(got) != len(tt.want) {
+			t.Errorf("uniqueStrings(%v) = %v, want %v", tt.input, got, tt.want)
+			continue
+		}
+		for i := range got {
+			if got[i] != tt.want[i] {
+				t.Errorf("uniqueStrings(%v)[%d] = %q, want %q", tt.input, i, got[i], tt.want[i])
+			}
 		}
 	}
 }

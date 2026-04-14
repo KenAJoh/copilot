@@ -12,6 +12,10 @@ import (
 // ─── CLI parsing tests ──────────────────────────────────────────────────────
 
 func TestRun_NoArgs(t *testing.T) {
+	// Prevent TUI from blocking when running in an interactive terminal
+	forceNonInteractive = true
+	t.Cleanup(func() { forceNonInteractive = false })
+
 	err := run([]string{})
 	if err != nil {
 		t.Fatalf("expected no error for no args (shows usage), got: %v", err)
@@ -419,7 +423,7 @@ func TestInstallAgent(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installAgent(srcDir, dstDir, "test", false, false, result)
+	err := installAgent(srcDir, ScopeRepo(dstDir), "test", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -445,7 +449,7 @@ func TestInstallAgent_NotFound(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installAgent(srcDir, dstDir, "nonexistent", false, false, result)
+	err := installAgent(srcDir, ScopeRepo(dstDir), "nonexistent", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -466,7 +470,7 @@ func TestInstallSkill(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installSkill(srcDir, dstDir, "my-skill", false, false, result)
+	err := installSkill(srcDir, ScopeRepo(dstDir), "my-skill", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -493,7 +497,7 @@ func TestInstallConflictBlocked(t *testing.T) {
 	os.WriteFile(filepath.Join(dstAgents, "test.agent.md"), []byte("local modified content"), 0o644)
 
 	result := &installResult{}
-	err := installAgent(srcDir, dstDir, "test", false, false, result)
+	err := installAgent(srcDir, ScopeRepo(dstDir), "test", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -517,7 +521,7 @@ func TestInstallConflictForced(t *testing.T) {
 	os.WriteFile(filepath.Join(dstAgents, "test.agent.md"), []byte("local modified content"), 0o644)
 
 	result := &installResult{}
-	err := installAgent(srcDir, dstDir, "test", false, true, result) // force=true
+	err := installAgent(srcDir, ScopeRepo(dstDir), "test", false, true, result) // force=true
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -566,7 +570,7 @@ func TestInstallAgent_PathTraversal(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installAgent(srcDir, dstDir, "../../../etc/passwd", false, false, result)
+	err := installAgent(srcDir, ScopeRepo(dstDir), "../../../etc/passwd", false, false, result)
 	if err == nil {
 		t.Fatal("expected error for path traversal attempt")
 	}
@@ -586,7 +590,7 @@ func TestInstallInstruction(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installInstruction(srcDir, dstDir, "my-instr", false, false, result)
+	err := installInstruction(srcDir, ScopeRepo(dstDir), "my-instr", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -606,7 +610,7 @@ func TestInstallInstruction_NotFound(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installInstruction(srcDir, dstDir, "nonexistent", false, false, result)
+	err := installInstruction(srcDir, ScopeRepo(dstDir), "nonexistent", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -624,7 +628,7 @@ func TestInstallPrompt_FlatFile(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installPrompt(srcDir, dstDir, "my-prompt", false, false, result)
+	err := installPrompt(srcDir, ScopeRepo(dstDir), "my-prompt", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -642,7 +646,7 @@ func TestInstallPrompt_Directory(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installPrompt(srcDir, dstDir, "my-prompt", false, false, result)
+	err := installPrompt(srcDir, ScopeRepo(dstDir), "my-prompt", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -662,7 +666,7 @@ func TestInstallPrompt_NotFound(t *testing.T) {
 	dstDir := t.TempDir()
 	result := &installResult{}
 
-	err := installPrompt(srcDir, dstDir, "nonexistent", false, false, result)
+	err := installPrompt(srcDir, ScopeRepo(dstDir), "nonexistent", false, false, result)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -687,7 +691,7 @@ func TestCmdUninstall(t *testing.T) {
 	}
 	writeState(dir, state)
 
-	err := cmdUninstall(dir, false)
+	err := cmdUninstall(ScopeRepo(dir), false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -705,7 +709,7 @@ func TestCmdUninstall(t *testing.T) {
 
 func TestCmdUninstall_NoState(t *testing.T) {
 	dir := t.TempDir()
-	err := cmdUninstall(dir, false)
+	err := cmdUninstall(ScopeRepo(dir), false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -726,7 +730,7 @@ func TestCmdUninstall_DryRun(t *testing.T) {
 	}
 	writeState(dir, state)
 
-	err := cmdUninstall(dir, true)
+	err := cmdUninstall(ScopeRepo(dir), true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -741,7 +745,7 @@ func TestCmdUninstall_DryRun(t *testing.T) {
 
 func TestCmdStatus_NoState(t *testing.T) {
 	dir := t.TempDir()
-	err := cmdStatus(dir)
+	err := cmdStatus(ScopeRepo(dir))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -765,7 +769,7 @@ func TestCmdStatus_WithState(t *testing.T) {
 	}
 	writeState(dir, state)
 
-	err := cmdStatus(dir)
+	err := cmdStatus(ScopeRepo(dir))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -824,7 +828,7 @@ func TestInstallItems(t *testing.T) {
 	}
 
 	dstDir := t.TempDir()
-	result, err := installItems(srcDir, dstDir, manifest, false, false)
+	result, err := installItems(srcDir, ScopeRepo(dstDir), manifest, false, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -839,6 +843,7 @@ func TestInstallItems(t *testing.T) {
 // ─── Security tests (B1, B2) ───────────────────────────────────────────────
 
 func TestValidateStatePath(t *testing.T) {
+	repo := ScopeRepo("/tmp")
 	tests := []struct {
 		path    string
 		wantErr bool
@@ -858,9 +863,9 @@ func TestValidateStatePath(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.path, func(t *testing.T) {
-			err := validateStatePath(tt.path)
+			err := repo.ValidateStatePath(tt.path)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("validateStatePath(%q) error = %v, wantErr %v", tt.path, err, tt.wantErr)
+				t.Errorf("ValidateStatePath(%q) error = %v, wantErr %v", tt.path, err, tt.wantErr)
 			}
 		})
 	}

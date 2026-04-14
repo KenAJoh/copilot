@@ -22,7 +22,7 @@ func TestResolveSyncFiles_WithState(t *testing.T) {
 	}
 	writeState(dir, state)
 
-	files, collection, err := resolveSyncFiles(dir, "")
+	files, collection, err := resolveSyncFiles(ScopeRepo(dir), "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -56,7 +56,7 @@ func TestResolveSyncFiles_AutoDetect(t *testing.T) {
 	os.MkdirAll(filepath.Join(sourceDir, ".github", "skills", "api-design"), 0o755)
 	os.WriteFile(filepath.Join(sourceDir, ".github", "skills", "api-design", "SKILL.md"), []byte("# API"), 0o644)
 
-	files, collection, err := resolveSyncFiles(targetDir, sourceDir)
+	files, collection, err := resolveSyncFiles(ScopeRepo(targetDir), sourceDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -166,7 +166,7 @@ func TestApplySyncUpdate_File(t *testing.T) {
 	os.WriteFile(filepath.Join(sourceDir, rel), []byte("new"), 0o644)
 
 	u := syncUpdate{Path: rel, CurrentHash: "a", SourceHash: "b"}
-	if err := applySyncUpdate(targetDir, sourceDir, u); err != nil {
+	if err := applySyncUpdate(ScopeRepo(targetDir), sourceDir, u); err != nil {
 		t.Fatal(err)
 	}
 
@@ -187,7 +187,7 @@ func TestApplySyncUpdate_Dir(t *testing.T) {
 	os.WriteFile(filepath.Join(sourceDir, ".github", "skills", "s", "SKILL.md"), []byte("new"), 0o644)
 
 	u := syncUpdate{Path: rel, CurrentHash: "a", SourceHash: "b"}
-	if err := applySyncUpdate(targetDir, sourceDir, u); err != nil {
+	if err := applySyncUpdate(ScopeRepo(targetDir), sourceDir, u); err != nil {
 		t.Fatal(err)
 	}
 
@@ -310,5 +310,138 @@ func TestSyncJSON_StdoutIsCleanJSON(t *testing.T) {
 	}
 	if got.Source != "abc1234" {
 		t.Errorf("expected source abc1234, got %s", got.Source)
+	}
+}
+
+// ─── User-scope sync tests ──────────────────────────────────────────────────
+
+func TestResolveSyncFiles_UserScope_PathRemapping(t *testing.T) {
+	// User-scope state stores paths as "agents/x" but source has ".github/agents/x"
+	homeDir := t.TempDir()
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        homeDir,
+		StateFile:      ".nav-pilot-state.json",
+		SupportedTypes: []string{"agent", "skill"},
+	}
+
+	state := &StateFile{
+		Collection: "fullstack",
+		Version:    "dev",
+		Scope:      "user",
+		Files: []InstalledFile{
+			{Path: "agents/nais.agent.md", Hash: "abc"},
+			{Path: "skills/api-design/", Hash: "def"},
+		},
+	}
+	writeScopedState(scope, state)
+
+	files, collection, err := resolveSyncFiles(scope, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if collection != "fullstack" {
+		t.Errorf("collection = %q, want %q", collection, "fullstack")
+	}
+	if len(files) != 2 {
+		t.Fatalf("files count = %d, want 2", len(files))
+	}
+
+	// Local path stays as "agents/..." but source path should be ".github/agents/..."
+	agent := files[0]
+	if agent.localPath != "agents/nais.agent.md" {
+		t.Errorf("localPath = %q, want %q", agent.localPath, "agents/nais.agent.md")
+	}
+	expectedSource := filepath.Join(".github", "agents", "nais.agent.md")
+	if agent.sourcePath != expectedSource {
+		t.Errorf("sourcePath = %q, want %q", agent.sourcePath, expectedSource)
+	}
+
+	skill := files[1]
+	if skill.localPath != "skills/api-design/" {
+		t.Errorf("localPath = %q, want %q", skill.localPath, "skills/api-design/")
+	}
+	expectedSkillSource := filepath.Join(".github", "skills", "api-design")
+	// filepath.Join strips trailing slash; isDir flag controls directory behavior
+	if skill.sourcePath != expectedSkillSource {
+		t.Errorf("sourcePath = %q, want %q", skill.sourcePath, expectedSkillSource)
+	}
+}
+
+func TestApplySyncUpdate_UserScope_PathRemapping(t *testing.T) {
+	homeDir := t.TempDir()
+	sourceDir := t.TempDir()
+
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        homeDir,
+		SupportedTypes: []string{"agent", "skill"},
+	}
+
+	// Source has the file at .github/agents/x.agent.md
+	os.MkdirAll(filepath.Join(sourceDir, ".github", "agents"), 0o755)
+	os.WriteFile(filepath.Join(sourceDir, ".github", "agents", "x.agent.md"), []byte("new content"), 0o644)
+
+	// Target (user home) has the file at agents/x.agent.md
+	os.MkdirAll(filepath.Join(homeDir, "agents"), 0o755)
+	os.WriteFile(filepath.Join(homeDir, "agents", "x.agent.md"), []byte("old content"), 0o644)
+
+	u := syncUpdate{Path: "agents/x.agent.md", CurrentHash: "a", SourceHash: "b"}
+	if err := applySyncUpdate(scope, sourceDir, u); err != nil {
+		t.Fatal(err)
+	}
+
+	got, _ := os.ReadFile(filepath.Join(homeDir, "agents", "x.agent.md"))
+	if string(got) != "new content" {
+		t.Errorf("file not updated, got %q", string(got))
+	}
+}
+
+func TestUpdateScopedStateHashes(t *testing.T) {
+	dir := t.TempDir()
+	scope := ScopeRepo(dir)
+
+	rel := filepath.Join(".github", "agents", "x.agent.md")
+	os.MkdirAll(filepath.Join(dir, ".github", "agents"), 0o755)
+	os.WriteFile(filepath.Join(dir, rel), []byte("updated"), 0o644)
+
+	state := &StateFile{
+		Collection: "test",
+		Scope:      "repo",
+		Files:      []InstalledFile{{Path: rel, Hash: "oldhash"}},
+	}
+	writeScopedState(scope, state)
+
+	newHash, _ := fileHash(filepath.Join(dir, rel))
+	updates := []syncUpdate{{Path: rel, CurrentHash: "oldhash", SourceHash: newHash}}
+
+	if err := updateScopedStateHashes(scope, updates); err != nil {
+		t.Fatal(err)
+	}
+
+	got, _ := readScopedState(scope)
+	if got.Files[0].Hash != newHash {
+		t.Errorf("hash = %q, want %q", got.Files[0].Hash, newHash)
+	}
+}
+
+func TestResolveSyncFiles_UserScope_NoState_ReturnsEmpty(t *testing.T) {
+	homeDir := t.TempDir()
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        homeDir,
+		StateFile:      ".nav-pilot-state.json",
+		SupportedTypes: []string{"agent", "skill"},
+	}
+
+	files, collection, err := resolveSyncFiles(scope, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if collection != "" {
+		t.Errorf("collection should be empty, got %q", collection)
+	}
+	if len(files) != 0 {
+		t.Errorf("expected 0 files for user scope without state, got %d", len(files))
 	}
 }
