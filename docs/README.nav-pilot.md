@@ -31,6 +31,31 @@ nav-pilot feedback             # åpner bug-rapport i nettleser
 nav-pilot feedback --feature   # åpner feature request
 ```
 
+## Oppgradering
+
+```bash
+# Enkleste metode — nav-pilot oppdaterer seg selv
+nav-pilot update
+
+# Alternativt via Homebrew
+brew update && brew upgrade nav-pilot
+```
+
+### Feilsøking: «already installed»
+
+Hvis `brew upgrade` sier at nav-pilot allerede er oppdatert men versjonen er gammel, skyldes det at den lokale tap-cachen ikke er oppdatert. Kjør `brew update` først for å hente nyeste formler:
+
+```bash
+brew update && brew upgrade nav-pilot
+```
+
+Dersom `brew update` feiler med tilgangsfeil:
+
+```bash
+sudo chown -R $(whoami) /opt/homebrew
+brew update && brew upgrade nav-pilot
+```
+
 ## Installasjonsscopes
 
 nav-pilot støtter to installasjonsscopes:
