@@ -41,7 +41,7 @@ func TestScopeUser_Paths(t *testing.T) {
 		RootDir:        "/home/dev/.copilot",
 		StateFile:      ".nav-pilot-state.json",
 		PathPrefix:     "",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	dst := scope.DstPath("agents", "nais.agent.md")
@@ -61,6 +61,19 @@ func TestScopeUser_Paths(t *testing.T) {
 	if scope.Label() != "~/.copilot (user-wide)" {
 		t.Errorf("Label = %q", scope.Label())
 	}
+
+	// Instructions in user scope get .github/ prefix (required by COPILOT_CUSTOM_INSTRUCTIONS_DIRS)
+	instrDst := scope.DstPath("instructions", "golang.instructions.md")
+	instrWant := filepath.Join("/home/dev/.copilot", ".github", "instructions", "golang.instructions.md")
+	if instrDst != instrWant {
+		t.Errorf("DstPath(instructions) = %q, want %q", instrDst, instrWant)
+	}
+
+	instrRel := scope.RelPath("instructions", "golang.instructions.md")
+	instrRelWant := filepath.Join(".github", "instructions", "golang.instructions.md")
+	if instrRel != instrRelWant {
+		t.Errorf("RelPath(instructions) = %q, want %q", instrRel, instrRelWant)
+	}
 }
 
 func TestScope_SupportsType(t *testing.T) {
@@ -73,14 +86,14 @@ func TestScope_SupportsType(t *testing.T) {
 
 	user := &InstallScope{
 		Name:           "user",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
-	for _, typ := range []string{"agent", "skill"} {
+	for _, typ := range []string{"agent", "skill", "instruction"} {
 		if !user.SupportsType(typ) {
 			t.Errorf("user scope should support %q", typ)
 		}
 	}
-	for _, typ := range []string{"instruction", "prompt"} {
+	for _, typ := range []string{"prompt"} {
 		if user.SupportsType(typ) {
 			t.Errorf("user scope should NOT support %q", typ)
 		}
@@ -89,7 +102,7 @@ func TestScope_SupportsType(t *testing.T) {
 
 func TestScope_ValidateStatePath(t *testing.T) {
 	repo := ScopeRepo("/tmp")
-	user := &InstallScope{Name: "user", SupportedTypes: []string{"agent", "skill"}}
+	user := &InstallScope{Name: "user", SupportedTypes: []string{"agent", "skill", "instruction"}}
 
 	tests := []struct {
 		scope   *InstallScope
@@ -103,9 +116,10 @@ func TestScope_ValidateStatePath(t *testing.T) {
 		{repo, ".github/../../../etc/passwd", true},  // traversal
 		{user, "agents/foo.agent.md", false},
 		{user, "skills/bar/", false},
-		{user, ".github/agents/foo.agent.md", true},  // .github not allowed in user
+		{user, ".github/instructions/foo.instructions.md", false}, // instructions use .github/ in user scope
+		{user, ".github/agents/foo.agent.md", true},  // .github/agents not allowed in user
 		{user, "/etc/passwd", true},                  // absolute
-		{user, "instructions/foo.instructions.md", true}, // not supported
+		{user, "instructions/foo.instructions.md", true}, // bare instructions/ not allowed
 	}
 
 	for _, tt := range tests {
@@ -124,7 +138,7 @@ func TestScope_CleanupDirs(t *testing.T) {
 		os.MkdirAll(filepath.Join(tmp, sub), 0o755)
 	}
 
-	scope := &InstallScope{Name: "user", RootDir: tmp, SupportedTypes: []string{"agent", "skill"}}
+	scope := &InstallScope{Name: "user", RootDir: tmp, SupportedTypes: []string{"agent", "skill", "instruction"}}
 	scope.CleanupDirs()
 
 	for _, sub := range []string{"agents", "skills"} {
@@ -154,18 +168,21 @@ func TestUserAndTargetDotMutuallyExclusive(t *testing.T) {
 	}
 }
 
-func TestCmdAdd_UserScopeRejectsInstruction(t *testing.T) {
+func TestCmdAdd_UserScopeAcceptsInstruction(t *testing.T) {
+	source := t.TempDir()
+	ghDir := filepath.Join(source, ".github", "instructions")
+	os.MkdirAll(ghDir, 0o755)
+	os.WriteFile(filepath.Join(ghDir, "test.instructions.md"), []byte("# Test"), 0o644)
+
 	scope := &InstallScope{
 		Name:           "user",
 		RootDir:        t.TempDir(),
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
-	err := cmdAdd("instruction", "test", scope, "", "", true, false)
-	if err == nil {
-		t.Fatal("expected error for instruction in user scope")
-	}
-	if !strings.Contains(err.Error(), "not supported in user scope") {
-		t.Errorf("unexpected error: %v", err)
+	// Dry run won't need real source resolution, but cmdAdd resolves source.
+	// Instead, verify SupportsType directly since cmdAdd needs network.
+	if !scope.SupportsType("instruction") {
+		t.Error("user scope should support instruction type")
 	}
 }
 
@@ -173,7 +190,7 @@ func TestCmdAdd_UserScopeRejectsPrompt(t *testing.T) {
 	scope := &InstallScope{
 		Name:           "user",
 		RootDir:        t.TempDir(),
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 	err := cmdAdd("prompt", "test", scope, "", "", true, false)
 	if err == nil {
@@ -199,7 +216,7 @@ func TestInstallAgent_UserScope(t *testing.T) {
 		RootDir:        target,
 		StateFile:      ".nav-pilot-state.json",
 		PathPrefix:     "",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	result := &installResult{}
@@ -241,7 +258,7 @@ func TestInstallItems_UserScope_SkipsUnsupported(t *testing.T) {
 		RootDir:        target,
 		StateFile:      ".nav-pilot-state.json",
 		PathPrefix:     "",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	manifest, err := loadManifest(source, "test-collection")
@@ -254,12 +271,12 @@ func TestInstallItems_UserScope_SkipsUnsupported(t *testing.T) {
 		t.Fatalf("installItems: %v", err)
 	}
 
-	// Only agent and skill should be installed, instruction and prompt skipped
-	if result.Installed != 2 {
-		t.Errorf("expected 2 installed (agent + skill), got %d", result.Installed)
+	// Agent, skill, and instruction should be installed; only prompt skipped
+	if result.Installed != 3 {
+		t.Errorf("expected 3 installed (agent + skill + instruction), got %d", result.Installed)
 	}
-	if len(result.Unsupported) != 2 {
-		t.Errorf("expected 2 unsupported, got %d: %v", len(result.Unsupported), result.Unsupported)
+	if len(result.Unsupported) != 1 {
+		t.Errorf("expected 1 unsupported (prompt), got %d: %v", len(result.Unsupported), result.Unsupported)
 	}
 }
 
@@ -297,7 +314,7 @@ func TestReadScopedState_RejectsRepoStateInUserScope(t *testing.T) {
 		Name:           "user",
 		RootDir:        tmp,
 		StateFile:      ".nav-pilot-state.json",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	_, err := readScopedState(scope)
@@ -365,7 +382,7 @@ func TestScope_ShouldInstallMetadata(t *testing.T) {
 		t.Error("repo scope should install metadata")
 	}
 
-	user := &InstallScope{Name: "user", SupportedTypes: []string{"agent", "skill"}}
+	user := &InstallScope{Name: "user", SupportedTypes: []string{"agent", "skill", "instruction"}}
 	if user.ShouldInstallMetadata() {
 		t.Error("user scope should NOT install metadata")
 	}

@@ -322,7 +322,7 @@ func TestResolveSyncFiles_UserScope_PathRemapping(t *testing.T) {
 		Name:           "user",
 		RootDir:        homeDir,
 		StateFile:      ".nav-pilot-state.json",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	state := &StateFile{
@@ -368,6 +368,48 @@ func TestResolveSyncFiles_UserScope_PathRemapping(t *testing.T) {
 	}
 }
 
+func TestResolveSyncFiles_UserScope_InstructionPathNotDoubled(t *testing.T) {
+	// Regression: instructions store paths as ".github/instructions/x.instructions.md"
+	// which already has .github/ prefix. resolveSyncFiles must NOT double it.
+	homeDir := t.TempDir()
+	scope := &InstallScope{
+		Name:           "user",
+		RootDir:        homeDir,
+		StateFile:      ".nav-pilot-state.json",
+		SupportedTypes: []string{"agent", "skill", "instruction"},
+	}
+
+	state := &StateFile{
+		Collection: CollectionAll,
+		Version:    "dev",
+		Scope:      "user",
+		Files: []InstalledFile{
+			{Path: "agents/nais.agent.md", Hash: "abc"},
+			{Path: ".github/instructions/go-nais.instructions.md", Hash: "def"},
+		},
+	}
+	writeScopedState(scope, state)
+
+	files, _, err := resolveSyncFiles(scope, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(files) != 2 {
+		t.Fatalf("files count = %d, want 2", len(files))
+	}
+
+	// Agent: local="agents/nais.agent.md" → source=".github/agents/nais.agent.md"
+	if files[0].sourcePath != filepath.Join(".github", "agents", "nais.agent.md") {
+		t.Errorf("agent sourcePath = %q, want .github/agents/nais.agent.md", files[0].sourcePath)
+	}
+
+	// Instruction: already has .github/ prefix — source should NOT be ".github/.github/..."
+	expectedInstrSource := filepath.Join(".github", "instructions", "go-nais.instructions.md")
+	if files[1].sourcePath != expectedInstrSource {
+		t.Errorf("instruction sourcePath = %q, want %q (was double-prefixed?)", files[1].sourcePath, expectedInstrSource)
+	}
+}
+
 func TestApplySyncUpdate_UserScope_PathRemapping(t *testing.T) {
 	homeDir := t.TempDir()
 	sourceDir := t.TempDir()
@@ -375,7 +417,7 @@ func TestApplySyncUpdate_UserScope_PathRemapping(t *testing.T) {
 	scope := &InstallScope{
 		Name:           "user",
 		RootDir:        homeDir,
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	// Source has the file at .github/agents/x.agent.md
@@ -431,7 +473,7 @@ func TestResolveSyncFiles_UserScope_NoState_ReturnsEmpty(t *testing.T) {
 		Name:           "user",
 		RootDir:        homeDir,
 		StateFile:      ".nav-pilot-state.json",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}
 
 	files, collection, err := resolveSyncFiles(scope, "")

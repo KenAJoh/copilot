@@ -54,6 +54,7 @@ const DOC_SECTIONS: TocItem[] = [
     label: "Kom i gang",
     children: [
       { id: "installasjon", label: "Installasjon (5 min)" },
+      { id: "personlig-installasjon", label: "Personlig installasjon (valgfritt)" },
       { id: "første-kommandoer", label: "Første kommandoer" },
     ],
   },
@@ -140,8 +141,7 @@ const COLLECTIONS = [
       agents: "accessibility, aksel, forfatter, nav-pilot",
       skills:
         "aksel-spacing, playwright-testing, web-design-reviewer, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
-      instructions:
-        "nextjs-aksel, performance, testing, testing-typescript, accessibility, github-actions, docker",
+      instructions: "nextjs-aksel, performance, testing, testing-typescript, accessibility, github-actions, docker",
       prompts: "aksel-component, nextjs-api-route, nais-manifest",
     },
   },
@@ -229,6 +229,10 @@ const PLANNING_SKILLS = [
 const CLI_COMMANDS = [
   { command: "nav-pilot", description: "Interaktivt: installer, oppgrader eller start Copilot-sandkassen (cplt)" },
   { command: "nav-pilot install <collection>", description: "Installer en collection i repoet ditt" },
+  {
+    command: "nav-pilot install --user",
+    description: "Installer agenter, skills og instruksjoner til ~/.copilot (alle repoer)",
+  },
   { command: "nav-pilot install --dry-run <collection>", description: "Forhåndsvis hva som installeres" },
   { command: "nav-pilot install --force <collection>", description: "Overskriv lokalt endrede filer" },
   { command: "nav-pilot list", description: "Vis tilgjengelige collections" },
@@ -239,6 +243,7 @@ const CLI_COMMANDS = [
   { command: "nav-pilot sync", description: "Sjekk om oppdateringer finnes (exit 1 hvis ja)" },
   { command: "nav-pilot sync --apply", description: "Oppdater filer direkte" },
   { command: "nav-pilot sync --json", description: "Maskinlesbar output for scripts" },
+  { command: "nav-pilot env", description: "Skriv shell-eksport for Copilot CLI-integrasjon" },
   { command: "nav-pilot update", description: "Oppdater nav-pilot CLI til nyeste versjon" },
   { command: "nav-pilot feedback", description: "Rapporter feil — åpner GitHub issue med diagnostikk" },
   { command: "nav-pilot feedback --feature", description: "Foreslå ny funksjonalitet" },
@@ -617,6 +622,31 @@ nav-pilot`}
                 </BodyLong>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div id="personlig-installasjon">
+          <LinkableHeading size="small" level="3">
+            Personlig installasjon (valgfritt)
+          </LinkableHeading>
+          <BodyLong className="mt-2" style={{ color: "#475569" }}>
+            I tillegg til repo-installasjon kan du installere agenter, skills og instruksjoner til hjemmemappen. De blir
+            da tilgjengelige i <em>alle</em> repoer uten å endre hvert enkelt.
+          </BodyLong>
+          <div className="mt-4">
+            <CodeBlock compact>{`nav-pilot install --user`}</CodeBlock>
+          </div>
+          <BodyLong className="mt-3" size="small" style={{ color: "#64748b" }}>
+            Filene installeres til <code className="font-mono text-xs">~/.copilot/</code>. Agenter og skills plukkes opp
+            automatisk av alle Copilot-klienter. Instruksjoner krever{" "}
+            <code className="font-mono text-xs">COPILOT_CUSTOM_INSTRUCTIONS_DIRS</code> og fungerer kun med Copilot CLI
+            — nav-pilot setter denne automatisk i interaktiv modus.
+          </BodyLong>
+          <BodyLong className="mt-2" size="small" style={{ color: "#64748b" }}>
+            For direkte bruk av cplt, legg til i shell-profilen:
+          </BodyLong>
+          <div className="mt-2">
+            <CodeBlock compact>{`eval "$(nav-pilot env)"`}</CodeBlock>
           </div>
         </div>
 

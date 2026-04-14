@@ -218,7 +218,7 @@ func interactiveUserOnlyInstall() error {
 	return interactiveUserInstall(src)
 }
 
-// interactiveUserInstall installs all agents & skills to user home.
+// interactiveUserInstall installs all agents, skills & instructions to user home.
 // Called from both interactiveFreshInstall (user scope selected) and interactiveUserOnlyInstall.
 func interactiveUserInstall(src *Source) error {
 	manifest, err := collectAllItems(src.Dir)
@@ -226,16 +226,16 @@ func interactiveUserInstall(src *Source) error {
 		return err
 	}
 
-	total := len(manifest.Agents) + len(manifest.Skills)
+	total := len(manifest.Agents) + len(manifest.Skills) + len(manifest.Instructions)
 	if total == 0 {
-		return fmt.Errorf("no agents or skills found in source")
+		return fmt.Errorf("no agents, skills, or instructions found in source")
 	}
 
 	if isInteractive() {
 		fmt.Println()
 		var installChoice string
 		err = huh.NewSelect[string]().
-			Title(fmt.Sprintf("Install all %d agents & skills to ~/.copilot?", total)).
+			Title(fmt.Sprintf("Install all %d agents, skills & instructions to ~/.copilot?", total)).
 			Options(
 				huh.NewOption("Yes", "yes"),
 				huh.NewOption("No", "no"),
@@ -358,7 +358,7 @@ func promptInstallScope(targetDir string) (*InstallScope, error) {
 		Title("Where to install?").
 		Options(
 			huh.NewOption("This repo (.github/) — full collection", "repo"),
-			huh.NewOption("User home (~/.copilot/) — agents & skills only, works across all repos", "user"),
+			huh.NewOption("User home (~/.copilot/) — agents, skills & instructions, works across all repos", "user"),
 		).
 		Value(&choice).
 		WithTheme(navTheme()).
@@ -431,6 +431,8 @@ func cliDisplayName(name string) string {
 }
 
 // launchCopilotWithAgent launches the Copilot CLI with an optional --agent flag.
+// If user-scope instructions exist, it sets COPILOT_CUSTOM_INSTRUCTIONS_DIRS
+// so cplt picks up ~/.copilot/.github/instructions/*.instructions.md.
 func launchCopilotWithAgent(agent string) {
 	cliPath, cliName := findCopilotCLI()
 	if cliPath == "" {
@@ -458,6 +460,7 @@ func launchCopilotWithAgent(agent string) {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Env = copilotEnv()
 	if err := cmd.Run(); err != nil {
 		fmt.Fprintf(os.Stderr, "%s Could not launch %s: %v\n", yellow("⚠"), displayName, err)
 	}
@@ -522,4 +525,57 @@ func offerLaunchCopilotWithAgents(agents []string) {
 
 	fmt.Println()
 	launchCopilotWithAgent(agent)
+}
+
+// copilotEnv returns the environment for launching cplt, injecting
+// COPILOT_CUSTOM_INSTRUCTIONS_DIRS if user-scope instructions exist.
+func copilotEnv() []string {
+	dir := userInstructionsDir()
+	if dir == "" {
+		return nil // nil inherits parent env
+	}
+
+	env := os.Environ()
+	// Merge with any existing COPILOT_CUSTOM_INSTRUCTIONS_DIRS value
+	copilotDir := filepath.Dir(filepath.Dir(dir)) // ~/.copilot (from ~/.copilot/.github/instructions)
+	key := "COPILOT_CUSTOM_INSTRUCTIONS_DIRS"
+	existing := os.Getenv(key)
+	if existing != "" {
+		// Don't duplicate if already present
+		for _, p := range strings.Split(existing, ",") {
+			if strings.TrimSpace(p) == copilotDir {
+				return nil // already set correctly, inherit parent env
+			}
+		}
+		copilotDir = existing + "," + copilotDir
+	}
+
+	// Replace or append the env var
+	found := false
+	for i, e := range env {
+		if strings.HasPrefix(e, key+"=") {
+			env[i] = key + "=" + copilotDir
+			found = true
+			break
+		}
+	}
+	if !found {
+		env = append(env, key+"="+copilotDir)
+	}
+	return env
+}
+
+// userInstructionsDir returns the path to ~/.copilot/.github/instructions/
+// if it exists and contains at least one .instructions.md file, or "" otherwise.
+func userInstructionsDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return ""
+	}
+	dir := filepath.Join(home, ".copilot", ".github", "instructions")
+	matches, err := filepath.Glob(filepath.Join(dir, "*.instructions.md"))
+	if err != nil || len(matches) == 0 {
+		return ""
+	}
+	return dir
 }

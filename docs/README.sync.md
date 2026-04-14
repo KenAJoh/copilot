@@ -35,7 +35,7 @@ jobs:
 
 **State-based repos** (used `nav-pilot install`): The state file (`.github/.nav-pilot-state.json`) tracks exactly which files were installed.
 
-**User-scope installs** (used `nav-pilot install --user`): The state file (`~/.copilot/.nav-pilot-state.json`) tracks installed agents and skills. Paths are remapped during sync (`agents/x` ↔ `.github/agents/x` in source).
+**User-scope installs** (used `nav-pilot install --user`): The state file (`~/.copilot/.nav-pilot-state.json`) tracks installed agents, skills, and instructions. Paths are remapped during sync (`agents/x` ↔ `.github/agents/x` in source). Instructions use `.github/instructions/` in both local and source paths.
 
 **Classic repos** (manually copied files): nav-pilot auto-detects files that also exist in the source repo:
 - `.github/agents/*.agent.md`

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-04-14T06:24:04.641Z",
+  "generatedAt": "2026-04-14T13:35:52.196Z",
   "items": [
     {
       "id": "accessibility-agent",
@@ -560,7 +560,7 @@
       "domain": "backend",
       "filePath": ".github/instructions/database.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/database.instructions.md",
-      "contentHash": "a45c76e4a947a91fedc27365a7151a56a5c3618aa1ed8d7bc53585512cba3abf",
+      "contentHash": "5b4639fd54c7b4f384ccf466d431aaa1a81038d53b16ef75339cf59f18a38bfd",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fdatabase.instructions.md",
       "applyTo": "**/db/migration/**/*.sql",
@@ -623,7 +623,7 @@
       "domain": "backend",
       "filePath": ".github/instructions/kotlin-ktor.instructions.md",
       "rawGitHubUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/kotlin-ktor.instructions.md",
-      "contentHash": "7eaa6e7c6e5cfe25df006c33c5273f27357ae4c851bd1de1729a7dd9226b5d21",
+      "contentHash": "556cd450ae2bedf3af79287dd1516e415dd58a349eed8fbe84d15db0e1c42677",
       "installUrl": "/install/instructions?url=vscode%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "insidersInstallUrl": "/install/instructions?url=vscode-insiders%3Achat-instructions%2Finstall%3Furl%3Dhttps%3A%2F%2Fraw.githubusercontent.com%2Fnavikt%2Fcopilot%2Fmain%2F.github%2Finstructions%2Fkotlin-ktor.instructions.md",
       "applyTo": "**/*.kt",

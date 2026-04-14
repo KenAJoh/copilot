@@ -8,9 +8,12 @@ Endringslogg for nav-pilot agent harness — agenter, skills, instruksjoner, pro
 
 ### Bruker-hjemmappe-installasjon (`--user`)
 
-- Nytt `InstallScope`-konsept (repo vs bruker) — `--user`-flagg installerer agenter og skills til `~/.copilot/`
+- Nytt `InstallScope`-konsept (repo vs bruker) — `--user`-flagg installerer agenter, skills og instruksjoner til `~/.copilot/`
 - Bruker-scope fungerer på tvers av alle repoer uten å modifisere hvert enkelt
-- Instruksjoner og prompts støttes kun i repo-scope
+- Instruksjoner installeres til `~/.copilot/.github/instructions/` og krever `COPILOT_CUSTOM_INSTRUCTIONS_DIRS` (kun Copilot CLI)
+- nav-pilot setter env-variabelen automatisk ved lansering av cplt i interaktiv modus
+- Ny `nav-pilot env`-kommando for shell-profilintegrasjon: `eval "$(nav-pilot env)"`
+- Prompts støttes kun i repo-scope
 - Scope-felt i state-fil for å forhindre kryssforurensning
 
 ### TUI-oppgradering

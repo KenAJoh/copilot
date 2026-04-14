@@ -381,18 +381,18 @@ func installAllFromSource(scope *InstallScope, src *Source, manifest *Manifest, 
 		}
 	}
 
-	total := len(manifest.Agents) + len(manifest.Skills)
+	total := len(manifest.Agents) + len(manifest.Skills) + len(manifest.Instructions)
 	if total == 0 {
-		return fmt.Errorf("no agents or skills found in source")
+		return fmt.Errorf("no agents, skills, or instructions found in source")
 	}
 
 	sourceLabel := "navikt/copilot"
 
 	fmt.Println()
 	if dryRun {
-		fmt.Println(bold(fmt.Sprintf("Dry run: all agents & skills (%d items)", total)))
+		fmt.Println(bold(fmt.Sprintf("Dry run: all agents, skills & instructions (%d items)", total)))
 	} else {
-		fmt.Println(bold(fmt.Sprintf("Installing: all agents & skills (%d items)", total)))
+		fmt.Println(bold(fmt.Sprintf("Installing: all agents, skills & instructions (%d items)", total)))
 	}
 	fmt.Printf("%s %s\n", dim("Source:"), dim(fmt.Sprintf("%s@%s", sourceLabel, src.SHA)))
 	fmt.Printf("%s %s\n", dim("Target:"), dim(scope.Label()))
@@ -432,6 +432,13 @@ func installAllFromSource(scope *InstallScope, src *Source, manifest *Manifest, 
 	fmt.Println()
 	fmt.Println(dim("Agents and skills are now available across all your repos."))
 	fmt.Println(dim("Use @nav-pilot in Copilot Chat or copilot --agent nav-pilot"))
+
+	if len(manifest.Instructions) > 0 && scope.IsUser() {
+		fmt.Println()
+		fmt.Println(dim("Instructions are available when launching cplt via nav-pilot."))
+		fmt.Println(dim("For direct cplt usage, add to your shell profile:"))
+		fmt.Printf("  %s\n", dim("eval \"$(nav-pilot env)\""))
+	}
 
 	return nil
 }

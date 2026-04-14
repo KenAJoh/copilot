@@ -18,7 +18,7 @@ func cmdAdd(itemType, name string, scope *InstallScope, ref, sourceRepo string, 
 	}
 
 	if !scope.SupportsType(itemType) {
-		return fmt.Errorf("type %q is not supported in user scope. Only agents and skills can be installed to ~/.copilot", itemType)
+		return fmt.Errorf("type %q is not supported in user scope. Only agents, skills, and instructions can be installed to ~/.copilot", itemType)
 	}
 
 	if err := validateName(name); err != nil {

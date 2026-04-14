@@ -84,12 +84,12 @@ func listCollectionDirs(sourceDir string) ([]string, error) {
 	return names, nil
 }
 
-// collectAllItems scans the source directory for all agents and skills,
+// collectAllItems scans the source directory for all agents, skills, and instructions,
 // returning a synthetic manifest. Used for user-scope "install everything".
 func collectAllItems(sourceDir string) (*Manifest, error) {
 	m := &Manifest{
 		Name:        "(all)",
-		Description: "All agents and skills",
+		Description: "All agents, skills, and instructions",
 	}
 
 	// Scan agents
@@ -123,6 +123,19 @@ func collectAllItems(sourceDir string) (*Manifest, error) {
 		}
 	}
 	sort.Strings(m.Skills)
+
+	// Scan instructions
+	instrFiles, err := filepath.Glob(filepath.Join(sourceDir, ".github", "instructions", "*.instructions.md"))
+	if err != nil {
+		return nil, fmt.Errorf("scanning instructions: %w", err)
+	}
+	for _, f := range instrFiles {
+		name := strings.TrimSuffix(filepath.Base(f), ".instructions.md")
+		if validateName(name) == nil {
+			m.Instructions = append(m.Instructions, name)
+		}
+	}
+	sort.Strings(m.Instructions)
 
 	return m, nil
 }

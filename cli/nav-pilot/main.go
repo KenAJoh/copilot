@@ -44,13 +44,14 @@ Usage:
 
 Commands:
   install <collection>    Install a curated collection into the current repo
-  install --user          Install all agents & skills to ~/.copilot (user-wide)
+  install --user          Install all agents, skills & instructions to ~/.copilot (user-wide)
   add <type> <name>       Install a single agent, skill, instruction, or prompt
   sync                    Check for updates and optionally apply them
   list                    List available collections and items
   status                  Show what's currently installed
   uninstall               Remove installed collection files
   update                  Update nav-pilot CLI to the latest version
+  env                     Print shell exports for Copilot CLI integration
   feedback                Report a bug or request a feature
   version                 Show version information
 
@@ -60,7 +61,7 @@ Flags:
   -t, --target <dir>      Target repository (default: current directory)
   -r, --ref <ref>         Git branch or tag to install from
   -s, --source <repo>     Source repository (default: navikt/copilot)
-  -u, --user              Install to ~/.copilot (user-wide, agents and skills only)
+  -u, --user              Install to ~/.copilot (user-wide, all agents, skills & instructions)
   --apply                 Apply available updates (sync only)
   --json                  Output results as JSON (sync only)
   -F, --feature           Submit a feature request (feedback only)
@@ -203,6 +204,8 @@ func run(args []string) error {
 		return cmdUninstall(scope, dryRun)
 	case "update":
 		return cmdUpdate()
+	case "env":
+		return cmdEnv()
 	case "feedback":
 		return cmdFeedback(targetDir, featureRequest)
 	case "version", "--version", "-v":

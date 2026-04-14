@@ -181,8 +181,10 @@ func resolveSyncFiles(scope *InstallScope, sourceDir string) ([]syncFile, string
 		var files []syncFile
 		for _, f := range state.Files {
 			sp := f.Path
-			// User scope: local path is "agents/x" but source is ".github/agents/x"
-			if scope.IsUser() {
+			// User scope: local path is "agents/x" but source is ".github/agents/x".
+			// Instructions already have .github/ prefix (e.g. ".github/instructions/x"),
+			// so only prepend when it's not already present.
+			if scope.IsUser() && !strings.HasPrefix(f.Path, ".github/") {
 				sp = filepath.Join(".github", f.Path)
 			}
 			files = append(files, syncFile{
@@ -203,7 +205,7 @@ func resolveSyncFiles(scope *InstallScope, sourceDir string) ([]syncFile, string
 	return autoDetectSyncFiles(scope.RootDir, sourceDir)
 }
 
-// detectNewItems checks if the source has agents/skills not in the state file.
+// detectNewItems checks if the source has agents/skills/instructions not in the state file.
 // Only relevant for "(all)" user-scope installs where new items may appear.
 func detectNewItems(scope *InstallScope, sourceDir string) []string {
 	state, err := readScopedState(scope)
@@ -232,6 +234,12 @@ func detectNewItems(scope *InstallScope, sourceDir string) []string {
 		path := "skills/" + skill + "/"
 		if !installed[path] {
 			newItems = append(newItems, "skill: "+skill)
+		}
+	}
+	for _, instr := range allItems.Instructions {
+		path := ".github/instructions/" + instr + ".instructions.md"
+		if !installed[path] {
+			newItems = append(newItems, "instruction: "+instr)
 		}
 	}
 	return newItems

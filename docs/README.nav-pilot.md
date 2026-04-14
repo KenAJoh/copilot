@@ -21,7 +21,7 @@ nav-pilot                        # interaktiv velger
 nav-pilot install kotlin-backend # eller direkte
 
 # Installer til brukerens hjemmappe (fungerer på tvers av alle repoer)
-nav-pilot install --user fullstack  # installerer agenter og skills til ~/.copilot/
+nav-pilot install --user  # installerer agenter, skills og instruksjoner til ~/.copilot/
 
 # Oppdater nav-pilot
 nav-pilot update
@@ -63,11 +63,19 @@ nav-pilot støtter to installasjonsscopes:
 | Scope | Plassering | Innhold | Bruk |
 |-------|-----------|---------|------|
 | **Repo** (standard) | `.github/` | Agenter, skills, instruksjoner, prompts | Delt med teamet via git |
-| **Bruker** (`--user`) | `~/.copilot/` | Kun agenter og skills | Personlig, fungerer i alle repoer |
+| **Bruker** (`--user`) | `~/.copilot/` | Agenter, skills og instruksjoner | Personlig, fungerer i alle repoer |
 
 - **Repo-scope** er standard — filene sjekkes inn i git og deles med hele teamet.
-- **Bruker-scope** installerer til `~/.copilot/`, som GitHub Copilot leser automatisk. Agenter og skills er tilgjengelige i alle repoer uten å modifisere hvert enkelt repo.
-- Instruksjoner og prompts støttes kun i repo-scope (GitHub Copilot leser ikke disse fra `~/.copilot/`).
+- **Bruker-scope** installerer til `~/.copilot/`. Agenter og skills leses automatisk av alle Copilot-klienter. Instruksjoner krever `COPILOT_CUSTOM_INSTRUCTIONS_DIRS` og fungerer kun med Copilot CLI.
+- Prompts støttes kun i repo-scope.
+
+#### Instruksjoner i bruker-scope
+
+Instruksjoner installeres til `~/.copilot/.github/instructions/`. nav-pilot setter `COPILOT_CUSTOM_INSTRUCTIONS_DIRS` automatisk når du starter cplt via interaktiv modus. For direkte bruk av cplt, legg til i shell-profilen:
+
+```bash
+eval "$(nav-pilot env)"
+```
 
 ## Bruk
 

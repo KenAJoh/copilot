@@ -39,7 +39,7 @@ func ScopeUser() (*InstallScope, error) {
 		RootDir:        rootDir,
 		StateFile:      ".nav-pilot-state.json",
 		PathPrefix:     "",
-		SupportedTypes: []string{"agent", "skill"},
+		SupportedTypes: []string{"agent", "skill", "instruction"},
 	}, nil
 }
 
@@ -56,9 +56,14 @@ func (s *InstallScope) SupportsType(itemType string) bool {
 // DstPath returns the full destination path for an artifact.
 // For repo: <rootDir>/.github/agents/name.agent.md
 // For user: <rootDir>/agents/name.agent.md
+// For user instructions: <rootDir>/.github/instructions/name.instructions.md
+//   (cplt requires .github/instructions/ inside COPILOT_CUSTOM_INSTRUCTIONS_DIRS)
 func (s *InstallScope) DstPath(parts ...string) string {
 	if s.PathPrefix != "" {
 		return filepath.Join(append([]string{s.RootDir, s.PathPrefix}, parts...)...)
+	}
+	if s.needsGitHubPrefix(parts) {
+		return filepath.Join(append([]string{s.RootDir, ".github"}, parts...)...)
 	}
 	return filepath.Join(append([]string{s.RootDir}, parts...)...)
 }
@@ -66,11 +71,22 @@ func (s *InstallScope) DstPath(parts ...string) string {
 // RelPath returns the relative path for state tracking.
 // For repo: .github/agents/name.agent.md
 // For user: agents/name.agent.md
+// For user instructions: .github/instructions/name.instructions.md
 func (s *InstallScope) RelPath(parts ...string) string {
 	if s.PathPrefix != "" {
 		return filepath.Join(append([]string{s.PathPrefix}, parts...)...)
 	}
+	if s.needsGitHubPrefix(parts) {
+		return filepath.Join(append([]string{".github"}, parts...)...)
+	}
 	return filepath.Join(parts...)
+}
+
+// needsGitHubPrefix returns true when user-scope artifacts require a .github/ prefix.
+// Instructions need this because COPILOT_CUSTOM_INSTRUCTIONS_DIRS expects
+// .github/instructions/**/*.instructions.md inside the directory.
+func (s *InstallScope) needsGitHubPrefix(parts []string) bool {
+	return s.Name == "user" && len(parts) > 0 && parts[0] == "instructions"
 }
 
 // SourcePath returns the path to read from in the source repo.
@@ -103,9 +119,9 @@ func (s *InstallScope) ValidateStatePath(p string) error {
 		return nil
 	}
 
-	// User scope: only agents/ and skills/ allowed
-	if !strings.HasPrefix(p, "agents/") && !strings.HasPrefix(p, "skills/") {
-		return fmt.Errorf("path outside agents/ or skills/ not allowed in user scope: %s", p)
+	// User scope: agents/, skills/, and .github/instructions/ allowed
+	if !strings.HasPrefix(p, "agents/") && !strings.HasPrefix(p, "skills/") && !strings.HasPrefix(p, ".github/instructions/") {
+		return fmt.Errorf("path outside agents/, skills/, or .github/instructions/ not allowed in user scope: %s", p)
 	}
 	return nil
 }
@@ -128,6 +144,15 @@ func (s *InstallScope) CleanupDirs() {
 		entries, err := os.ReadDir(dir)
 		if err == nil && len(entries) == 0 {
 			os.Remove(dir)
+		}
+	}
+	// Instructions live under .github/instructions/ in user scope
+	instrDir := filepath.Join(s.RootDir, ".github", "instructions")
+	if entries, err := os.ReadDir(instrDir); err == nil && len(entries) == 0 {
+		os.Remove(instrDir)
+		// Remove .github/ if now empty too
+		if entries, err := os.ReadDir(filepath.Join(s.RootDir, ".github")); err == nil && len(entries) == 0 {
+			os.Remove(filepath.Join(s.RootDir, ".github"))
 		}
 	}
 }
