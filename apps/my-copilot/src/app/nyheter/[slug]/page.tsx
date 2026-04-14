@@ -43,7 +43,7 @@ export default async function ArticlePage({ params }: Props) {
 
   if (!article) notFound();
 
-  const categoryConfig = CATEGORY_CONFIG[article.category];
+  const categoryConfig = CATEGORY_CONFIG[article.category] ?? { label: article.category, variant: "info" as const };
 
   return (
     <main>
