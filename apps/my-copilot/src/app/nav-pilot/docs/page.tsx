@@ -119,14 +119,15 @@ const COLLECTIONS = [
     name: "kotlin-backend",
     description: "Kotlin/Ktor og Spring Boot på Nais",
     agents: 6,
-    skills: 10,
+    skills: 13,
     bestFor: "Backend-API-er og hendelseskonsumenter",
     details: {
       agents: "auth, kafka, nais, observability, security-champion, nav-pilot",
       skills:
-        "api-design, flyway-migration, kotlin-app-config, observability-setup, security-review, tokenx-auth, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
-      instructions: "kotlin-ktor, kotlin-spring, testing, testing-kotlin, github-actions, docker, database",
-      prompts: "spring-boot-endpoint, kafka-topic, nais-manifest",
+        "api-design, flyway-migration, java-to-kotlin, kotlin-app-config, ktor-scaffold, observability-setup, security-review, threat-model, tokenx-auth, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
+      instructions:
+        "kotlin-ktor, kotlin-spring, security-owasp, testing, testing-kotlin, github-actions, docker, database",
+      prompts: "ktor-endpoint, spring-boot-endpoint, kafka-topic, nais-manifest",
     },
   },
   {
@@ -139,7 +140,8 @@ const COLLECTIONS = [
       agents: "accessibility, aksel, forfatter, nav-pilot",
       skills:
         "aksel-spacing, playwright-testing, web-design-reviewer, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
-      instructions: "nextjs-aksel, testing, testing-typescript, accessibility, github-actions, docker",
+      instructions:
+        "nextjs-aksel, performance, testing, testing-typescript, accessibility, github-actions, docker",
       prompts: "aksel-component, nextjs-api-route, nais-manifest",
     },
   },
@@ -147,30 +149,31 @@ const COLLECTIONS = [
     name: "fullstack",
     description: "Komplett stack (backend + frontend)",
     agents: 10,
-    skills: 13,
+    skills: 16,
     bestFor: "Team som eier hele stacken",
     details: {
       agents:
         "accessibility, aksel, auth, code-review, forfatter, kafka, nais, observability, security-champion, nav-pilot",
       skills:
-        "aksel-spacing, api-design, flyway-migration, kotlin-app-config, observability-setup, playwright-testing, security-review, tokenx-auth, web-design-reviewer, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
+        "aksel-spacing, api-design, flyway-migration, java-to-kotlin, kotlin-app-config, ktor-scaffold, observability-setup, playwright-testing, security-review, threat-model, tokenx-auth, web-design-reviewer, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
       instructions:
-        "kotlin-ktor, kotlin-spring, nextjs-aksel, testing, testing-kotlin, testing-typescript, accessibility, github-actions, docker, database",
-      prompts: "spring-boot-endpoint, kafka-topic, nais-manifest, aksel-component, nextjs-api-route",
+        "kotlin-ktor, kotlin-spring, golang, nextjs-aksel, performance, security-owasp, testing, testing-kotlin, testing-typescript, accessibility, github-actions, docker, database",
+      prompts:
+        "ktor-endpoint, spring-boot-endpoint, kafka-topic, nais-manifest, aksel-component, nextjs-api-route, golang-service",
     },
   },
   {
     name: "platform",
-    description: "Nais, observability, sikkerhet",
+    description: "Nais, observability, sikkerhet og Go",
     agents: 4,
-    skills: 7,
+    skills: 8,
     bestFor: "Plattform- og DevOps-team",
     details: {
       agents: "nais, observability, security-champion, nav-pilot",
       skills:
-        "observability-setup, security-review, workstation-security, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
-      instructions: "github-actions, docker",
-      prompts: "nais-manifest",
+        "observability-setup, security-review, threat-model, workstation-security, nav-plan, nav-deep-interview, nav-architecture-review, nav-troubleshoot",
+      instructions: "golang, security-owasp, github-actions, docker",
+      prompts: "golang-service, nais-manifest",
     },
   },
 ];
@@ -744,7 +747,7 @@ function CollectionsSection() {
                 <BodyShort size="small" className="mb-3" style={{ color: "#64748b" }}>
                   {c.description}
                 </BodyShort>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {counts.map((cat) => (
                     <span
                       key={cat.label}
@@ -755,6 +758,34 @@ function CollectionsSection() {
                     </span>
                   ))}
                 </div>
+                <details className="text-xs">
+                  <summary className="cursor-pointer font-semibold" style={{ color: "#64748b" }}>
+                    Vis innhold
+                  </summary>
+                  <div className="mt-2 space-y-1.5" style={{ color: "#64748b" }}>
+                    {[
+                      { label: "Agenter", items: c.details.agents },
+                      { label: "Skills", items: c.details.skills },
+                      { label: "Instruksjoner", items: c.details.instructions },
+                      { label: "Prompts", items: c.details.prompts },
+                    ].map((group) => (
+                      <div key={group.label}>
+                        <span className="font-semibold">{group.label}:</span>{" "}
+                        {group.items.split(", ").map((item, j) => (
+                          <span key={item}>
+                            {j > 0 && ", "}
+                            <code
+                              className="font-mono rounded px-1 py-0.5"
+                              style={{ background: "#f1f5f9", fontSize: "0.7rem" }}
+                            >
+                              {item.trim()}
+                            </code>
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </details>
               </Box>
             );
           })}

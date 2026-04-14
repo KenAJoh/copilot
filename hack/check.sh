@@ -5,5 +5,6 @@ for app in $APPS; do
 done
 echo "📄 docs:" && mise run docs:check && echo ""
 echo "🔧 skills:" && mise run skills:lint -- -q && echo ""
+echo "📦 collections:" && mise run collections:lint -- -q && echo ""
 echo "🧭 nav-pilot:" && mise run nav-pilot:check && echo ""
 echo "✅ All checks passed"
