@@ -13,8 +13,10 @@ function safeHref(url: string): string {
   return "#";
 }
 
+const DEFAULT_CATEGORY_CONFIG = { label: "Annet", variant: "info" as const };
+
 export function NewsCard({ item }: { item: NewsItem }) {
-  const categoryConfig = CATEGORY_CONFIG[item.category];
+  const categoryConfig = CATEGORY_CONFIG[item.category] ?? DEFAULT_CATEGORY_CONFIG;
   const isLink = item.type === "link";
   const href = isLink ? safeHref(item.url!) : `/nyheter/${item.slug}`;
   const linkProps = isLink ? { target: "_blank" as const, rel: "noopener noreferrer" } : {};
@@ -59,7 +61,7 @@ export function NewsCard({ item }: { item: NewsItem }) {
 }
 
 export function FeaturedNewsCard({ item }: { item: NewsItem }) {
-  const categoryConfig = CATEGORY_CONFIG[item.category];
+  const categoryConfig = CATEGORY_CONFIG[item.category] ?? DEFAULT_CATEGORY_CONFIG;
   const isLink = item.type === "link";
   const href = isLink ? safeHref(item.url!) : `/nyheter/${item.slug}`;
   const linkProps = isLink ? { target: "_blank" as const, rel: "noopener noreferrer" } : {};
