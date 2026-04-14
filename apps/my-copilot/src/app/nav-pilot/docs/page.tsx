@@ -87,6 +87,7 @@ const DOC_SECTIONS: TocItem[] = [
     label: "CLI-referanse",
     children: [
       { id: "installer-cli", label: "Installer CLI" },
+      { id: "oppgrader-cli", label: "Oppgrader CLI" },
       { id: "kommandooversikt", label: "Kommandooversikt" },
     ],
   },
@@ -1087,6 +1088,44 @@ function CliReferenceSection() {
             <CodeBlock compact>{`brew install navikt/tap/nav-pilot`}</CodeBlock>
             <AltInstall />
           </div>
+        </div>
+
+        {/* Upgrade */}
+        <div id="oppgrader-cli">
+          <LinkableHeading size="small" level="3">
+            Oppgrader CLI
+          </LinkableHeading>
+          <BodyLong className="mt-2" style={{ color: "#475569" }}>
+            nav-pilot sjekker automatisk om det finnes en nyere versjon ved oppstart. Du kan oppgradere på to måter:
+          </BodyLong>
+          <div className="mt-4 space-y-3">
+            {[
+              { label: "Selvoppdatering", cmd: "nav-pilot update" },
+              { label: "Via Homebrew", cmd: "brew update && brew upgrade nav-pilot" },
+            ].map((item) => (
+              <div key={item.cmd}>
+                <BodyShort size="small" style={{ color: "#94a3b8", fontSize: "0.75rem" }}>
+                  {item.label}
+                </BodyShort>
+                <CodeBlock compact>{item.cmd}</CodeBlock>
+              </div>
+            ))}
+          </div>
+          <Box background="neutral-soft" padding="space-16" borderRadius="8" className="mt-4">
+            <Heading size="xsmall" level="4" style={{ color: "#334155" }}>
+              Feilsøking: «already installed»
+            </Heading>
+            <BodyLong size="small" className="mt-2" style={{ color: "#475569" }}>
+              Hvis <code className="font-mono text-xs">brew upgrade</code> sier at nav-pilot allerede er oppdatert men
+              versjonen er gammel, skyldes det at den lokale tap-cachen ikke er oppdatert. Kjør{" "}
+              <code className="font-mono text-xs">brew update</code> først. Dersom det feiler med tilgangsfeil:
+            </BodyLong>
+            <div className="mt-2">
+              <CodeBlock
+                compact
+              >{`sudo chown -R $(whoami) /opt/homebrew\nbrew update && brew upgrade nav-pilot`}</CodeBlock>
+            </div>
+          </Box>
         </div>
 
         {/* Command reference */}
