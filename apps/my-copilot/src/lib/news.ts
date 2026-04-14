@@ -2,7 +2,21 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-export type NewsCategory = "copilot" | "nav" | "praksis";
+export type NewsCategory = "copilot" | "nav" | "nav-pilot" | "praksis";
+
+const VALID_CATEGORIES: Set<string> = new Set<string>(["copilot", "nav", "nav-pilot", "praksis"]);
+
+function isValidCategory(value: unknown): value is NewsCategory {
+  return typeof value === "string" && VALID_CATEGORIES.has(value);
+}
+
+function parseCategory(value: unknown, slug: string): NewsCategory {
+  if (isValidCategory(value)) return value;
+  if (value !== undefined) {
+    console.warn(`Unknown news category "${value}" in ${slug}.md, falling back to "copilot"`);
+  }
+  return "copilot";
+}
 
 export interface NewsItem {
   slug: string;
@@ -39,7 +53,7 @@ function parseNewsFile(fileName: string): NewsItem {
     title: data.title,
     date: data.date instanceof Date ? data.date.toISOString().split("T")[0] : data.date,
     draft: data.draft === true,
-    category: data.category ?? "copilot",
+    category: parseCategory(data.category, slug),
     excerpt: data.excerpt ?? "",
     tags: data.tags ?? [],
     type: hasUrl && !hasContent ? "link" : "article",
@@ -71,7 +85,7 @@ export function getArticle(slug: string): (NewsItem & { content: string }) | nul
     title: data.title,
     date: data.date instanceof Date ? data.date.toISOString().split("T")[0] : data.date,
     draft: data.draft === true,
-    category: data.category ?? "copilot",
+    category: parseCategory(data.category, slug),
     excerpt: data.excerpt ?? "",
     tags: data.tags ?? [],
     type: "article",
@@ -99,5 +113,6 @@ export function getArticleSlugs(): string[] {
 export const CATEGORY_CONFIG: Record<NewsCategory, { label: string; variant: "info" | "success" | "warning" }> = {
   copilot: { label: "Copilot", variant: "info" },
   nav: { label: "Nav", variant: "success" },
+  "nav-pilot": { label: "Nav-pilot", variant: "info" },
   praksis: { label: "Praksis", variant: "warning" },
 };

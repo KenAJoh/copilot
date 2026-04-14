@@ -2,7 +2,7 @@ import { CATEGORY_CONFIG, type NewsCategory } from "./news";
 
 describe("CATEGORY_CONFIG", () => {
   it("should have config for all known categories", () => {
-    const categories: NewsCategory[] = ["copilot", "nav", "praksis"];
+    const categories: NewsCategory[] = ["copilot", "nav", "nav-pilot", "praksis"];
 
     for (const category of categories) {
       const config = CATEGORY_CONFIG[category];
@@ -23,5 +23,14 @@ describe("CATEGORY_CONFIG", () => {
     for (const config of Object.values(CATEGORY_CONFIG)) {
       expect(validVariants).toContain(config.variant);
     }
+  });
+
+  it("should have an entry for every value in NewsCategory", () => {
+    const configKeys = Object.keys(CATEGORY_CONFIG);
+    expect(configKeys).toContain("copilot");
+    expect(configKeys).toContain("nav");
+    expect(configKeys).toContain("nav-pilot");
+    expect(configKeys).toContain("praksis");
+    expect(configKeys).toHaveLength(4);
   });
 });
