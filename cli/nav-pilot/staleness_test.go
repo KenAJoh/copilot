@@ -98,6 +98,22 @@ func TestCheckStaleness_UsesCachedResult(t *testing.T) {
 	}
 }
 
+func TestCheckStaleness_CachedOlderVersionNoWarning(t *testing.T) {
+	setupTestCache(t)
+
+	// Cache has an older version from before the user updated
+	writeCache(&stalenessCache{
+		LastChecked:   time.Now().UTC().Format(time.RFC3339),
+		LatestVersion: "2026.04.14-120650-71dcb83",
+	})
+
+	// Current binary is newer than the cached "latest"
+	result := checkStaleness("2026.04.14-202800-a25f6c3")
+	if result != "" {
+		t.Errorf("expected no warning when current is newer than cached, got %q", result)
+	}
+}
+
 func TestCheckStaleness_ExpiredCacheRefetches(t *testing.T) {
 	setupTestCache(t)
 

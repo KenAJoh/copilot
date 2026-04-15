@@ -77,7 +77,7 @@ func checkStaleness(installedVersion string) string {
 		if t, err := time.Parse(time.RFC3339, cache.LastChecked); err == nil {
 			if time.Since(t) < checkInterval {
 				// Within cooldown — use cached result
-				if cache.LatestVersion != "" && cache.LatestVersion != installedVersion {
+				if cache.LatestVersion != "" && versionNewer(cache.LatestVersion, installedVersion) {
 					return cache.LatestVersion
 				}
 				return ""
@@ -102,7 +102,7 @@ func checkStaleness(installedVersion string) string {
 		LatestVersion: latest,
 	})
 
-	if latest != installedVersion {
+	if versionNewer(latest, installedVersion) {
 		return latest
 	}
 	return ""

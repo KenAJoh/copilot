@@ -42,7 +42,7 @@ func cmdUpdate() error {
 		return fmt.Errorf("could not check for updates: %w", err)
 	}
 
-	if current == latest {
+	if !versionNewer(latest, current) {
 		fmt.Printf("✓ nav-pilot is up to date (%s)\n", current)
 		return nil
 	}
