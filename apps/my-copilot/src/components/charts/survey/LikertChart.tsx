@@ -31,10 +31,7 @@ const COLORS = {
 // Round percentages so segments always sum to exactly 100
 function roundToHundred(values: number[]): number[] {
   const floored = values.map(Math.floor);
-  const remainder = Math.min(
-    100 - floored.reduce((a, b) => a + b, 0),
-    values.length,
-  );
+  const remainder = Math.min(100 - floored.reduce((a, b) => a + b, 0), values.length);
   const decimals = values.map((v, i) => ({ i, d: v - floored[i] }));
   decimals.sort((a, b) => b.d - a.d);
   for (let j = 0; j < remainder; j++) {

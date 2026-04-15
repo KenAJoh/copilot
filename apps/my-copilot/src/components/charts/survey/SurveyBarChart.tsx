@@ -65,8 +65,7 @@ export const SurveyBarChart: React.FC<SurveyBarChartProps> = ({
         max: maxValue,
         ticks: {
           ...commonHorizontalBarOptions.scales.x.ticks,
-          callback: (v: string | number) =>
-            showPercent ? `${Math.round(((v as number) * 100) / safeTotal)} %` : v,
+          callback: (v: string | number) => (showPercent ? `${Math.round(((v as number) * 100) / safeTotal)} %` : v),
         },
       },
     },

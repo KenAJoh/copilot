@@ -300,10 +300,7 @@ export default function SurveyArticlePage() {
             </article>
 
             <Box paddingBlock="space-8" className="print-hidden">
-              <NextLink
-                href="/"
-                className="inline-flex items-center gap-1.5 text-sm no-underline hover:underline"
-              >
+              <NextLink href="/" className="inline-flex items-center gap-1.5 text-sm no-underline hover:underline">
                 <ArrowLeftIcon aria-hidden fontSize="1rem" />
                 Alle nyheter
               </NextLink>
