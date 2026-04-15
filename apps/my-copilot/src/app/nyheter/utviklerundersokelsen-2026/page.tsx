@@ -297,6 +297,11 @@ export default function SurveyArticlePage() {
                 Som med alle undersøkelser basert på selvseleksjon, bør vi lese resultatene som et nyttig bilde av
                 holdningene blant engasjerte utviklere — ikke nødvendigvis representative for alle 500+ brukere.
               </BodyLong>
+              <BodyLong spacing>
+                <strong>Om bruk av AI i denne artikkelen.</strong> Tekst og visualiseringer ble utarbeidet med hjelp av
+                AI-verktøy. Statistikken er hentet fra Microsoft Forms og bearbeidet med Python. Alle resultater er
+                verifisert og kvalitetssikret av mennesker.
+              </BodyLong>
             </article>
 
             <Box paddingBlock="space-8" className="print-hidden">
