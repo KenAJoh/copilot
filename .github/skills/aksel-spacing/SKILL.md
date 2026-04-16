@@ -1,11 +1,11 @@
 ---
 name: aksel-spacing
-description: Lag responsive layouts med Aksel Design System v8 - spacing tokens, layout primitives (Box, HStack, VStack, HGrid, Page, Bleed) og ResponsiveProp
+description: Lag responsive layouts med Aksel Design System (v8+) - spacing tokens, layout primitives (Box, HStack, VStack, HGrid, Page, Bleed) og ResponsiveProp
 ---
 
 # Aksel: Responsivt layout med spacing tokens
 
-Referanse for å bygge responsive layouts med Aksel v8. Hent oppdatert dokumentasjon fra [https://aksel.nav.no/llm.md](https://aksel.nav.no/llm.md) ved behov.
+Referanse for å bygge responsive layouts med Aksel v8+. Hent oppdatert dokumentasjon fra [https://aksel.nav.no/llm.md](https://aksel.nav.no/llm.md) ved behov.
 
 > **v8-BRUDD:** Tokens = pixelverdi direkte. `--ax-space-4` = 4px (ikke 16px!). Bruk alltid tallverdien som matcher ønsket px.
 
