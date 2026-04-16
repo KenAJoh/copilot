@@ -211,11 +211,11 @@ Conditionally skjul/vis innhold per breakpoint. Bruker CSS `display`-egenskap (i
 ```tsx
 import { Show, Hide } from "@navikt/ds-react";
 
-<Hide below="md"><DesktopMenu /></Hide>   // skjult under md
-<Show below="md"><MobileMenu /></Show>    // synlig under md
+<Hide below="md"><DesktopMenu /></Hide>   
+<Show below="md"><MobileMenu /></Show>    
 
-<Hide above="lg"><CompactView /></Hide>   // skjult over lg
-<Show above="lg"><FullView /></Show>      // synlig over lg
+<Hide above="lg"><CompactView /></Hide>   
+<Show above="lg"><FullView /></Show>      
 ```
 
 Props: `above` | `below` (breakpoint-nøkkel: `sm` | `md` | `lg` | `xl` | `2xl`)
