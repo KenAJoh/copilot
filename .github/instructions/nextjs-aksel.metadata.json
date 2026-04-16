@@ -1,0 +1,9 @@
+{
+  "displayName": "Next.js/Aksel Development",
+  "description": "Aksel spacing tokens (never Tailwind p-/m-), mobile-first responsive design.",
+  "domain": "frontend",
+  "tags": ["aksel", "design-system", "nextjs", "react", "ui"],
+  "examples": [
+    "Lag en responsiv søknadsoversikt med Aksel Box og VStack"
+  ]
+}

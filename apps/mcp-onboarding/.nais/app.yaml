@@ -29,6 +29,9 @@ spec:
     timeout: 1
     periodSeconds: 10
     failureThreshold: 3
+  prometheus:
+    enabled: true
+    path: /metrics
   ingresses:
     {{#each ingresses}}
     - {{this}}
@@ -42,3 +45,8 @@ spec:
       value: "{{log_level}}"
   envFrom:
     - secret: mcp-onboarding-secrets
+  accessPolicy:
+    outbound:
+      external:
+        - host: api.github.com
+        - host: github.com

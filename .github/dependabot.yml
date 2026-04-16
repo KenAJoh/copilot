@@ -1,27 +1,114 @@
 version: 2
 updates:
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
-      gha:
+      github-actions:
         patterns:
           - "*"
-    cooldown:
-      default-days: 7
+    open-pull-requests-limit: 5
 
+  # my-copilot (Next.js)
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/apps/my-copilot"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
     groups:
-      npm:
+      nextjs-core:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+      navikt:
+        patterns:
+          - "@navikt/*"
+      dev-dependencies:
+        dependency-type: "development"
+      production-dependencies:
+        dependency-type: "production"
+        exclude-patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+          - "@navikt/*"
+    ignore:
+      - dependency-name: "eslint"
+        versions: [">=10"]
+    open-pull-requests-limit: 5
+
+  # copilot-metrics (Go)
+  - package-ecosystem: "gomod"
+    directory: "/apps/copilot-metrics"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
+    groups:
+      copilot-metrics-go:
         patterns:
           - "*"
-    cooldown:
-      default-days: 7
+    open-pull-requests-limit: 5
+
+  # mcp-onboarding (Go)
+  - package-ecosystem: "gomod"
+    directory: "/apps/mcp-onboarding"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
+    groups:
+      mcp-onboarding-go:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5
+
+  # mcp-registry (Go)
+  - package-ecosystem: "gomod"
+    directory: "/apps/mcp-registry"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
+    groups:
+      mcp-registry-go:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5
+
+  # nav-pilot installer (Go)
+  - package-ecosystem: "gomod"
+    directory: "/cli/nav-pilot"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "navikt/copilot"
+    groups:
+      nav-pilot-go:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 5

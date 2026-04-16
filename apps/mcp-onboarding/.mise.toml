@@ -1,7 +1,8 @@
 [tools]
-go = "1.25"
-golangci-lint = "latest"
+go = "1.26"
+golangci-lint = "2.10.1"
 "go:honnef.co/go/tools/cmd/staticcheck" = "latest"
+fnox = "latest"
 
 [tasks.version]
 description = "Generate version string (YYYYMMDD-gitsha)"
@@ -10,6 +11,10 @@ run = "echo $(date +%Y.%m.%d)-$(date +%H.%M)-$(git rev-parse --short HEAD)"
 [tasks.install]
 description = "Download dependencies"
 run = "go mod download"
+
+[tasks.update]
+description = "Update all Go dependencies"
+run = ["go get -u ./...", "go mod tidy"]
 
 [tasks.build]
 description = "Build the Go application"
@@ -57,24 +62,7 @@ run = "go run ./cmd/generate-manifest"
 
 [tasks."generate:check"]
 description = "Check if generated manifest is up to date"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "Generating manifest..."
-go run ./cmd/generate-manifest
-
-if git diff --exit-code internal/discovery/copilot-manifest.json > /dev/null 2>&1; then
-  echo "✅ Manifest is up to date"
-  exit 0
-else
-  echo "❌ Manifest is out of date. Run 'mise generate' to update it."
-  echo ""
-  echo "Differences:"
-  git diff internal/discovery/copilot-manifest.json
-  exit 1
-fi
-'''
+run = "bash hack/generate-check.sh"
 
 [tasks.check]
 description = "Run all checks (fmt, vet, staticcheck, lint, test)"
@@ -86,41 +74,12 @@ depends = ["check", "generate", "build", "test", "docker:build"]
 
 [tasks.validate]
 description = "Validate allowlist.json by starting server"
-run = '''
-#!/usr/bin/env bash
-set -e
-echo "Validating allowlist.json..."
-
-if curl -sf http://localhost:8080/health > /dev/null 2>&1; then
-  echo "Using existing server on port 8080..."
-  if curl -f http://localhost:8080/v0.1/servers > /dev/null 2>&1; then
-    echo "✅ Validation successful"
-    exit 0
-  else
-    echo "❌ Validation failed"
-    exit 1
-  fi
-fi
-
-go run . &
-SERVER_PID=$!
-sleep 3
-if curl -f http://localhost:8080/health > /dev/null 2>&1 && \
-   curl -f http://localhost:8080/v0.1/servers > /dev/null 2>&1; then
-  echo "✅ Validation successful"
-  EXIT_CODE=0
-else
-  echo "❌ Validation failed"
-  EXIT_CODE=1
-fi
-kill $SERVER_PID 2>/dev/null || true
-exit $EXIT_CODE
-'''
+run = "bash hack/validate.sh"
 
 [tasks.dev]
 description = "Run with development settings (DEBUG log level)"
 env = { LOG_LEVEL = "DEBUG", LOGGED_ENDPOINTS = "/,/health,/ready,/v0.1/servers" }
-run = "go run ."
+run = "fnox exec -- go run ."
 
 [tasks.clean]
 description = "Clean build artifacts and test outputs"
@@ -132,11 +91,7 @@ run = ["go mod download", "go mod verify", "go mod tidy"]
 
 [tasks."docker:build"]
 description = "Build Docker image"
-run = '''
-VERSION=${VERSION:-$(git rev-parse --short HEAD)}
-docker build -t ghcr.io/navikt/mcp-onboarding:$VERSION .
-docker tag ghcr.io/navikt/mcp-onboarding:$VERSION ghcr.io/navikt/mcp-onboarding:latest
-'''
+run = "bash hack/docker-build.sh"
 
 [tasks."docker:run"]
 description = "Run Docker container locally"

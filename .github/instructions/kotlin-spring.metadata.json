@@ -1,0 +1,9 @@
+{
+  "displayName": "Kotlin/Spring Development",
+  "description": "Spring Boot patterns: @RestController, @Service, Spring Data.",
+  "domain": "backend",
+  "tags": ["kotlin", "spring", "backend"],
+  "examples": [
+    "Lag en REST-controller i kursportalen-backend med Spring Boot og validering"
+  ]
+}

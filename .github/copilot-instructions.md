@@ -2,11 +2,12 @@
 
 ## Repository Overview
 
-Monorepo containing NAV's GitHub Copilot ecosystem tools:
+Monorepo containing Nav's GitHub Copilot ecosystem tools:
 
 - **my-copilot** - Self-service portal for managing Copilot subscriptions (Next.js 16)
+- **copilot-metrics** - Naisjob that populates BigQuery with daily Copilot usage metrics (Go)
 - **mcp-onboarding** - Reference MCP server with GitHub OAuth (Go)
-- **mcp-registry** - Public registry for NAV-approved MCP servers (Go)
+- **mcp-registry** - Public registry for Nav-approved MCP servers (Go)
 
 All applications deployed on NAIS platform with environment-specific configurations.
 
@@ -96,7 +97,7 @@ Based on [GitHub's analysis of 2,500+ repositories](https://github.blog/ai-and-m
 
 - **Commands early**: Put executable commands near the top, not buried at the bottom
 - **Code over prose**: Show real code examples, not descriptions of what code should do
-- **Specific stack**: Include versions (`Next.js 16`, `Go 1.23`, `Kotlin 2.0`)
+- **Specific stack**: Include versions (`Next.js 16`, `Go 1.26`, `Kotlin 2.0`)
 - **Actionable boundaries**: "Never commit secrets" not "I cannot access secrets"
 
 ---
@@ -115,8 +116,8 @@ Working directory: `apps/my-copilot`
 
 **Available tasks:**
 
-- `mise check` - Run all checks (ESLint, TypeScript, Prettier, Knip, Jest)
-- `mise test` - Run Jest tests
+- `mise check` - Run all checks (ESLint, TypeScript, Prettier, Knip, Vitest)
+- `mise test` - Run Vitest tests
 - `mise dev` - Start Next.js dev server (http://localhost:3000)
 
 ### Tech Stack
@@ -126,7 +127,8 @@ Working directory: `apps/my-copilot`
 - Nav Design System (@navikt/ds-react)
 - Tailwind CSS v4.1
 - Octokit for GitHub API
-- Jest for testing
+- BigQuery for usage analytics (via @google-cloud/bigquery)
+- Vitest for testing
 
 ### File Structure
 
@@ -140,6 +142,8 @@ apps/my-copilot/src/
 └── lib/             # Utilities and business logic
     ├── auth.ts      # Azure AD JWT validation
     ├── github.ts    # GitHub API client (Octokit)
+    ├── bigquery.ts  # BigQuery client for usage metrics
+    ├── cached-bigquery.ts # Cached BigQuery queries
     └── data-utils.ts # Data aggregation
 ```
 
@@ -157,7 +161,7 @@ const user = await getUser(false); // returns null if not auth
 ```typescript
 // ✅ Explicit error handling
 export async function GET() {
-  const { usage, error } = await getCopilotUsage("navikt");
+  const { usage, error } = await getCachedBigQueryUsage();
   if (error) return NextResponse.json({ error }, { status: 500 });
   return NextResponse.json(usage);
 }
@@ -195,7 +199,7 @@ formatNumber(151354); // "151 354" (Norwegian locale)
 
 ### Testing
 
-- Framework: Jest with TypeScript
+- Framework: Vitest with TypeScript
 - Location: `*.test.ts` files next to source
 - Run: `pnpm test` in `apps/my-copilot`
 - Focus on `lib/` utilities
@@ -279,7 +283,7 @@ VS Code (MCP Client) ←→ mcp-onboarding (OAuth + MCP Server) ←→ GitHub OA
 
 ## apps/mcp-registry (Go + Public API)
 
-Public registry service for NAV-approved MCP servers, implementing MCP Registry v0.1 specification.
+Public registry service for Nav-approved MCP servers, implementing MCP Registry v0.1 specification.
 
 ### Commands
 

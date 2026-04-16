@@ -1,6 +1,6 @@
 ---
 name: flyway-migration
-description: Database migration patterns using Flyway with versioned SQL scripts
+description: Databasemigrasjonsmønstre med Flyway og versjonerte SQL-skript
 ---
 
 # Flyway Migration Skill

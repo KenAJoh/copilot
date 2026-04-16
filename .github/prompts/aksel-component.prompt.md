@@ -1,25 +1,25 @@
 ---
 name: aksel-component
-description: Scaffold a responsive React component using Aksel Design System with correct spacing tokens
+description: Scaffold en responsiv React-komponent med Aksel Design System og riktige spacing-tokens
 ---
 
-You are creating a new React component using Nav's Aksel Design System.
+Du lager en ny React-komponent med Navs Aksel Design System.
 
-## CRITICAL Rules
+## Viktige regler
 
-1. **NEVER use Tailwind padding/margin utilities** (`p-*`, `m-*`, `px-*`, `py-*`)
-2. **ALWAYS use Aksel spacing tokens** with `space-` prefix
-3. **Mobile-first responsive design** with breakpoints: `xs`, `sm`, `md`, `lg`, `xl`
-4. **Use Aksel components**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
+1. **Aldri bruk Tailwind padding/margin** (`p-*`, `m-*`, `px-*`, `py-*`)
+2. **Alltid bruk Aksel spacing-tokens** med `space-`-prefiks
+3. **Mobil først**, responsivt design med breakpoints: `xs`, `sm`, `md`, `lg`, `xl`
+4. **Bruk Aksel-komponenter**: Box, VStack, HGrid, Heading, BodyShort, Button, etc.
 
-## Ask the User
+## Spør brukeren
 
-1. **Component name**: What is the component called? (PascalCase)
-2. **Purpose**: What does the component do?
-3. **Layout**: Card, list item, form, dashboard section, etc.?
-4. **Responsive**: Should layout change on different screen sizes?
+1. **Komponentnavn**: Hva heter komponenten? (PascalCase)
+2. **Formål**: Hva gjør komponenten?
+3. **Layout**: Card, listeelement, form, dashboard-seksjon, etc.?
+4. **Responsiv**: Skal layouten endre seg på ulike skjermstørrelser?
 
-## Component Template
+## Komponentmal
 
 ```tsx
 import { Box, VStack, Heading, BodyShort } from "@navikt/ds-react";
@@ -27,7 +27,7 @@ import { Box, VStack, Heading, BodyShort } from "@navikt/ds-react";
 interface {ComponentName}Props {
   title: string;
   description?: string;
-  // Add more props as needed
+  // Legg til flere props etter behov
 }
 
 export function {ComponentName}({
@@ -55,9 +55,9 @@ export function {ComponentName}({
 }
 ```
 
-## Common Patterns
+## Vanlige mønstre
 
-### Card Component
+### Card-komponent
 
 ```tsx
 <Box
@@ -75,7 +75,7 @@ export function {ComponentName}({
 </Box>
 ```
 
-### Responsive Grid Layout
+### Responsiv grid-layout
 
 ```tsx
 <HGrid columns={{ xs: 1, md: 2, lg: 3 }} gap="4">
@@ -85,7 +85,7 @@ export function {ComponentName}({
 </HGrid>
 ```
 
-### Form Section
+### Form-seksjon
 
 ```tsx
 <Box paddingBlock="space-24">
@@ -94,9 +94,9 @@ export function {ComponentName}({
       Form Title
     </Heading>
     <VStack gap="4">
-      <TextField label="Field 1" />
-      <TextField label="Field 2" />
-      <Button>Submit</Button>
+      <TextField label="Felt 1" />
+      <TextField label="Felt 2" />
+      <Button>Send inn</Button>
     </VStack>
   </VStack>
 </Box>

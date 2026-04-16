@@ -1,0 +1,9 @@
+{
+  "displayName": "Dockerfile Standards",
+  "description": "Multi-stage builds, distroless base images, layer caching, non-root.",
+  "domain": "platform",
+  "tags": ["docker", "dockerfile", "container", "multi-stage"],
+  "examples": [
+    "Lag en multi-stage Dockerfile for en Spring Boot-applikasjon"
+  ]
+}

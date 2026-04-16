@@ -1,78 +1,127 @@
 # Root-level mise tasks for the monorepo
-# These tasks orchestrate running tasks across all apps
+#
+# Orchestrates running tasks across all applications.
+# Each app defines its own tasks in apps/<name>/.mise.toml.
+#
+# Standard tasks (delegated to each app):
+#   check, test, build, update
+#
+# Selective tasks (only apps that need them):
+#   generate — mcp-onboarding, my-copilot
+#
+# Root-only tasks:
+#   docs:*    — documentation generation and checking
+#   ratchet:* — GitHub Actions SHA pinning
+#   all       — full pipeline: generate → check → build
+
+[tools]
+"go:github.com/sethvargo/ratchet" = "latest"
+shellcheck = "latest"
+
+[env]
+APPS = "copilot-adoption copilot-metrics mcp-onboarding mcp-registry my-copilot"
+APPS_WITH_GENERATE = "mcp-onboarding my-copilot"
+
+# ─── Pipeline ────────────────────────────────────────────────────────────────
+
+[tasks.all]
+description = "Full pipeline: generate, check, build"
+run = "bash hack/all.sh"
+
+# ─── Standard tasks (delegated to all apps) ──────────────────────────────────
 
 [tasks.check]
 description = "Run all checks across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "🔍 Running checks across all apps..."
-echo ""
-
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise check)
-echo ""
-
-echo "📦 mcp-registry:"
-(cd apps/mcp-registry && mise check)
-echo ""
-
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise check)
-echo ""
-
-echo "✅ All checks passed"
-'''
+run = "bash hack/check.sh"
 
 [tasks.test]
 description = "Run tests across all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
-
-echo "🧪 Running tests across all apps..."
-echo ""
-
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise test)
-echo ""
-
-echo "📦 mcp-registry:"
-(cd apps/mcp-registry && mise test)
-echo ""
-
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise test)
-echo ""
-
-echo "✅ All tests passed"
-'''
+run = "bash hack/test.sh"
 
 [tasks.build]
 description = "Build all apps"
-run = '''
-#!/usr/bin/env bash
-set -e
+run = "bash hack/build.sh"
 
-echo "🔨 Building all apps..."
-echo ""
+[tasks.update]
+description = "Update dependencies across all apps"
+run = "bash hack/update.sh"
 
-echo "📦 mcp-onboarding:"
-(cd apps/mcp-onboarding && mise build)
-echo ""
+# ─── Generate (only apps that have generate tasks) ───────────────────────────
 
-echo "📦 mcp-registry:"
-(cd apps/mcp-registry && mise build)
-echo ""
+[tasks.generate]
+description = "Generate all generated files"
+run = "bash hack/generate.sh"
 
-echo "📦 my-copilot:"
-(cd apps/my-copilot && mise build)
-echo ""
+# ─── Docs ────────────────────────────────────────────────────────────────────
 
-echo "✅ All apps built successfully"
-'''
+[tasks."docs:generate"]
+description = "Generate docs from customization files"
+run = "(cd scripts/generate-docs && go run .)"
 
-[tasks.all]
-description = "Run all checks, tests, and builds across all apps"
-depends = ["check", "test", "build"]
+[tasks."docs:check"]
+description = "Check if docs are in sync with customization files"
+run = "(cd scripts/generate-docs && go run . --check)"
+
+# ─── Skills ──────────────────────────────────────────────────────────────────
+
+[tasks."skills:lint"]
+description = "Lint .github/skills/ for quality (token budget, structure, metadata)"
+run = "bash scripts/lint-skills.sh"
+
+[tasks."collections:lint"]
+description = "Verify docs page COLLECTIONS data matches manifest.json files"
+run = "bash scripts/lint-collections.sh"
+
+# ─── nav-pilot installer ─────────────────────────────────────────────────────
+
+[tasks."nav-pilot:build"]
+description = "Build nav-pilot installer CLI"
+run = """
+LDFLAGS="-X main.version=dev -X main.commit=$(git rev-parse --short HEAD) -X main.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+(cd cli/nav-pilot && go build -ldflags "$LDFLAGS" -o nav-pilot .)
+"""
+
+[tasks."nav-pilot:test"]
+description = "Run nav-pilot installer tests"
+run = "(cd cli/nav-pilot && go test -race -v ./...)"
+
+[tasks."nav-pilot:check"]
+description = "Run all nav-pilot checks (mirrors CI: build, test, vet, staticcheck, shellcheck)"
+run = """
+echo "  build..."   && cd cli/nav-pilot && go build -o /dev/null . && \
+echo "  test..."    && go test -race ./... && \
+echo "  vet..."     && go vet ./... && \
+echo "  staticcheck..." && staticcheck ./... && \
+cd ../.. && \
+echo "  shellcheck..." && shellcheck scripts/install.sh && \
+echo "  ✅ nav-pilot checks passed"
+"""
+
+[tasks."nav-pilot:install"]
+description = "Build and install nav-pilot CLI to GOBIN"
+run = """
+LDFLAGS="-X main.version=dev -X main.commit=$(git rev-parse --short HEAD) -X main.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+cd cli/nav-pilot && go build -ldflags "$LDFLAGS" -o nav-pilot .
+DEST="${GOBIN:-${GOPATH:-$HOME/go}/bin}"
+mkdir -p "$DEST"
+mv nav-pilot "$DEST/nav-pilot"
+echo "✓ Installed nav-pilot to $DEST/nav-pilot"
+"""
+
+# ─── Ratchet (GitHub Actions pinning) ────────────────────────────────────────
+
+[tasks."ratchet:pin"]
+description = "Pin GitHub Actions to specific commit SHAs"
+run = "ratchet pin .github/workflows/*.y?ml"
+
+[tasks."ratchet:update"]
+description = "Update pinned GitHub Actions to latest versions"
+run = "ratchet update .github/workflows/*.y?ml"
+
+[tasks."ratchet:lint"]
+description = "Check if GitHub Actions are properly pinned"
+run = "ratchet lint .github/workflows/*.y?ml"
+
+[tasks."ratchet:unpin"]
+description = "Unpin GitHub Actions (restore to tags)"
+run = "ratchet unpin .github/workflows/*.y?ml"

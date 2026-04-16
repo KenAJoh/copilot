@@ -1,0 +1,7 @@
+{
+  "domain": "frontend",
+  "tags": ["aksel", "design-system", "react", "component"],
+  "examples": [
+    "#aksel-component Lag en varslingsbanner med ikon og lukkeknapp"
+  ]
+}

@@ -69,7 +69,7 @@ export async function getUsernameBySamlIdentity(
                 };
                 user: {
                   login: string;
-                };
+                } | null;
               };
             }>;
           };
@@ -80,13 +80,16 @@ export async function getUsernameBySamlIdentity(
     const externalIdentities = response.organization.samlIdentityProvider.externalIdentities.edges;
 
     if (externalIdentities.length > 0) {
-      return { user: externalIdentities[0].node.user.login, error: null };
+      const user = externalIdentities[0].node.user;
+      if (!user) {
+        // SAML identity exists but is not linked to a GitHub user — not an error,
+        // the user just needs to authenticate via GitHub SSO.
+        return { user: null, error: null };
+      }
+      return { user: user.login, error: null };
     }
 
-    return {
-      user: null,
-      error: `No user found for SAML identity ${identity} in the ${organization} GitHub organization.`,
-    };
+    return { user: null, error: null };
   } catch (error) {
     return { user: null, error: error instanceof Error ? error.message : String(error) };
   }
@@ -112,6 +115,9 @@ export async function getCopilotBilling(org: string): Promise<{ billing: Copilot
   try {
     const { data } = await octokit.request("GET /orgs/{org}/copilot/billing", {
       org,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
     });
 
     return { billing: data, error: null };
@@ -147,6 +153,9 @@ export async function getCopilotSeat(
     const { data } = await octokit.request("GET /orgs/{org}/members/{username}/copilot", {
       org,
       username,
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
     });
     return { copilot: data, error: null };
   } catch (error) {
@@ -170,6 +179,9 @@ export async function assignUserToCopilot(
         selected_usernames: [username],
       },
       selected_usernames: [],
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
     });
     return { seats_created: data.seats_created, error: null };
   } catch (error) {
@@ -188,123 +200,13 @@ export async function unassignUserFromCopilot(
         selected_usernames: [username],
       },
       selected_usernames: [],
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
     });
     return { seats_cancelled: data.seats_cancelled, error: null };
   } catch (error) {
     return { seats_cancelled: null, error: error instanceof Error ? error.message : String(error) };
-  }
-}
-
-export type CopilotMetrics = {
-  date: string;
-  total_active_users?: number | undefined;
-  total_engaged_users?: number | undefined;
-  copilot_ide_code_completions?:
-    | {
-        total_engaged_users?: number | undefined;
-        languages?:
-          | Array<{
-              name?: string | undefined;
-              total_engaged_users?: number | undefined;
-            }>
-          | undefined;
-        editors?:
-          | Array<{
-              name?: string | undefined;
-              total_engaged_users?: number | undefined;
-              models?:
-                | Array<{
-                    name?: string | undefined;
-                    is_custom_model?: boolean | undefined;
-                    custom_model_training_date?: string | null | undefined;
-                    total_engaged_users?: number | undefined;
-                    languages?:
-                      | Array<{
-                          name?: string | undefined;
-                          total_engaged_users?: number | undefined;
-                          total_code_suggestions?: number | undefined;
-                          total_code_acceptances?: number | undefined;
-                          total_code_lines_suggested?: number | undefined;
-                          total_code_lines_accepted?: number | undefined;
-                        }>
-                      | undefined;
-                  }>
-                | undefined;
-            }>
-          | undefined;
-      }
-    | null
-    | undefined;
-  copilot_ide_chat?:
-    | {
-        total_engaged_users?: number | undefined;
-        editors?:
-          | Array<{
-              name?: string | undefined;
-              total_engaged_users?: number | undefined;
-              models?:
-                | Array<{
-                    name?: string | undefined;
-                    is_custom_model?: boolean | undefined;
-                    custom_model_training_date?: string | null | undefined;
-                    total_engaged_users?: number | undefined;
-                    total_chats?: number | undefined;
-                    total_chat_insertion_events?: number | undefined;
-                    total_chat_copy_events?: number | undefined;
-                  }>
-                | undefined;
-            }>
-          | undefined;
-      }
-    | null
-    | undefined;
-  copilot_dotcom_chat?:
-    | {
-        total_engaged_users?: number | undefined;
-        models?:
-          | Array<{
-              name?: string | undefined;
-              is_custom_model?: boolean | undefined;
-              custom_model_training_date?: string | null | undefined;
-              total_engaged_users?: number | undefined;
-              total_chats?: number | undefined;
-            }>
-          | undefined;
-      }
-    | null
-    | undefined;
-  copilot_dotcom_pull_requests?:
-    | {
-        total_engaged_users?: number | undefined;
-        repositories?:
-          | Array<{
-              name?: string | undefined;
-              total_engaged_users?: number | undefined;
-              models?:
-                | Array<{
-                    name?: string | undefined;
-                    is_custom_model?: boolean | undefined;
-                    custom_model_training_date?: string | null | undefined;
-                    total_pr_summaries_created?: number | undefined;
-                    total_engaged_users?: number | undefined;
-                  }>
-                | undefined;
-            }>
-          | undefined;
-      }
-    | null
-    | undefined;
-};
-
-export async function getCopilotUsage(org: string): Promise<{ usage: CopilotMetrics[] | null; error: string | null }> {
-  try {
-    const { data } = await octokit.request("GET /orgs/{org}/copilot/metrics", {
-      org,
-    });
-
-    return { usage: data, error: null };
-  } catch (error) {
-    return { usage: null, error: error instanceof Error ? error.message : String(error) };
   }
 }
 

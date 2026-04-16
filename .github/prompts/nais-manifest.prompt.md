@@ -1,6 +1,6 @@
 ---
 name: nais-manifest
-description: Generate a production-ready Nais application manifest for Kubernetes deployment
+description: Generer et produksjonsklart Nais-applikasjonsmanifest for Kubernetes-deployment
 ---
 
 You are creating a Nais application manifest in `.nais/app.yaml` for deploying to Nav's Kubernetes platform.

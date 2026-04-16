@@ -319,6 +319,534 @@ func TestValidateRegistry_RequiredFields(t *testing.T) {
 			},
 			expectError: false,
 		},
+		{
+			name: "valid package with npm stdio",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeNPM, Identifier: "@test/mcp", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid package with pypi",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypePyPI, Identifier: "mcp-server-test", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid package with oci",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeOCI, Identifier: "ghcr.io/test/mcp-server", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid package with nuget",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeNuGet, Identifier: "TestMcpServer", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid package with mcpb",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeMCPB, Identifier: "https://example.com/server.mcpb", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid server with both remotes and packages",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Remotes: []Transport{
+							{Type: TransportTypeStreamableHTTP, URL: "https://example.com/mcp"},
+						},
+						Packages: []Package{
+							{RegistryType: RegistryTypeNPM, Identifier: "@test/mcp", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "package missing registryType",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{Identifier: "@test/mcp", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'registryType' is required",
+		},
+		{
+			name: "package invalid registryType",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: "invalid", Identifier: "@test/mcp", Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'registryType' must be one of",
+		},
+		{
+			name: "package missing identifier",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeNPM, Transport: Transport{Type: TransportTypeStdio}},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'identifier' is required",
+		},
+		{
+			name: "package missing transport type",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeNPM, Identifier: "@test/mcp"},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'transport.type' is required",
+		},
+		{
+			name: "package invalid transport type",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{RegistryType: RegistryTypeNPM, Identifier: "@test/mcp", Transport: Transport{Type: "websocket"}},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'transport.type' must be one of",
+		},
+		{
+			name: "valid package with named packageArguments",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								PackageArguments: []Argument{
+									{Type: "named", Name: "--isolated"},
+									{Type: "named", Name: "--caps", Value: "core"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid package with positional packageArguments",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								PackageArguments: []Argument{
+									{Type: "positional", Value: "some-value"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "packageArgument invalid type",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								PackageArguments: []Argument{
+									{Type: "invalid"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'type' must be 'named' or 'positional'",
+		},
+		{
+			name: "named packageArgument missing name",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								PackageArguments: []Argument{
+									{Type: "named"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'name' is required for named arguments",
+		},
+		{
+			name: "positional packageArgument missing value and valueHint",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								PackageArguments: []Argument{
+									{Type: "positional"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'value' or 'valueHint' is required for positional arguments",
+		},
+		{
+			name: "valid positional packageArgument with valueHint only",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								PackageArguments: []Argument{
+									{Type: "positional", ValueHint: "config_path"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "valid runtimeArguments",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								RuntimeHint:  "docker",
+								Transport:    Transport{Type: TransportTypeStdio},
+								RuntimeArguments: []Argument{
+									{Type: "named", Name: "--network", Value: "none"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "runtimeArgument invalid type",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Packages: []Package{
+							{
+								RegistryType: RegistryTypeNPM,
+								Identifier:   "@test/mcp",
+								Transport:    Transport{Type: TransportTypeStdio},
+								RuntimeArguments: []Argument{
+									{Type: "bad"},
+								},
+							},
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "'type' must be 'named' or 'positional'",
+		},
+		{
+			name: "valid websiteUrl",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						WebsiteURL:  "https://example.com/docs",
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "invalid websiteUrl - not https",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						WebsiteURL:  "http://example.com",
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "URL must use https scheme",
+		},
+		{
+			name: "valid repository",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Repository: &Repository{
+							URL:    "https://github.com/org/repo",
+							Source: "github",
+						},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "repository missing source",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Repository: &Repository{
+							URL: "https://github.com/org/repo",
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "repository.source is required",
+		},
+		{
+			name: "repository invalid url",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Repository: &Repository{
+							URL:    "http://github.com/org/repo",
+							Source: "github",
+						},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "URL must use https scheme",
+		},
+		{
+			name: "valid tools list",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Tools:       []string{"search_docs", "get_info"},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "empty tool name",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Tools:       []string{"search_docs", ""},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "tool name cannot be empty",
+		},
+		{
+			name: "valid tags",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Tags:        []string{"frontend", "browser-automation"},
+					},
+				},
+			},
+			expectError: false,
+		},
+		{
+			name: "invalid tag - uppercase",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Tags:        []string{"Frontend"},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "must be lowercase kebab-case",
+		},
+		{
+			name: "invalid tag - spaces",
+			data: &StaticRegistryData{
+				Servers: []StaticServerData{
+					{
+						Name:        "io.github.test/server",
+						Description: "Test Description",
+						Version:     "1.0.0",
+						Tags:        []string{"browser automation"},
+					},
+				},
+			},
+			expectError: true,
+			errorMsg:    "must be lowercase kebab-case",
+		},
 	}
 
 	for _, tt := range tests {

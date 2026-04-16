@@ -1,100 +1,60 @@
 # 📦 Copilot Collections
 
-Collections are curated sets of agents, prompts, instructions, and skills organized around specific NAV development domains or workflows.
+Collections are curated bundles of agents, skills, instructions, and prompts organized by team archetype.
 
-Collections provide a convenient way to install related Copilot customizations as a complete package, ensuring consistent tooling and practices across NAV teams.
-
-### How to Use Collections
-
-**To Install:**
-- Download the complete collection folder
-- Copy to your workspace's `.github/` directory
-- Collections automatically integrate with GitHub Copilot
-
-**What's Included:**
-- **Agents**: Specialized AI assistants for domain-specific tasks
-- **Prompts**: Reusable templates for common workflows
-- **Instructions**: Technology and pattern-specific guidelines
-- **Skills**: Bundled resources and templates
+📖 **Full documentation:** [min-copilot.ansatt.nav.no/nav-pilot/docs](https://min-copilot.ansatt.nav.no/nav-pilot/docs)
 
 ## Available Collections
 
-| Name        | Description                        | Components | Location               |
-| ----------- | ---------------------------------- | ---------- | ---------------------- |
-| Coming Soon | NAV collections will be added here |            | `.github/collections/` |
-
-## Potential NAV Collections
-
-### NAIS Platform Collection
-Complete set of tools for NAIS platform development:
-- **Agents**: Platform deployment, configuration management
-- **Prompts**: Manifest generation, troubleshooting
-- **Instructions**: NAIS best practices, security patterns
-- **Skills**: Deployment templates, monitoring setup
-
-### Full-Stack NAV Application Collection
-Everything needed for a complete NAV application:
-- **Agents**: Frontend (Aksel/Next.js), Backend (Kotlin/Ktor), Database
-- **Prompts**: Component creation, API design, database migrations
-- **Instructions**: Coding standards for all layers
-- **Skills**: Application templates, testing patterns
-
-### Auth & Security Collection
-Authentication and security patterns for NAV:
-- **Agents**: Azure AD setup, TokenX configuration
-- **Prompts**: Security validation, access control
-- **Instructions**: Security best practices
-- **Skills**: Auth configuration templates
-
-### Observability Collection
-Complete observability stack setup:
-- **Agents**: Metrics, logging, tracing
-- **Prompts**: Dashboard creation, alert rules
-- **Instructions**: Observability patterns
-- **Skills**: Instrumentation templates
+| Collection | Description | Agents | Skills | Best for |
+| --- | --- | --- | --- | --- |
+| **kotlin-backend** | Kotlin/Ktor and Spring Boot on Nais | 6 | 10 | Backend API and event consumers |
+| **nextjs-frontend** | Next.js with Aksel Design System | 4 | 7 | Innbygger- og saksbehandler-frontends |
+| **fullstack** | Complete stack (backend + frontend) | 10 | 13 | Teams that own the full stack |
+| **platform** | Nais, observability, security | 4 | 7 | Platform and DevOps teams |
 
 ## Collection Structure
 
 ```
 .github/collections/
-└── collection-name/
-    ├── README.md             # Collection documentation
-    ├── agents/              # Collection-specific agents
-    ├── prompts/             # Collection-specific prompts
-    ├── instructions/        # Collection-specific instructions
-    └── skills/              # Collection-specific skills
+├── kotlin-backend/
+│   └── manifest.json       # Lists all agents, skills, instructions, prompts
+├── nextjs-frontend/
+│   └── manifest.json
+├── fullstack/
+│   └── manifest.json
+└── platform/
+    └── manifest.json
 ```
 
-## Creating Collections
+Each `manifest.json` references items by name. The CLI resolves these to actual files from the repository.
 
-When creating collections for NAV:
+## Creating a New Collection
 
-1. **Cohesive Theme**: Focus on specific domain or workflow
-2. **Complete Package**: Include all necessary components
-3. **NAV Alignment**: Follow NAV development principles
-4. **Documentation**: Provide clear setup and usage guides
-5. **Dependencies**: Document required MCP servers or tools
-6. **Team Input**: Gather feedback from NAV teams
+1. Create a directory in `.github/collections/<name>/`
+2. Add a `manifest.json` listing the items:
 
-## Installation
+```json
+{
+  "name": "my-collection",
+  "description": "Description of the collection",
+  "agents": ["nav-pilot", "my-agent"],
+  "skills": ["nav-plan", "nav-deep-interview"],
+  "instructions": ["my-instruction"],
+  "prompts": ["my-prompt"]
+}
+```
 
-To install a collection:
+3. Test with `nav-pilot install --dry-run <name>`
+4. Submit a PR
+
+## Modifying a Collection
+
+Edit the `manifest.json` in the collection directory. Items are referenced by name — ensure the referenced agents, skills, instructions, and prompts exist in the repository.
+
+After modifying, test with:
 
 ```bash
-# Navigate to your project
-cd /path/to/your/project
-
-# Copy the collection
-cp -r /path/to/copilot/docs/collections/collection-name .github/
+nav-pilot install --dry-run <collection>
+nav-pilot install --force <collection>
 ```
-
-Or use the provided installation tasks in VS Code.
-
-## Best Practices
-
-- Use collections for comprehensive domain coverage
-- Keep collections focused and maintainable
-- Update collections based on NAV team feedback
-- Version collections for stability
-- Document collection dependencies
-- Provide examples and getting started guides

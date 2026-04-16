@@ -56,6 +56,12 @@ spec:
       value: "true"
     - name: OTEL_METRICS_EXEMPLAR_FILTER
       value: ALWAYS_ON
+    - name: MCP_REGISTRY_URL
+      value: "{{mcp_registry_url}}"
+    - name: BIGQUERY_DATASET
+      value: "copilot_metrics"
+    - name: BIGQUERY_TABLE
+      value: "usage_metrics"
   liveness:
     path: "/health"
     port: 3000
@@ -74,10 +80,21 @@ spec:
     requests:
       cpu: "10m"
       memory: "128Mi"
+  gcp:
+    bigQueryDatasets:
+      - name: copilot_metrics
+        permission: READ
+      - name: copilot_adoption
+        permission: READ
   accessPolicy:
     outbound:
       external:
+        - host: api.github.com
+        - host: avatars.githubusercontent.com
         - host: login.microsoftonline.com
+        - host: {{mcp_registry_host}}
+        - host: bigquery.googleapis.com
+        - host: storage.googleapis.com
   filesFrom:
     - emptyDir:
         medium: Memory

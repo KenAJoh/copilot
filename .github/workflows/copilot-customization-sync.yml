@@ -1,0 +1,157 @@
+name: Copilot Customization Sync
+
+# Reusable workflow that teams add to their repos to keep Copilot customizations
+# up to date with navikt/copilot, similar to Dependabot for dependencies.
+#
+# Zero config required — just add this workflow and it auto-detects all
+# customization files in your repo and checks them against the source.
+#
+# Works with both:
+#   - Repos that used `nav-pilot install` (state-based tracking)
+#   - Repos that manually copied files (auto-detection)
+#
+# Usage: Create .github/workflows/copilot-sync.yml in your repo:
+#
+#   name: Copilot Customization Sync
+#   on:
+#     schedule:
+#       - cron: '0 7 * * 1'  # Weekly on Mondays at 07:00 UTC
+#     workflow_dispatch:
+#   jobs:
+#     sync:
+#       uses: navikt/copilot/.github/workflows/copilot-customization-sync.yml@main
+#       permissions:
+#         contents: write
+#         pull-requests: write
+#
+# Optional: sync from a different source repo:
+#
+#   jobs:
+#     sync:
+#       uses: navikt/copilot/.github/workflows/copilot-customization-sync.yml@main
+#       with:
+#         source_repo: navikt/my-team-copilot
+#       permissions:
+#         contents: write
+#         pull-requests: write
+
+on:
+  workflow_call:
+    inputs:
+      source_repo:
+        description: 'Source repository to sync customizations from (owner/repo)'
+        type: string
+        required: false
+        default: 'navikt/copilot'
+      source_ref:
+        description: 'Git branch or tag to sync from (default: auto-detect based on nav-pilot version)'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Check for customization updates
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # ratchet:actions/checkout@v6.0.2
+
+      - name: Install nav-pilot
+        shell: bash
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/navikt/copilot/main/scripts/install.sh | bash -s -- --no-brew
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Check for updates
+        id: check
+        env:
+          SOURCE_REPO: ${{ inputs.source_repo }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+        shell: bash
+        run: |
+          # Build nav-pilot flags from workflow inputs
+          SYNC_FLAGS="--json"
+          if [[ "$SOURCE_REPO" != "navikt/copilot" ]]; then
+            SYNC_FLAGS="$SYNC_FLAGS --source $SOURCE_REPO"
+          fi
+          if [[ -n "$SOURCE_REF" ]]; then
+            SYNC_FLAGS="$SYNC_FLAGS --ref $SOURCE_REF"
+          fi
+
+          # Run sync and capture exit code (stdout = JSON, stderr = log)
+          set +e
+          nav-pilot sync $SYNC_FLAGS > sync-result.json
+          EXIT_CODE=$?
+          set -e
+
+          if [[ $EXIT_CODE -eq 0 ]]; then
+            echo "has_updates=false" >> "$GITHUB_OUTPUT"
+          elif [[ $EXIT_CODE -eq 2 ]]; then
+            echo "::error::nav-pilot sync encountered errors"
+            cat sync-result.json
+            exit 1
+          elif [[ $EXIT_CODE -eq 1 ]]; then
+            # Verify we got valid JSON before treating as "updates available"
+            if ! jq empty sync-result.json &>/dev/null; then
+              echo "::error::nav-pilot sync failed (no valid JSON output)"
+              cat sync-result.json
+              exit 1
+            fi
+
+            echo "has_updates=true" >> "$GITHUB_OUTPUT"
+
+            # Build PR body from JSON result
+            {
+              echo "body_lines<<BODY_EOF"
+              jq -r '.updates[].path' sync-result.json | while read -r f; do
+                echo "- \`$f\`"
+              done
+              echo "BODY_EOF"
+            } >> "$GITHUB_OUTPUT"
+
+            UPDATE_COUNT=$(jq '.updates | length' sync-result.json)
+            echo "update_count=$UPDATE_COUNT" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::nav-pilot sync failed with unexpected exit code $EXIT_CODE"
+            cat sync-result.json
+            exit 1
+          fi
+
+      - name: Apply updates
+        if: steps.check.outputs.has_updates == 'true'
+        env:
+          SOURCE_REPO: ${{ inputs.source_repo }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+        run: |
+          SYNC_FLAGS="--apply"
+          if [[ "$SOURCE_REPO" != "navikt/copilot" ]]; then
+            SYNC_FLAGS="$SYNC_FLAGS --source $SOURCE_REPO"
+          fi
+          if [[ -n "$SOURCE_REF" ]]; then
+            SYNC_FLAGS="$SYNC_FLAGS --ref $SOURCE_REF"
+          fi
+          nav-pilot sync $SYNC_FLAGS
+
+      - name: Create Pull Request
+        if: steps.check.outputs.has_updates == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # ratchet:peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          commit-message: "chore: sync Copilot customizations from ${{ inputs.source_repo }}"
+          title: "chore: sync ${{ steps.check.outputs.update_count }} Copilot customization(s)"
+          body: |
+            This PR syncs Copilot customization files from [${{ inputs.source_repo }}](https://github.com/${{ inputs.source_repo }}).
+
+            **Changed files:**
+            ${{ steps.check.outputs.body_lines }}
+
+            ---
+            🤖 This PR was created automatically by the [Copilot Customization Sync](https://github.com/${{ inputs.source_repo }}) workflow.
+          branch: copilot-customization-sync
+          delete-branch: true
+          labels: dependencies

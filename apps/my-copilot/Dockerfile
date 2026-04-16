@@ -5,17 +5,21 @@ RUN corepack enable
 FROM base AS deps
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml .npmrc ./
+COPY apps/my-copilot/package.json apps/my-copilot/pnpm-lock.yaml apps/my-copilot/.npmrc ./
 RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-COPY public ./public
+COPY apps/my-copilot/ .
+COPY docs/news/articles ./docs/news/articles
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV GITHUB_ORG=navikt
+ENV NEXT_PUBLIC_FARO_APP_NAME=my-copilot-browser
+ENV NEXT_PUBLIC_FARO_URL=https://telemetry.nav.no/collect
+ENV NEXT_PUBLIC_FARO_NAMESPACE=nais
 
 RUN pnpm build
 
@@ -30,6 +34,8 @@ COPY --from=builder --chown=nonroot:nonroot /app/.next/standalone ./
 # Copy static assets into standalone structure
 COPY --from=builder --chown=nonroot:nonroot /app/.next/static ./.next/static
 COPY --from=builder --chown=nonroot:nonroot /app/public ./public
+# Copy news article markdown files for server-side rendering
+COPY --from=builder --chown=nonroot:nonroot /app/docs/news/articles ./docs/news/articles
 
 USER nonroot
 

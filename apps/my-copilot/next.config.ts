@@ -2,7 +2,21 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  serverExternalPackages: ["pino", "thread-stream"],
+  serverExternalPackages: ["pino", "thread-stream", "@google-cloud/bigquery"],
+  images: {
+    remotePatterns: [{ hostname: "avatars.githubusercontent.com" }],
+  },
+  async redirects() {
+    return [
+      { source: "/best-practices", destination: "/praksis", permanent: true },
+      { source: "/practice", destination: "/praksis", permanent: true },
+      { source: "/customizations", destination: "/verktoy", permanent: true },
+      { source: "/usage", destination: "/statistikk", permanent: true },
+      { source: "/stats", destination: "/statistikk", permanent: true },
+      { source: "/overview", destination: "/kostnad", permanent: true },
+      { source: "/cost", destination: "/kostnad", permanent: true },
+    ];
+  },
   // Enable Cache Components (Partial Prerendering)
   cacheComponents: true,
   turbopack: {

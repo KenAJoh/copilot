@@ -6,179 +6,469 @@
   --color-foreground: var(--foreground);
 }
 
-/* Fix: Nav resets margin on typography. Override with higher specificity to allow Tailwind utilities */
-.navds-heading.mb-1 {
-  margin-bottom: calc(var(--spacing) * 1) !important;
-}
-.navds-heading.mb-2 {
-  margin-bottom: calc(var(--spacing) * 2) !important;
-}
-.navds-heading.mb-3 {
-  margin-bottom: calc(var(--spacing) * 3) !important;
-}
-.navds-heading.mb-4 {
-  margin-bottom: calc(var(--spacing) * 4) !important;
-}
-.navds-heading.mb-5 {
-  margin-bottom: calc(var(--spacing) * 5) !important;
-}
-.navds-heading.mb-6 {
-  margin-bottom: calc(var(--spacing) * 6) !important;
-}
-.navds-heading.mb-8 {
-  margin-bottom: calc(var(--spacing) * 8) !important;
-}
-.navds-heading.mt-2 {
-  margin-top: calc(var(--spacing) * 2) !important;
-}
-.navds-heading.mt-3 {
-  margin-top: calc(var(--spacing) * 3) !important;
-}
-.navds-heading.mt-4 {
-  margin-top: calc(var(--spacing) * 4) !important;
-}
-.navds-heading.mt-6 {
-  margin-top: calc(var(--spacing) * 6) !important;
-}
-.navds-heading.mt-8 {
-  margin-top: calc(var(--spacing) * 8) !important;
+/* Hero gradient — deep, immersive dark */
+.hero-gradient {
+  background: linear-gradient(170deg, #0c1222 0%, #111b2e 50%, #162036 100%);
+  position: relative;
 }
 
-.navds-body-short.mb-2 {
-  margin-bottom: calc(var(--spacing) * 2) !important;
-}
-.navds-body-short.mb-3 {
-  margin-bottom: calc(var(--spacing) * 3) !important;
-}
-.navds-body-short.mb-4 {
-  margin-bottom: calc(var(--spacing) * 4) !important;
-}
-.navds-body-short.mb-6 {
-  margin-bottom: calc(var(--spacing) * 6) !important;
-}
-.navds-body-short.mt-1 {
-  margin-top: calc(var(--spacing) * 1) !important;
-}
-.navds-body-short.mt-2 {
-  margin-top: calc(var(--spacing) * 2) !important;
-}
-.navds-body-short.mt-3 {
-  margin-top: calc(var(--spacing) * 3) !important;
-}
-.navds-body-short.mt-4 {
-  margin-top: calc(var(--spacing) * 4) !important;
+.hero-gradient::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    rgba(255, 255, 255, 0.08) 30%,
+    rgba(255, 255, 255, 0.08) 70%,
+    transparent 95%
+  );
 }
 
-/* Label overrides */
-.navds-label.mb-2 {
-  margin-bottom: calc(var(--spacing) * 2) !important;
-}
-.navds-label.mb-3 {
-  margin-bottom: calc(var(--spacing) * 3) !important;
-}
-.navds-label.mb-4 {
-  margin-bottom: calc(var(--spacing) * 4) !important;
-}
-.navds-label.mt-2 {
-  margin-top: calc(var(--spacing) * 2) !important;
-}
-.navds-label.mt-4 {
-  margin-top: calc(var(--spacing) * 4) !important;
+/* Oversized hero title */
+.hero-title {
+  font-size: clamp(2.5rem, 4vw + 1rem, 4.5rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
 }
 
-/* Text color overrides - Nav sets specific colors that need !important to override */
-.navds-heading[class*="text-"] {
-  color: inherit !important;
-}
-.navds-body-short[class*="text-"] {
-  color: inherit !important;
-}
-.navds-label[class*="text-"] {
-  color: inherit !important;
+/* Staggered hero entrance */
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Font size overrides - Nav sets specific font sizes that need !important to override */
-.navds-body-short.text-xs {
+@media (prefers-reduced-motion: no-preference) {
+  .hero-animate {
+    animation: hero-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+  .hero-animate-d1 {
+    animation: hero-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) 100ms forwards;
+    opacity: 0;
+  }
+  .hero-animate-d2 {
+    animation: hero-enter 0.7s cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards;
+    opacity: 0;
+  }
+}
+
+/* Sub-page hero — coherent with front page */
+.hero-gradient-subtle {
+  background: linear-gradient(170deg, #111b2e 0%, #162036 60%, #1a2640 100%);
+}
+
+/* Greeting fade-in */
+@keyframes greeting-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Link copied checkmark */
+@keyframes copied-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .greeting-fade {
+    animation: greeting-pop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  .link-copied-icon {
+    animation: copied-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+/* Featured news card — clean elevation, no decorative border */
+.featured-card {
+  background: #f5f7fa;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.04),
+    0 1px 2px rgba(0, 0, 0, 0.03);
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .featured-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 8px 24px rgba(0, 0, 0, 0.08),
+      0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  .featured-card:active {
+    transform: translateY(-1px);
+    transition-duration: 0.1s;
+  }
+}
+
+/* Category-colored left borders for news cards */
+.news-card-copilot {
+  border-left: 3px solid #2563eb;
+}
+.news-card-nav {
+  border-left: 3px solid #15803d;
+}
+.news-card-praksis {
+  border-left: 3px solid #d97706;
+}
+
+/* News card hover lift */
+[class*="news-card-"] {
+  transition:
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [class*="news-card-"]:hover {
+    transform: translateY(-2px);
+  }
+
+  [class*="news-card-"]:active {
+    transform: translateY(0);
+    transition-duration: 0.1s;
+  }
+}
+
+/* Scroll-reveal animation for content sections */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-section {
+    opacity: 0;
+    animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .reveal-section:nth-child(1) {
+    animation-delay: 0ms;
+  }
+  .reveal-section:nth-child(2) {
+    animation-delay: 80ms;
+  }
+  .reveal-section:nth-child(3) {
+    animation-delay: 160ms;
+  }
+  .reveal-section:nth-child(4) {
+    animation-delay: 240ms;
+  }
+  .reveal-section:nth-child(5) {
+    animation-delay: 320ms;
+  }
+  .reveal-section:nth-child(6) {
+    animation-delay: 400ms;
+  }
+  .reveal-section:nth-child(7) {
+    animation-delay: 480ms;
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 25s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+/* Print styles — clean PDF output for articles */
+@media print {
+  /* Hide site chrome */
+  header,
+  footer {
+    display: none !important;
+  }
+
+  /* Hide navigation links */
+  .print-hidden {
+    display: none !important;
+  }
+
+  /* Remove dark background */
+  body {
+    background: white !important;
+  }
+
+  /* Prevent charts, blockquotes and figures from splitting across pages */
+  canvas,
+  blockquote,
+  figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep headings with their following content */
+  h1,
+  h2,
+  h3,
+  h4,
+  .aksel-heading {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Reasonable margins */
+  article {
+    max-width: 100% !important;
+  }
+}
+
+/* Prose styles for article rendering */
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.prose ul,
+.prose ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+.prose ul {
+  list-style-type: disc;
+}
+.prose ol {
+  list-style-type: decimal;
+}
+.prose li {
+  margin-bottom: 0.25rem;
+  line-height: 1.6;
+}
+.prose li > ul,
+.prose li > ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+.prose :is(h2, h3) + ul,
+.prose :is(h2, h3) + ol {
+  margin-top: -0.25rem;
+}
+.prose code {
+  font-family:
+    ui-monospace, "Menlo", "Monaco", "Cascadia Mono", "Segoe UI Mono", "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace",
+    "Source Code Pro", "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
+  font-size: 0.8em;
+  font-weight: 600;
+  background-color: var(--ax-bg-neutral-softA);
+  box-shadow: inset 0 0 0 1px var(--ax-border-neutral-subtleA);
+  padding: var(--ax-space-2) var(--ax-space-4);
+  border-radius: var(--ax-radius-2);
+  word-break: break-word;
+}
+.prose pre {
+  margin-bottom: 1rem;
+  padding: var(--ax-space-8);
+  background: var(--ax-bg-default);
+  border: 1px solid var(--ax-border-neutral-subtleA);
+  border-radius: var(--ax-radius-12);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  font-size: var(--ax-font-size-medium);
+  line-height: 1.5;
+}
+.prose pre code {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  font-weight: 400;
+  word-break: normal;
+}
+.prose a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.prose th,
+.prose td {
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose th {
+  background: #f9fafb;
+  font-weight: 600;
+}
+.prose hr {
+  margin: 2rem 0;
+  border-color: #e5e7eb;
+}
+.prose strong {
+  font-weight: 600;
+}
+.prose blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 1rem;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+/* Fix: Aksel DS resets styles on typography components, overriding Tailwind utilities.
+   Use higher specificity with !important to let Tailwind margin, color, and font-size work. */
+:is(.aksel-heading, .aksel-body-short, .aksel-body-long, .aksel-label) {
+  &.mb-1 {
+    margin-bottom: calc(var(--spacing) * 1) !important;
+  }
+  &.mb-2 {
+    margin-bottom: calc(var(--spacing) * 2) !important;
+  }
+  &.mb-3 {
+    margin-bottom: calc(var(--spacing) * 3) !important;
+  }
+  &.mb-4 {
+    margin-bottom: calc(var(--spacing) * 4) !important;
+  }
+  &.mb-5 {
+    margin-bottom: calc(var(--spacing) * 5) !important;
+  }
+  &.mb-6 {
+    margin-bottom: calc(var(--spacing) * 6) !important;
+  }
+  &.mb-8 {
+    margin-bottom: calc(var(--spacing) * 8) !important;
+  }
+  &.mb-10 {
+    margin-bottom: calc(var(--spacing) * 10) !important;
+  }
+  &.mb-12 {
+    margin-bottom: calc(var(--spacing) * 12) !important;
+  }
+  &.mt-1 {
+    margin-top: calc(var(--spacing) * 1) !important;
+  }
+  &.mt-2 {
+    margin-top: calc(var(--spacing) * 2) !important;
+  }
+  &.mt-3 {
+    margin-top: calc(var(--spacing) * 3) !important;
+  }
+  &.mt-4 {
+    margin-top: calc(var(--spacing) * 4) !important;
+  }
+  &.mt-6 {
+    margin-top: calc(var(--spacing) * 6) !important;
+  }
+  &.mt-8 {
+    margin-top: calc(var(--spacing) * 8) !important;
+  }
+
+  &[class*="text-"] {
+    color: inherit !important;
+  }
+
+  &.text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+  &.text-sm {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+}
+
+/* Fix: Aksel Box inherits font-size to child code/pre elements, overriding Tailwind text-xs/text-sm */
+code.text-xs,
+pre.text-xs {
   font-size: 0.75rem !important;
-  line-height: 1rem !important;
+  line-height: 1.25rem !important;
 }
-.navds-body-short.text-sm {
+
+code.text-sm,
+pre.text-sm {
   font-size: 0.875rem !important;
   line-height: 1.25rem !important;
 }
-.navds-heading.text-xs {
-  font-size: 0.75rem !important;
-  line-height: 1rem !important;
-}
-.navds-heading.text-sm {
-  font-size: 0.875rem !important;
-  line-height: 1.25rem !important;
+
+/* Fix: Aksel sets `color: inherit !important` on components with text-* classes,
+   which breaks Tailwind text color utilities. For dark sections on the nav-pilot page,
+   force Aksel components to inherit color from parent elements. */
+.dark-section :is(.aksel-heading, .aksel-body-short, .aksel-body-long, .aksel-label) {
+  color: inherit !important;
 }
 
-/* Display overrides - Nav components need !important to respect Tailwind display utilities */
-.hidden {
-  display: none !important;
-}
-.block {
-  display: block !important;
-}
-.flex {
-  display: flex !important;
-}
-.inline-flex {
-  display: inline-flex !important;
-}
-.grid {
-  display: grid !important;
-}
-
-/* Target Nav components specifically */
-.navds-internal-header__title.hidden,
-.navds-internal-header__button.hidden,
-.navds-internal-header__user.hidden {
-  display: none !important;
-}
-
-/* Responsive display utilities */
-@media (min-width: 640px) {
-  .sm\:hidden {
+/* Display overrides - Aksel DS sets display on components, override to respect Tailwind utilities */
+:is(.aksel-heading, .aksel-body-short, .aksel-body-long, .aksel-label) {
+  &.hidden {
     display: none !important;
   }
-  .sm\:block {
+  &.block {
     display: block !important;
   }
-  .sm\:flex {
+  &.flex {
     display: flex !important;
   }
-}
-
-@media (min-width: 768px) {
-  .md\:hidden {
-    display: none !important;
+  &.inline-flex {
+    display: inline-flex !important;
   }
-  .md\:block {
-    display: block !important;
-  }
-  .md\:flex {
-    display: flex !important;
-  }
-
-  /* Target Nav components specifically for md breakpoint */
-  .navds-internal-header__title.md\:block,
-  .navds-internal-header__button.md\:flex,
-  .navds-internal-header__user.md\:flex {
-    display: flex !important;
-  }
-}
-
-@media (min-width: 1024px) {
-  .lg\:hidden {
-    display: none !important;
-  }
-  .lg\:block {
-    display: block !important;
-  }
-  .lg\:flex {
-    display: flex !important;
+  &.grid {
+    display: grid !important;
   }
 }

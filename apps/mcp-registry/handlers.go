@@ -2,13 +2,14 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func healthHandler(w http.ResponseWriter, _ *http.Request) {
@@ -19,20 +20,8 @@ func readyHandler(w http.ResponseWriter, _ *http.Request) {
 	respondJSON(w, http.StatusOK, map[string]string{"status": "ready"})
 }
 
-func metricsHandler(w http.ResponseWriter, _ *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusOK)
-	if _, err := fmt.Fprintf(w, "# HELP mcp_registry_requests_total Total number of requests\n"); err != nil {
-		slog.Error("Failed to write metrics help", "error", err)
-		return
-	}
-	if _, err := fmt.Fprintf(w, "# TYPE mcp_registry_requests_total counter\n"); err != nil {
-		slog.Error("Failed to write metrics type", "error", err)
-		return
-	}
-	if _, err := fmt.Fprintf(w, "mcp_registry_requests_total 0\n"); err != nil {
-		slog.Error("Failed to write metrics value", "error", err)
-	}
+func metricsHandler() http.Handler {
+	return promhttp.Handler()
 }
 
 func rootHandler(w http.ResponseWriter, _ *http.Request) {
@@ -43,6 +32,7 @@ func rootHandler(w http.ResponseWriter, _ *http.Request) {
 		"endpoints": map[string]string{
 			"servers":        "/v0.1/servers",
 			"server_version": "/v0.1/servers/{serverName}/versions/{version}",
+			"server_latest":  "/v0.1/servers/{serverName}/latest",
 			"health":         "/health",
 			"ready":          "/ready",
 			"metrics":        "/metrics",
@@ -115,13 +105,20 @@ func serversListHandler(w http.ResponseWriter, r *http.Request, config *Config) 
 		if status == "" {
 			status = StatusActive
 		}
+		var navMeta *NavRegistryMeta
+		if len(s.Tools) > 0 || len(s.Tags) > 0 || len(s.Examples) > 0 {
+			navMeta = &NavRegistryMeta{Tools: s.Tools, Tags: s.Tags, Examples: s.Examples}
+		}
 		servers = append(servers, ServerResponse{
 			Server: ServerJSON{
 				Schema:      CurrentSchemaURL,
 				Name:        s.Name,
 				Description: s.Description,
 				Version:     s.Version,
+				WebsiteURL:  s.WebsiteURL,
+				Repository:  s.Repository,
 				Remotes:     s.Remotes,
+				Packages:    s.Packages,
 			},
 			Meta: ResponseMeta{
 				Official: &RegistryExtensions{
@@ -130,6 +127,7 @@ func serversListHandler(w http.ResponseWriter, r *http.Request, config *Config) 
 					UpdatedAt:   updatedAt,
 					IsLatest:    true,
 				},
+				NavRegistry: navMeta,
 			},
 		})
 	}
@@ -164,20 +162,32 @@ func serverVersionHandler(w http.ResponseWriter, r *http.Request, config *Config
 	}
 
 	path := strings.TrimPrefix(r.URL.Path, "/v0.1/servers/")
-	parts := strings.Split(path, "/versions/")
-	if len(parts) != 2 {
+
+	var serverName, version string
+	if parts := strings.Split(path, "/versions/"); len(parts) == 2 {
+		var err error
+		serverName, err = url.PathUnescape(parts[0])
+		if err != nil {
+			slog.Warn("Invalid server name encoding", "encoded", parts[0], "error", err)
+			http.Error(w, "Invalid server name encoding", http.StatusBadRequest)
+			return
+		}
+		version = parts[1]
+	} else if strings.HasSuffix(path, "/latest") {
+		encoded := strings.TrimSuffix(path, "/latest")
+		var err error
+		serverName, err = url.PathUnescape(encoded)
+		if err != nil {
+			slog.Warn("Invalid server name encoding", "encoded", encoded, "error", err)
+			http.Error(w, "Invalid server name encoding", http.StatusBadRequest)
+			return
+		}
+		version = "latest"
+	} else {
 		slog.Warn("Invalid path format", "path", r.URL.Path)
 		http.Error(w, "Invalid path format", http.StatusBadRequest)
 		return
 	}
-
-	serverName, err := url.PathUnescape(parts[0])
-	if err != nil {
-		slog.Warn("Invalid server name encoding", "encoded", parts[0], "error", err)
-		http.Error(w, "Invalid server name encoding", http.StatusBadRequest)
-		return
-	}
-	version := parts[1]
 
 	data, err := os.ReadFile("allowlist.json")
 	if err != nil {
@@ -215,13 +225,20 @@ func serverVersionHandler(w http.ResponseWriter, r *http.Request, config *Config
 			if status == "" {
 				status = StatusActive
 			}
+			var navMeta *NavRegistryMeta
+			if len(s.Tools) > 0 || len(s.Tags) > 0 {
+				navMeta = &NavRegistryMeta{Tools: s.Tools, Tags: s.Tags}
+			}
 			response := ServerResponse{
 				Server: ServerJSON{
 					Schema:      CurrentSchemaURL,
 					Name:        s.Name,
 					Description: s.Description,
 					Version:     s.Version,
+					WebsiteURL:  s.WebsiteURL,
+					Repository:  s.Repository,
 					Remotes:     s.Remotes,
+					Packages:    s.Packages,
 				},
 				Meta: ResponseMeta{
 					Official: &RegistryExtensions{
@@ -230,15 +247,18 @@ func serverVersionHandler(w http.ResponseWriter, r *http.Request, config *Config
 						UpdatedAt:   updatedAt,
 						IsLatest:    true,
 					},
+					NavRegistry: navMeta,
 				},
 			}
 			slog.Debug("Returning server", "name", serverName, "version", version)
+			recordServerLookup(serverName, "found")
 			setCORSHeaders(w)
 			respondJSON(w, http.StatusOK, response)
 			return
 		}
 	}
 
+	recordServerLookup(serverName, "not_found")
 	slog.Warn("Server not found", "name", serverName, "version", version)
 	http.Error(w, "Server not found", http.StatusNotFound)
 }

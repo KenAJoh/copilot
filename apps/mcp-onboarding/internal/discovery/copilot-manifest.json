@@ -4,9 +4,30 @@
   "agents": [
     {
       "type": "agent",
+      "name": "accessibility-agent",
+      "displayName": "@accessibility-agent",
+      "description": "WCAG 2.1/2.2, universell utforming, Aksel-tilgjengelighet og automatisert UU-testing",
+      "category": "frontend",
+      "tags": [
+        "aksel",
+        "design-system",
+        "nextjs",
+        "react",
+        "ui"
+      ],
+      "filePath": ".github/agents/accessibility.agent.md",
+      "useCases": [
+        "Converting Tailwind to Aksel tokens",
+        "Responsive layouts"
+      ],
+      "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/accessibility.agent.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/accessibility.agent.md"
+    },
+    {
+      "type": "agent",
       "name": "aksel-agent",
       "displayName": "@aksel-agent",
-      "description": "Expert on Nav Aksel Design System, spacing tokens, responsive layouts, and component patterns",
+      "description": "Navs Aksel Design System — spacing-tokens, responsiv layout og komponentmønstre",
       "category": "frontend",
       "tags": [
         "aksel",
@@ -27,7 +48,7 @@
       "type": "agent",
       "name": "auth-agent",
       "displayName": "@auth-agent",
-      "description": "Expert on Azure AD, TokenX, ID-porten, Maskinporten, and JWT validation for Nav applications",
+      "description": "Azure AD, TokenX, ID-porten, Maskinporten og JWT-validering for Nav-apper",
       "category": "security",
       "tags": [
         "auth",
@@ -37,6 +58,7 @@
       ],
       "filePath": ".github/agents/auth.agent.md",
       "useCases": [
+        "Creating .nais/app.yaml manifests",
         "Azure AD integration",
         "TokenX token exchange",
         "Network policies",
@@ -48,9 +70,46 @@
     },
     {
       "type": "agent",
+      "name": "code-review-agent",
+      "displayName": "@code-review-agent",
+      "description": "Kodegjennomgang for Nav-applikasjoner — finner feil, sikkerhetsproblemer og brudd på Nav-konvensjoner",
+      "filePath": ".github/agents/code-review.agent.md",
+      "useCases": [
+        "Creating .nais/app.yaml manifests",
+        "Adding PostgreSQL/Kafka",
+        "Azure AD integration",
+        "TokenX token exchange",
+        "Creating Kafka event consumers",
+        "Designing event schemas",
+        "Converting Tailwind to Aksel tokens",
+        "Responsive layouts",
+        "Network policies",
+        "Secrets management",
+        "GDPR compliance"
+      ],
+      "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/code-review.agent.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/code-review.agent.md"
+    },
+    {
+      "type": "agent",
+      "name": "forfatter",
+      "displayName": "@forfatter",
+      "description": "Norsk teknisk redaktør: klarspråk, AI-markører, anglismer, fagtermer, mikrotekst.",
+      "filePath": ".github/agents/forfatter.agent.md",
+      "useCases": [
+        "Creating .nais/app.yaml manifests",
+        "Adding PostgreSQL/Kafka",
+        "Creating Kafka event consumers",
+        "Designing event schemas"
+      ],
+      "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/forfatter.agent.md"
+    },
+    {
+      "type": "agent",
       "name": "kafka-agent",
       "displayName": "@kafka-agent",
-      "description": "Expert on Rapids \u0026 Rivers event-driven architecture, Kafka patterns, and event schema design",
+      "description": "Rapids \u0026 Rivers, eventdrevet arkitektur, Kafka-mønstre og schema-design",
       "category": "backend",
       "tags": [
         "kafka",
@@ -77,7 +136,7 @@
       "type": "agent",
       "name": "nais-agent",
       "displayName": "@nais-agent",
-      "description": "Expert on Nais deployment, GCP resources, Kafka topics, and platform troubleshooting",
+      "description": "Nais-deployment, GCP-ressurser, Kafka-topics og feilsøking på plattformen",
       "category": "platform",
       "tags": [
         "nais",
@@ -106,9 +165,41 @@
     },
     {
       "type": "agent",
+      "name": "nav-pilot",
+      "displayName": "@nav-pilot",
+      "description": "Planlegg, arkitekturer og bygg Nav-applikasjoner med innebygd kjennskap til Nais, auth, Kafka, sikkerhet og Nav-mønstre",
+      "category": "platform",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
+      "filePath": ".github/agents/nav-pilot.agent.md",
+      "useCases": [
+        "Adding PostgreSQL/Kafka",
+        "Troubleshooting deployments",
+        "Azure AD integration",
+        "TokenX token exchange",
+        "Creating Kafka event consumers",
+        "Designing event schemas",
+        "Converting Tailwind to Aksel tokens",
+        "Responsive layouts",
+        "Health endpoints",
+        "Business metrics",
+        "OpenTelemetry tracing",
+        "Network policies",
+        "Secrets management",
+        "GDPR compliance"
+      ],
+      "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/nav-pilot.agent.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/nav-pilot.agent.md"
+    },
+    {
+      "type": "agent",
       "name": "observability-agent",
       "displayName": "@observability-agent",
-      "description": "Expert on Prometheus metrics, OpenTelemetry tracing, Grafana dashboards, and alerting",
+      "description": "Prometheus-metrikker, OpenTelemetry-tracing, Grafana-dashboards og varsling",
       "category": "platform",
       "tags": [
         "observability",
@@ -137,7 +228,7 @@
       "type": "agent",
       "name": "research-agent",
       "displayName": "@research-agent",
-      "description": "Expert at researching codebases, investigating issues, analyzing patterns, and gathering context before implementation",
+      "description": "Utforsker kodebaser, undersøker problemer og samler kontekst før implementering",
       "filePath": ".github/agents/research.agent.md",
       "useCases": [
         "Creating .nais/app.yaml manifests",
@@ -156,9 +247,33 @@
     },
     {
       "type": "agent",
+      "name": "rust-agent",
+      "displayName": "@rust-agent",
+      "description": "Idiomatisk Rust-utvikling med cargo, clippy, error handling, async/tokio, unsafe og testing",
+      "tags": [
+        "testing",
+        "jest",
+        "junit",
+        "quality"
+      ],
+      "filePath": ".github/agents/rust.agent.md",
+      "useCases": [
+        "Creating .nais/app.yaml manifests",
+        "Health endpoints",
+        "Business metrics",
+        "OpenTelemetry tracing",
+        "Network policies",
+        "Secrets management",
+        "GDPR compliance"
+      ],
+      "installUrl": "vscode:chat-agent/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/rust.agent.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/agents/rust.agent.md"
+    },
+    {
+      "type": "agent",
       "name": "security-champion-agent",
       "displayName": "@security-champion-agent",
-      "description": "Expert on Nav security architecture, threat modeling, compliance, and holistic security practices",
+      "description": "Navs sikkerhetsarkitektur, trusselmodellering, compliance og sikkerhetspraksis",
       "category": "security",
       "tags": [
         "security",
@@ -168,6 +283,7 @@
       ],
       "filePath": ".github/agents/security-champion.agent.md",
       "useCases": [
+        "Creating .nais/app.yaml manifests",
         "Azure AD integration",
         "TokenX token exchange",
         "Network policies",
@@ -181,12 +297,60 @@
   "instructions": [
     {
       "type": "instruction",
+      "name": "accessibility",
+      "displayName": "Accessibility Development",
+      "description": "Universell utforming er lovpålagt i Norge. All frontend-kode i Nav skal oppfylle WCAG 2.1 AA.",
+      "filePath": ".github/instructions/accessibility.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/accessibility.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/accessibility.instructions.md"
+    },
+    {
+      "type": "instruction",
       "name": "database",
       "displayName": "Database Development",
-      "description": "Follow Flyway naming convention: `V{version}__{description}.sql`",
+      "description": "Standarder for databasemigrasjoner med Flyway: navnekonvensjoner, sikre endringer og idempotente skript.",
       "filePath": ".github/instructions/database.instructions.md",
       "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/database.instructions.md",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/database.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "docker",
+      "displayName": "Docker Development",
+      "description": "Standarder for Dockerfile i Nav: Chainguard base images, multi-stage builds og sikkerhetspraksis.",
+      "filePath": ".github/instructions/docker.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/docker.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/docker.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "github-actions",
+      "displayName": "Github/Actions Development",
+      "description": "Standarder for CI/CD-workflows med GitHub Actions på Nais: SHA-pinning, Nais deploy og caching.",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
+      "filePath": ".github/instructions/github-actions.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/github-actions.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/github-actions.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "golang",
+      "displayName": "Golang Development",
+      "description": "Go-mønstre for Nav-tjenester på Nais-plattformen. Gjelder Go HTTP-tjenester, CLI-verktøy og plattformkomponenter.",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
+      "filePath": ".github/instructions/golang.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/golang.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/golang.instructions.md"
     },
     {
       "type": "instruction",
@@ -204,9 +368,23 @@
     },
     {
       "type": "instruction",
+      "name": "kotlin-spring",
+      "displayName": "Kotlin/Spring Development",
+      "description": "```kotlin",
+      "tags": [
+        "kotlin",
+        "ktor",
+        "backend"
+      ],
+      "filePath": ".github/instructions/kotlin-spring.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/kotlin-spring.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/kotlin-spring.instructions.md"
+    },
+    {
+      "type": "instruction",
       "name": "nextjs-aksel",
       "displayName": "Nextjs/Aksel Development",
-      "description": "**CRITICAL**: Always use Nav DS spacing tokens, never Tailwind padding/margin utilities.",
+      "description": "Standarder for Next.js-apper med Aksel: spacing-tokens, responsive props og komponentmønstre.",
       "tags": [
         "aksel",
         "design-system",
@@ -220,9 +398,70 @@
     },
     {
       "type": "instruction",
+      "name": "performance",
+      "displayName": "Performance Development",
+      "description": "Core Web Vitals targets and performance patterns for Next.js applications with Aksel Design System on NAIS.",
+      "tags": [
+        "aksel",
+        "design-system",
+        "nextjs",
+        "react",
+        "ui"
+      ],
+      "filePath": ".github/instructions/performance.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/performance.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/performance.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "security-owasp",
+      "displayName": "Security/Owasp Development",
+      "description": "Tactical security patterns for Kotlin and Go code on NAIS. This instruction focuses on **code-level anti-patterns** and fixes — it complements `@security-champion-agent` (architecture-level threat modeling) and the `security-review` skill (scanning tools like trivy, zizmor, govulncheck).",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
+      "filePath": ".github/instructions/security-owasp.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/security-owasp.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/security-owasp.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "testing-kotlin",
+      "displayName": "Testing/Kotlin Development",
+      "description": "Kotlin-spesifikke testmønstre for Nav: Kotest-matchers, TestRapid, Testcontainers og MockOAuth2Server.",
+      "tags": [
+        "auth",
+        "azure-ad",
+        "tokenx",
+        "security"
+      ],
+      "filePath": ".github/instructions/testing-kotlin.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-kotlin.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-kotlin.instructions.md"
+    },
+    {
+      "type": "instruction",
+      "name": "testing-typescript",
+      "displayName": "Testing/Typescript Development",
+      "description": "TypeScript-spesifikke testmønstre for Nav: Vitest, mocking, async og React-komponenttesting.",
+      "tags": [
+        "testing",
+        "jest",
+        "junit",
+        "quality"
+      ],
+      "filePath": ".github/instructions/testing-typescript.instructions.md",
+      "installUrl": "vscode:chat-instructions/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-typescript.instructions.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/instructions/testing-typescript.instructions.md"
+    },
+    {
+      "type": "instruction",
       "name": "testing",
       "displayName": "Testing Development",
-      "description": "```kotlin",
+      "description": "Felles testprinsipper for Nav. Språkspesifikke eksempler finnes i egne instruksjoner for [Kotlin](testing-kotlin.instructions.md) og [TypeScript](testing-typescript.instructions.md).",
       "tags": [
         "kotlin",
         "ktor",
@@ -238,7 +477,7 @@
       "type": "prompt",
       "name": "aksel-component",
       "displayName": "#aksel-component",
-      "description": "Scaffold a responsive React component using Aksel Design System with correct spacing tokens",
+      "description": "Scaffold en responsiv React-komponent med Aksel Design System og riktige spacing-tokens",
       "tags": [
         "aksel",
         "design-system",
@@ -252,9 +491,24 @@
     },
     {
       "type": "prompt",
+      "name": "golang-service",
+      "displayName": "#golang-service",
+      "description": "Scaffold ein Go HTTP-teneste med NAIS-mønster, pgx, sqlc og slog",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
+      "filePath": ".github/prompts/golang-service.prompt.md",
+      "installUrl": "vscode:chat-prompt/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/golang-service.prompt.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/golang-service.prompt.md"
+    },
+    {
+      "type": "prompt",
       "name": "kafka-topic",
       "displayName": "#kafka-topic",
-      "description": "Add Kafka topic configuration to Nais manifest and create Rapids \u0026 Rivers event handler",
+      "description": "Legg til Kafka-topic-konfigurasjon i Nais-manifest og lag Rapids \u0026 Rivers event handler",
       "tags": [
         "nais",
         "kubernetes",
@@ -267,9 +521,18 @@
     },
     {
       "type": "prompt",
+      "name": "ktor-endpoint",
+      "displayName": "#ktor-endpoint",
+      "description": "Generer ein Ktor-rute med autentisering, validering og feilhåndtering",
+      "filePath": ".github/prompts/ktor-endpoint.prompt.md",
+      "installUrl": "vscode:chat-prompt/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/ktor-endpoint.prompt.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/ktor-endpoint.prompt.md"
+    },
+    {
+      "type": "prompt",
       "name": "nais-manifest",
       "displayName": "#nais-manifest",
-      "description": "Generate a production-ready Nais application manifest for Kubernetes deployment",
+      "description": "Generer et produksjonsklart Nais-applikasjonsmanifest for Kubernetes-deployment",
       "tags": [
         "nais",
         "kubernetes",
@@ -279,6 +542,36 @@
       "filePath": ".github/prompts/nais-manifest.prompt.md",
       "installUrl": "vscode:chat-prompt/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/nais-manifest.prompt.md",
       "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/nais-manifest.prompt.md"
+    },
+    {
+      "type": "prompt",
+      "name": "nextjs-api-route",
+      "displayName": "#nextjs-api-route",
+      "description": "Scaffold en Next.js App Router API-rute med validering, feilhåndtering, auth og test",
+      "tags": [
+        "nextjs",
+        "aksel",
+        "frontend",
+        "react"
+      ],
+      "filePath": ".github/prompts/nextjs-api-route.prompt.md",
+      "installUrl": "vscode:chat-prompt/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/nextjs-api-route.prompt.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/nextjs-api-route.prompt.md"
+    },
+    {
+      "type": "prompt",
+      "name": "spring-boot-endpoint",
+      "displayName": "#spring-boot-endpoint",
+      "description": "Scaffold et Spring Boot REST-endepunkt med Controller, Service, Repository, Test og Nais-konfig",
+      "tags": [
+        "nais",
+        "kubernetes",
+        "deployment",
+        "infrastructure"
+      ],
+      "filePath": ".github/prompts/spring-boot-endpoint.prompt.md",
+      "installUrl": "vscode:chat-prompt/install?url=https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/spring-boot-endpoint.prompt.md",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/prompts/spring-boot-endpoint.prompt.md"
     }
   ],
   "skills": [
@@ -286,10 +579,28 @@
       "type": "skill",
       "name": "aksel-spacing",
       "displayName": "aksel-spacing",
-      "description": "This skill provides responsive layout patterns using Nav Aksel Design System spacing tokens.",
+      "description": "Responsive layout-mønstre med Navs Aksel Design System spacing-tokens.",
       "filePath": ".github/skills/aksel-spacing",
       "installUrl": "",
-      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/aksel-spacing"
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/aksel-spacing/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "api-design",
+      "displayName": "api-design",
+      "description": "REST API design for Nav services. Covers naming conventions, error handling with ProblemDetail, versioning, pagination, and OpenAPI spec.",
+      "filePath": ".github/skills/api-design",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/api-design/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "conventional-commit",
+      "displayName": "conventional-commit",
+      "description": "Generate commit messages following the Conventional Commits specification, adapted for Nav projects.",
+      "filePath": ".github/skills/conventional-commit",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/conventional-commit/SKILL.md"
     },
     {
       "type": "skill",
@@ -298,7 +609,16 @@
       "description": "This skill provides patterns for managing database schema changes with Flyway.",
       "filePath": ".github/skills/flyway-migration",
       "installUrl": "",
-      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/flyway-migration"
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/flyway-migration/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "java-to-kotlin",
+      "displayName": "java-to-kotlin",
+      "description": "Systematic conversion of Java codebases to idiomatic Kotlin, with framework-aware transformations for Nav services. Covers the full journey from faithful translation through nullability audit, collection migration, and idiomatic transforms — plus framework-specific patterns for Spring→Ktor, JPA→Kotliquery, JUnit→Kotest, and Lombok elimination.",
+      "filePath": ".github/skills/java-to-kotlin",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/java-to-kotlin/SKILL.md"
     },
     {
       "type": "skill",
@@ -307,7 +627,96 @@
       "description": "This skill provides patterns for type-safe environment configuration using Kotlin sealed classes.",
       "filePath": ".github/skills/kotlin-app-config",
       "installUrl": "",
-      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/kotlin-app-config"
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/kotlin-app-config/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "ktor-scaffold",
+      "displayName": "ktor-scaffold",
+      "description": "Scaffold a new Kotlin/Ktor service following Nav's standard patterns. This skill composes patterns from existing Nav skills and instructions.",
+      "filePath": ".github/skills/ktor-scaffold",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/ktor-scaffold/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "nav-architecture-review",
+      "displayName": "nav-architecture-review",
+      "description": "Generer et Architecture Decision Record (ADR) med review fra tre perspektiver: arkitektur, sikkerhet og plattform. Følger Navs Architecture Advice Process.",
+      "filePath": ".github/skills/nav-architecture-review",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-architecture-review/SKILL.md",
+      "references": [
+        {
+          "path": "references/adr-template.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-architecture-review/references/adr-template.md"
+        },
+        {
+          "path": "references/nav-principles.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-architecture-review/references/nav-principles.md"
+        }
+      ]
+    },
+    {
+      "type": "skill",
+      "name": "nav-deep-interview",
+      "displayName": "nav-deep-interview",
+      "description": "Kjør et strukturert intervju for å avdekke blinde flekker *før* implementering starter. Basert på vanlige feil og oversikter i Nav-prosjekter.",
+      "filePath": ".github/skills/nav-deep-interview",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-deep-interview/SKILL.md",
+      "references": [
+        {
+          "path": "references/data-classification.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-deep-interview/references/data-classification.md"
+        },
+        {
+          "path": "references/blind-spots.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-deep-interview/references/blind-spots.md"
+        }
+      ]
+    },
+    {
+      "type": "skill",
+      "name": "nav-plan",
+      "displayName": "nav-plan",
+      "description": "Gå fra en vag idé til en konkret, Nav-kompatibel arkitekturplan. Bruker beslutningstrær for å velge riktig auth, kommunikasjon, database og Nais-oppsett.",
+      "filePath": ".github/skills/nav-plan",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-plan/SKILL.md",
+      "references": [
+        {
+          "path": "references/decision-trees.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-plan/references/decision-trees.md"
+        },
+        {
+          "path": "references/documentation-templates.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-plan/references/documentation-templates.md"
+        },
+        {
+          "path": "references/nais-templates.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-plan/references/nais-templates.md"
+        },
+        {
+          "path": "references/modernization-patterns.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-plan/references/modernization-patterns.md"
+        }
+      ]
+    },
+    {
+      "type": "skill",
+      "name": "nav-troubleshoot",
+      "displayName": "nav-troubleshoot",
+      "description": "Strukturerte diagnostiske trær for vanlige problemer på Nais-plattformen. Erstatter «spør i Slack-kanalen» med guidet feilsøking.",
+      "filePath": ".github/skills/nav-troubleshoot",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-troubleshoot/SKILL.md",
+      "references": [
+        {
+          "path": "references/diagnostic-trees.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/nav-troubleshoot/references/diagnostic-trees.md"
+        }
+      ]
     },
     {
       "type": "skill",
@@ -316,7 +725,77 @@
       "description": "This skill provides patterns for setting up observability in Nais applications.",
       "filePath": ".github/skills/observability-setup",
       "installUrl": "",
-      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/observability-setup"
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/observability-setup/SKILL.md",
+      "references": [
+        {
+          "path": "references/grafana-queries.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/observability-setup/references/grafana-queries.md"
+        },
+        {
+          "path": "references/production-patterns.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/observability-setup/references/production-patterns.md"
+        }
+      ]
+    },
+    {
+      "type": "skill",
+      "name": "playwright-testing",
+      "displayName": "playwright-testing",
+      "description": "Generate Playwright tests for Nav web applications. Covers page object pattern, authentication fixtures, accessibility testing, and CI configuration.",
+      "filePath": ".github/skills/playwright-testing",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/playwright-testing/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "postgresql-review",
+      "displayName": "postgresql-review",
+      "description": "Review and optimize PostgreSQL queries, schemas, and patterns for Nav applications. Covers EXPLAIN analysis, index strategies, JSONB patterns, and common anti-patterns.",
+      "filePath": ".github/skills/postgresql-review",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/postgresql-review/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "rust-development",
+      "displayName": "rust-development",
+      "description": "Patterns, templates, and procedures for building high-quality Rust applications and libraries. Based on [Microsoft Pragmatic Rust Guidelines](https://microsoft.github.io/rust-guidelines/) and [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/checklist.html).",
+      "filePath": ".github/skills/rust-development",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/rust-development/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "security-review",
+      "displayName": "security-review",
+      "description": "This skill provides pre-commit and pre-PR security checks for Nav applications. Covers secret scanning, vulnerability scanning, and Nav-specific requirements.",
+      "filePath": ".github/skills/security-review",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/security-review/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "spring-boot-scaffold",
+      "displayName": "spring-boot-scaffold",
+      "description": "Scaffold a new Spring Boot project with Nav standards: Nais manifest, Flyway migrations, Azure AD, health endpoints, and Docker.",
+      "filePath": ".github/skills/spring-boot-scaffold",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/spring-boot-scaffold/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "threat-model",
+      "displayName": "threat-model",
+      "description": "Systematic threat identification for NAIS microservices using the STRIDE-A methodology. Produces a data flow diagram, structured threats table, prioritized mitigations, and residual risk summary.",
+      "filePath": ".github/skills/threat-model",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/threat-model/SKILL.md",
+      "references": [
+        {
+          "path": "references/nav-mitigations.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/threat-model/references/nav-mitigations.md"
+        }
+      ]
     },
     {
       "type": "skill",
@@ -325,7 +804,35 @@
       "description": "This skill provides patterns for secure service-to-service authentication using TokenX.",
       "filePath": ".github/skills/tokenx-auth",
       "installUrl": "",
-      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/tokenx-auth"
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/tokenx-auth/SKILL.md"
+    },
+    {
+      "type": "skill",
+      "name": "web-design-reviewer",
+      "displayName": "web-design-reviewer",
+      "description": "Visuell inspeksjon og validering av designkvalitet på nettsider. Identifiserer og fikser problemer på kildekodenivå.",
+      "filePath": ".github/skills/web-design-reviewer",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/web-design-reviewer/SKILL.md",
+      "references": [
+        {
+          "path": "references/framework-fixes.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/web-design-reviewer/references/framework-fixes.md"
+        },
+        {
+          "path": "references/visual-checklist.md",
+          "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/web-design-reviewer/references/visual-checklist.md"
+        }
+      ]
+    },
+    {
+      "type": "skill",
+      "name": "workstation-security",
+      "displayName": "workstation-security",
+      "description": "Run these checks with `run_in_terminal` or `bash`. Report every finding with a severity (CRITICAL / HIGH / MEDIUM / INFO / PASS) and a concrete fix. Summarize results in a table at the end.",
+      "filePath": ".github/skills/workstation-security",
+      "installUrl": "",
+      "rawUrl": "https://raw.githubusercontent.com/navikt/copilot/main/.github/skills/workstation-security/SKILL.md"
     }
   ]
 }

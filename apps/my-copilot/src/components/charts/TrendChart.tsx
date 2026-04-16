@@ -1,6 +1,6 @@
 "use client";
 
-import { CopilotMetrics } from "@/lib/github";
+import type { DailyTrend } from "@/lib/types";
 import React from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -12,11 +12,11 @@ import {
 } from "@/lib/chart-utils";
 
 interface TrendChartProps {
-  usage: CopilotMetrics[];
+  data: DailyTrend[];
 }
 
-const TrendChart: React.FC<TrendChartProps> = ({ usage }) => {
-  if (!usage || usage.length === 0) {
+const TrendChart: React.FC<TrendChartProps> = ({ data }) => {
+  if (!data || data.length === 0) {
     return (
       <div className={chartWrapperClass}>
         <div className="text-center text-gray-500 py-8">{NO_DATA_MESSAGE}</div>
@@ -24,35 +24,28 @@ const TrendChart: React.FC<TrendChartProps> = ({ usage }) => {
     );
   }
 
-  const labels = usage.map((dayUsage) => dayUsage.date);
+  const labels = data.map((d) => d.day);
 
   const trendData = {
     labels,
     datasets: [
       {
-        label: "Totalt aktive brukere",
-        data: usage.map((dayUsage) => dayUsage.total_active_users),
+        label: "Kodeforslag (genereringer)",
+        data: data.map((d) => d.codeCompletionUsers),
         borderColor: chartColors[0],
         backgroundColor: getBackgroundColor(chartColors[0]),
         tension: 0.4,
       },
       {
-        label: "Engasjerte brukere",
-        data: usage.map((dayUsage) => dayUsage.total_engaged_users),
-        borderColor: chartColors[1],
-        backgroundColor: getBackgroundColor(chartColors[1]),
-        tension: 0.4,
-      },
-      {
-        label: "Kodeforslag brukere",
-        data: usage.map((dayUsage) => dayUsage.copilot_ide_code_completions?.total_engaged_users || 0),
+        label: "Chat (interaksjoner)",
+        data: data.map((d) => d.chatUsers),
         borderColor: chartColors[2],
         backgroundColor: getBackgroundColor(chartColors[2]),
         tension: 0.4,
       },
       {
-        label: "Chat brukere (IDE)",
-        data: usage.map((dayUsage) => dayUsage.copilot_ide_chat?.total_engaged_users || 0),
+        label: "Agent (genereringer)",
+        data: data.map((d) => d.agentUsers),
         borderColor: chartColors[3],
         backgroundColor: getBackgroundColor(chartColors[3]),
         tension: 0.4,
@@ -66,7 +59,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ usage }) => {
       ...commonLineOptions.plugins,
       title: {
         display: true,
-        text: "Brukertrend over tid",
+        text: "Daglig aktivitet over tid",
       },
     },
   };

@@ -1,0 +1,136 @@
+export type CustomizationType = "agent" | "instruction" | "prompt" | "skill" | "mcp";
+
+export type { Domain } from "./manifest-types";
+import type { ExampleItem } from "./manifest-types";
+import type { Domain } from "./manifest-types";
+
+export interface Contributor {
+  login: string;
+  avatarUrl: string;
+}
+
+interface BaseCustomization {
+  id: string;
+  name: string;
+  description: string;
+  type: CustomizationType;
+  domain: Domain;
+  filePath: string;
+  rawGitHubUrl: string;
+  installUrl: string | null;
+  insidersInstallUrl: string | null;
+  tags?: string[];
+  examples?: ExampleItem[];
+}
+
+export interface Agent extends BaseCustomization {
+  type: "agent";
+  tools: string[];
+  agentReferences?: string[];
+}
+
+export interface Instruction extends BaseCustomization {
+  type: "instruction";
+  applyTo: string;
+}
+
+export interface Prompt extends BaseCustomization {
+  type: "prompt";
+  invocation: string;
+}
+
+export interface SkillReference {
+  path: string;
+  rawUrl: string;
+}
+
+export interface Skill extends BaseCustomization {
+  type: "skill";
+  references?: SkillReference[];
+}
+
+export interface McpServerCustomization extends BaseCustomization {
+  type: "mcp";
+  version: string;
+  remotes: { type: string; url: string }[];
+  websiteUrl?: string;
+  repository?: { url: string; source: string; subfolder?: string };
+  tools?: string[];
+  tags?: string[];
+  packages?: {
+    registryType: string;
+    identifier: string;
+    runtimeHint?: string;
+    transport: { type: string };
+    packageArguments?: { type: string; name?: string; value?: string; description?: string }[];
+    environmentVariables?: { name: string; description?: string; isRequired?: boolean; isSecret?: boolean }[];
+  }[];
+}
+
+export type AnyCustomization = Agent | Instruction | Prompt | Skill | McpServerCustomization;
+
+export interface DomainConfig {
+  label: string;
+  description: string;
+  color: "blue" | "green" | "orange" | "purple" | "red";
+  background: "info-soft" | "success-soft" | "warning-soft" | "accent-soft" | "danger-soft";
+}
+
+export const DOMAIN_CONFIGS: Record<Domain, DomainConfig> = {
+  platform: {
+    label: "Plattform",
+    description: "Nais, Kubernetes, deploy og infrastruktur",
+    color: "blue",
+    background: "info-soft",
+  },
+  frontend: {
+    label: "Frontend",
+    description: "React, Next.js, Aksel Design System",
+    color: "green",
+    background: "success-soft",
+  },
+  backend: {
+    label: "Backend",
+    description: "Kotlin, Ktor, database, Kafka",
+    color: "orange",
+    background: "warning-soft",
+  },
+  auth: {
+    label: "Sikkerhet",
+    description: "Azure AD, TokenX, ID-porten, trusselmodellering",
+    color: "purple",
+    background: "accent-soft",
+  },
+  observability: {
+    label: "Observability",
+    description: "Prometheus, Grafana, OpenTelemetry, logging",
+    color: "red",
+    background: "danger-soft",
+  },
+  general: {
+    label: "Generelt",
+    description: "Forskning, analyse og generelle verktøy",
+    color: "blue",
+    background: "info-soft",
+  },
+  testing: {
+    label: "Testing",
+    description: "Testverktøy, browser-automatisering og kvalitetssikring",
+    color: "orange",
+    background: "warning-soft",
+  },
+  design: {
+    label: "Design",
+    description: "Figma, design-til-kode og visuelle verktøy",
+    color: "purple",
+    background: "accent-soft",
+  },
+};
+
+export const TYPE_LABELS: Record<CustomizationType, string> = {
+  agent: "Agent",
+  instruction: "Instruksjon",
+  prompt: "Prompt",
+  skill: "Skill",
+  mcp: "MCP Server",
+};

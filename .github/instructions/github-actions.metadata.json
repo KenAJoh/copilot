@@ -1,0 +1,9 @@
+{
+  "displayName": "GitHub Actions CI/CD",
+  "description": "Action pinning, permissions, Nais deploy, caching, reusable workflows.",
+  "domain": "platform",
+  "tags": ["github-actions", "ci-cd", "workflow", "deployment"],
+  "examples": [
+    "Lag en GitHub Actions workflow som bygger og deployer til Nais"
+  ]
+}

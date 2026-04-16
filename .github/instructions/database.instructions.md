@@ -4,6 +4,8 @@ applyTo: "**/db/migration/**/*.sql"
 
 # Database Migration Standards (Flyway)
 
+Standarder for databasemigrasjoner med Flyway: navnekonvensjoner, sikre endringer og idempotente skript.
+
 ## Migration File Naming
 
 Follow Flyway naming convention: `V{version}__{description}.sql`
@@ -178,7 +180,7 @@ object PostgresDataSourceBuilder {
     val dataSource by lazy {
         HikariDataSource().apply {
             jdbcUrl = getOrThrow(DB_URL_KEY)
-            maximumPoolSize = 40
+            maximumPoolSize = 5 // Start low in K8s; scale up if needed
             minimumIdle = 1
         }
     }
@@ -196,6 +198,65 @@ fun main() {
     PostgresDataSourceBuilder.runMigration()
     // Start application
 }
+```
+
+## PostgreSQL Query Optimization
+
+### EXPLAIN ANALYZE
+
+Always analyze new or changed queries:
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT * FROM vedtak
+WHERE bruker_id = '12345678901' AND status = 'aktiv'
+ORDER BY opprettet_dato DESC LIMIT 10;
+```
+
+Red flags: `Seq Scan` on large tables, `Sort external merge`, high discrepancy between estimated/actual rows.
+
+### JSONB Patterns
+
+```sql
+-- GIN index for containment queries
+CREATE INDEX idx_metadata_gin ON hendelser USING GIN (metadata);
+
+-- Query JSONB
+SELECT * FROM hendelser WHERE metadata @> '{"type": "vedtak"}';
+
+-- Extract fields
+SELECT id, metadata->>'type' AS type FROM hendelser;
+```
+
+### Window Functions
+
+```sql
+-- Latest per group
+SELECT * FROM (
+    SELECT *, ROW_NUMBER() OVER (
+        PARTITION BY bruker_id ORDER BY opprettet_dato DESC
+    ) AS rn
+    FROM vedtak
+) sub WHERE rn = 1;
+```
+
+### Large Table Migrations
+
+```sql
+-- Add column with default (instant in PostgreSQL 11+)
+ALTER TABLE stor_tabell ADD COLUMN ny_kolonne BOOLEAN DEFAULT false;
+
+-- Standard Flyway migration (runs in a transaction)
+CREATE INDEX idx_ny ON stor_tabell(ny_kolonne);
+
+-- Use CREATE INDEX CONCURRENTLY only in its own dedicated migration
+-- with no other statements in the file.
+-- Example Flyway migration:
+--      V5__add_idx_ny_concurrently.sql
+-- Example migration content:
+--      CREATE INDEX CONCURRENTLY idx_ny ON stor_tabell(ny_kolonne);
+-- This migration must run without being wrapped in a transaction,
+-- so configure Flyway's transaction handling accordingly for your setup.
 ```
 
 ## Testing Migrations
@@ -250,3 +311,11 @@ class MigrationTest {
 - Use single underscore in naming
 - Deploy untested migrations to production
 - Commit migration files without testing
+
+## Related
+
+| Resource | Use For |
+|----------|---------|
+| `flyway-migration` skill | Flyway migration patterns and best practices |
+| `@nais-agent` | GCP Cloud SQL configuration in Nais manifests |
+| `postgresql-review` skill | Query optimization and indexing strategy |

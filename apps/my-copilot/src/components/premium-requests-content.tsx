@@ -13,13 +13,12 @@ export default function PremiumRequestsContent({ metrics }: PremiumRequestsConte
     <div className="space-y-6">
       <Heading size="medium">Oversikt over premiumforespørsler</Heading>
 
-      <HGrid columns={4} gap="4">
+      <HGrid columns={4} gap="space-16">
         <MetricCard
           value={formatNumber(metrics.totalGrossRequests)}
           label="Totale forespørsler"
           helpTitle="Totale forespørsler"
           helpText="Totalt antall premium AI-forespørsler brukt i perioden, inkludert både inkluderte og fakturerte forespørsler."
-          accentColor="blue"
         />
 
         <MetricCard
@@ -27,7 +26,6 @@ export default function PremiumRequestsContent({ metrics }: PremiumRequestsConte
           label="Inkluderte forespørsler"
           helpTitle="Inkluderte forespørsler"
           helpText="Antall forespørsler som er inkludert i abonnementet og ikke medfører ekstra kostnader."
-          accentColor="green"
         />
 
         <MetricCard
@@ -35,7 +33,6 @@ export default function PremiumRequestsContent({ metrics }: PremiumRequestsConte
           label="Fakturerte forespørsler"
           helpTitle="Fakturerte forespørsler"
           helpText="Antall forespørsler som går utover kvoten og blir fakturert separat."
-          accentColor="orange"
         />
 
         <MetricCard
@@ -43,15 +40,14 @@ export default function PremiumRequestsContent({ metrics }: PremiumRequestsConte
           label="Nettokostnad"
           helpTitle="Nettokostnad"
           helpText="Total kostnad etter rabatter for premiumforespørsler i perioden."
-          accentColor="purple"
         />
       </HGrid>
 
-      <Box background="surface-subtle" padding="6" borderRadius="large">
+      <Box background="neutral-soft" padding="space-24" borderRadius="12">
         <Heading size="small" level="3" className="mb-4">
           Kostnadsdetaljer
         </Heading>
-        <HGrid columns={3} gap="4">
+        <HGrid columns={3} gap="space-16">
           <div>
             <BodyShort className="text-gray-600 mb-1">Bruttokostnad</BodyShort>
             <Heading size="medium" level="4">

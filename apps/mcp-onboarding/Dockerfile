@@ -1,4 +1,4 @@
-FROM golang:1.25-alpine AS builder
+FROM golang:1.26-alpine AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -12,7 +12,7 @@ COPY *.go ./
 COPY internal/ ./internal/
 COPY cmd/ ./cmd/
 
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o mcp-onboarding .
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -trimpath -ldflags="-s -w" -o mcp-onboarding .
 
 FROM gcr.io/distroless/static-debian12:nonroot
 

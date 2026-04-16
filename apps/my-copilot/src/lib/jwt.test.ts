@@ -1,7 +1,8 @@
 import { validate } from "./jwt";
-import fetchMock from "jest-fetch-mock";
+import { vi } from "vitest";
 
-fetchMock.enableMocks();
+const fetchMock = vi.fn<typeof globalThis.fetch>();
+vi.stubGlobal("fetch", fetchMock);
 
 function createToken(header: object, payload: object, signature: string = "signature"): string {
   const encode = (obj: object) => Buffer.from(JSON.stringify(obj)).toString("base64url");
@@ -10,7 +11,7 @@ function createToken(header: object, payload: object, signature: string = "signa
 
 describe("validate", () => {
   beforeEach(() => {
-    fetchMock.resetMocks();
+    fetchMock.mockReset();
   });
 
   it("should return invalid for a token with invalid format", async () => {
@@ -67,25 +68,27 @@ describe("validate", () => {
   });
 
   it("should return invalid if public key is not found in JWKS", async () => {
-    fetchMock.mockResponseOnce(JSON.stringify({ keys: [] }));
+    fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({ keys: [] })));
     const token = createToken({ alg: "RS256", kid: "123" }, { aud: "clientId", iss: "issuer" });
     const result = await validate(token, "clientId", "issuer", "publicKeyEndpoint");
     expect(result).toEqual({ isValid: false, error: "Public key not found in JWKS endpoint." });
   });
 
   it("should return invalid if there is an error fetching JWKS", async () => {
-    fetchMock.mockRejectOnce(new Error("Network error"));
+    fetchMock.mockRejectedValueOnce(new Error("Network error"));
     const token = createToken({ alg: "RS256", kid: "123" }, { aud: "clientId", iss: "issuer" });
     const result = await validate(token, "clientId", "issuer", "publicKeyEndpoint");
     expect(result).toEqual({ isValid: false, error: "Error fetching JWKS: Network error" });
   });
 
   it("should return invalid if there is an error importing public key", async () => {
-    fetchMock.mockResponseOnce(
-      JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+      )
     );
     const token = createToken({ alg: "RS256", kid: "123" }, { aud: "clientId", iss: "issuer" });
-    jest.spyOn(crypto.subtle, "importKey").mockImplementationOnce(() => {
+    vi.spyOn(crypto.subtle, "importKey").mockImplementationOnce(() => {
       throw new Error("Import error");
     });
     const result = await validate(token, "clientId", "issuer", "publicKeyEndpoint");
@@ -93,11 +96,13 @@ describe("validate", () => {
   });
 
   it("should return invalid if there is an error verifying signature", async () => {
-    fetchMock.mockResponseOnce(
-      JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+      )
     );
     const token = createToken({ alg: "RS256", kid: "123" }, { aud: "clientId", iss: "issuer" });
-    jest.spyOn(crypto.subtle, "verify").mockImplementationOnce(() => {
+    vi.spyOn(crypto.subtle, "verify").mockImplementationOnce(() => {
       throw new Error("Verify error");
     });
     const result = await validate(token, "clientId", "issuer", "publicKeyEndpoint");
@@ -105,11 +110,13 @@ describe("validate", () => {
   });
 
   it("should return invalid if signature does not match", async () => {
-    fetchMock.mockResponseOnce(
-      JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+      )
     );
     const token = createToken({ alg: "RS256", kid: "123" }, { aud: "clientId", iss: "issuer" });
-    jest.spyOn(crypto.subtle, "verify").mockResolvedValueOnce(false);
+    vi.spyOn(crypto.subtle, "verify").mockResolvedValueOnce(false);
     const result = await validate(token, "clientId", "issuer", "publicKeyEndpoint");
     expect(result).toEqual({
       isValid: false,
@@ -118,8 +125,10 @@ describe("validate", () => {
   });
 
   it("should return valid for a correct token", async () => {
-    fetchMock.mockResponseOnce(
-      JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+    fetchMock.mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({ keys: [{ kid: "123", kty: "RSA", alg: "RS256", use: "sig", n: "abc", e: "AQAB" }] })
+      )
     );
     const token = createToken(
       { alg: "RS256", kid: "123" },
@@ -130,7 +139,7 @@ describe("validate", () => {
         exp: Math.floor(Date.now() / 1000) + 3600, // Token expires in 1 hour
       }
     );
-    jest.spyOn(crypto.subtle, "verify").mockResolvedValueOnce(true);
+    vi.spyOn(crypto.subtle, "verify").mockResolvedValueOnce(true);
     const { isValid, error, payload } = await validate(token, "clientId", "issuer", "publicKeyEndpoint");
     expect(isValid).toEqual(true);
     expect(error).toBeUndefined();

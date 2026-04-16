@@ -1,0 +1,9 @@
+{
+  "displayName": "Database Development",
+  "description": "Flyway migration standards, PostgreSQL schema patterns, safe alterations.",
+  "domain": "backend",
+  "tags": ["database", "flyway", "sql", "migration"],
+  "examples": [
+    "Lag en Flyway-migrasjon som legger til en status-kolonne i vedtak-tabellen i dp-inntekt"
+  ]
+}

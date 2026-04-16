@@ -1,0 +1,31 @@
+{
+  "name": "platform",
+  "description": "Agents og skills for plattformteam og DevOps — Nais, observerbarhet, sikkerhet, Go og infrastruktur",
+  "version": "2025.07",
+  "agents": [
+    "nais",
+    "observability",
+    "security-champion",
+    "nav-pilot"
+  ],
+  "skills": [
+    "observability-setup",
+    "security-review",
+    "threat-model",
+    "workstation-security",
+    "nav-plan",
+    "nav-deep-interview",
+    "nav-architecture-review",
+    "nav-troubleshoot"
+  ],
+  "instructions": [
+    "golang",
+    "security-owasp",
+    "github-actions",
+    "docker"
+  ],
+  "prompts": [
+    "nais-manifest",
+    "golang-service"
+  ]
+}

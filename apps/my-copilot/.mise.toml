@@ -1,6 +1,14 @@
 [tools]
 node = "24"
 pnpm = "10.24.0"
+fnox = "latest"
+
+[env]
+GITHUB_ORG = "navikt"
+GCP_TEAM_PROJECT_ID = "copilot-dev-e17a"
+NEXT_PUBLIC_FARO_APP_NAME = "my-copilot-browser"
+NEXT_PUBLIC_FARO_URL = "https://telemetry.nav.no/collect"
+NEXT_PUBLIC_FARO_NAMESPACE = "nais"
 
 [tasks.version]
 run = 'echo "$(date +%Y%m%d)-$(git rev-parse --short HEAD)"'
@@ -10,12 +18,17 @@ description = "Generate version string"
 run = "pnpm install --frozen-lockfile"
 description = "Install dependencies"
 
+[tasks.update]
+run = "pnpm update"
+description = "Update all pnpm dependencies"
+
 [tasks.lint]
 run = "pnpm lint"
 description = "Run ESLint"
 
 [tasks.check]
 run = "pnpm check"
+depends = ["generate:check"]
 description = "Run lint, typecheck, and tests"
 
 [tasks.test]
@@ -27,8 +40,16 @@ run = "pnpm build"
 description = "Build Next.js production bundle"
 
 [tasks.dev]
-run = "pnpm dev"
-description = "Start Next.js development server"
+run = "fnox exec -- pnpm dev"
+description = "Start Next.js development server (secrets from Keychain)"
+
+[tasks.generate]
+run = "pnpm generate && pnpm prettier --write src/lib/copilot-manifest.json"
+description = "Generate customizations manifest from .github files"
+
+[tasks."generate:check"]
+description = "Check if generated manifest is up to date"
+run = "bash hack/generate-check.sh"
 
 [tasks.knip]
 run = "pnpm knip"

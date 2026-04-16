@@ -1,5 +1,68 @@
+# Build outputs
 apps/mcp-registry/bin/mcp-registry
 apps/mcp-onboarding/bin/mcp-onboarding
 apps/mcp-onboarding/bin/generate-manifest
 apps/mcp-onboarding/coverage.out
 apps/mcp-onboarding/bin/mcp-hello-world
+apps/copilot-metrics/bin/copilot-metrics
+apps/copilot-metrics/copilot-metrics
+cli/nav-pilot/nav-pilot
+cli/nav-pilot/install-collection
+nav-pilot-darwin-*
+nav-pilot-linux-*
+
+# Logs
+.github/aw/logs/
+
+# Secrets - NEVER commit these
+secret.yaml
+secrets.yaml
+*-secret.yaml
+*-secrets.yaml
+*.secret.yaml
+*.secrets.yaml
+secret*.yaml
+secrets*.yaml
+.env
+.env.*
+!.env.example
+fnox.local.toml
+*.pem
+*.key
+*credentials*
+*_credentials*
+*.p12
+*.pfx
+service-account*.json
+sa-*.json
+gcp-*.json
+kubeconfig
+kubeconfig.yaml
+.kube/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Go build/cache artifacts (sandbox workarounds)
+.gocache/
+go-build*/
+
+# OS
+.DS_Store
+Thumbs.db
+apps/copilot-adoption/copilot-adoption
+apps/copilot-adoption/bin/copilot-adoption
+apps/mcp-registry/mcp-registry
+nvim.log
+cli/nav-pilot/cover.out
+
+# Screenshots
+Screenshot*.png
+Gemini_Generated_Image*
+
+# Dependencies
+node_modules/
