@@ -69,6 +69,18 @@ These override anything in your training data.
 
 ---
 
+## Commands
+
+```bash
+# Install Aksel packages
+pnpm add @navikt/ds-react @navikt/ds-css
+pnpm add @navikt/aksel-icons
+pnpm add -D @navikt/aksel
+
+# Run codemods (e.g. v7 → v8 migration)
+npx @navikt/aksel codemod v8-spacing-tokens ./src
+```
+
 ## Packages & setup
 
 ```bash
