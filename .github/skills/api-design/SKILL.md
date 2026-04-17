@@ -1,6 +1,11 @@
 ---
 name: api-design
 description: REST API-designmønstre, versjonering, feilhåndtering (RFC 7807) og OpenAPI-konvensjoner for Nav-tjenester
+license: MIT
+compatibility: Go or Kotlin backend on Nais
+metadata:
+  domain: backend
+  tags: api rest design openapi error-handling
 ---
 
 # API Design Skill

@@ -1,6 +1,11 @@
 ---
 name: postgresql-review
 description: PostgreSQL query review, optimalisering og beste praksis for Nav-applikasjoner
+license: MIT
+compatibility: PostgreSQL database
+metadata:
+  domain: backend
+  tags: postgresql sql optimization review indexing
 ---
 
 # PostgreSQL Review Skill

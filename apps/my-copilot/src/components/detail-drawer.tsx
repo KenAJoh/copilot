@@ -39,6 +39,7 @@ function ToolList({ tools }: { tools: string[] }) {
 import {
   transportLabel,
   getManualInstallCommand,
+  getGhSkillInstallCommand,
   getMcpServerConfig,
   getVsCodeAddMcpCommand,
   getMcpAddFields,
@@ -527,6 +528,31 @@ function StaticCustomizationDetails({
                           : item.type === "skill"
                             ? "Krever Agent Mode (forhåndsvisning). Aktiver via Settings > GitHub Copilot > Chat > Agent."
                             : null}
+                  </BodyShort>
+                </VStack>
+              </Accordion.Content>
+            </Accordion.Item>
+          )}
+          {CLIENT_SUPPORT[item.type].includes("gh") && (
+            <Accordion.Item>
+              <Accordion.Header>GitHub CLI</Accordion.Header>
+              <Accordion.Content>
+                <VStack gap="space-8">
+                  <BodyShort size="small">
+                    Installer med <code className="text-xs bg-gray-100 rounded px-1">gh skill</code> (krever gh
+                    ≥2.90.0):
+                  </BodyShort>
+                  <div className="relative">
+                    <pre className="text-xs bg-gray-100 rounded p-2 pr-10 overflow-x-auto whitespace-pre-wrap break-all">
+                      {getGhSkillInstallCommand(item)}
+                    </pre>
+                    <div className="absolute top-1 right-1">
+                      <CopyButton size="xsmall" copyText={getGhSkillInstallCommand(item)} />
+                    </div>
+                  </div>
+                  <BodyShort size="small" className="text-gray-500">
+                    Installerer skill med referansefiler til ditt prosjekt. Oppdater med{" "}
+                    <code className="text-xs bg-gray-100 rounded px-1">gh skill update</code>.
                   </BodyShort>
                 </VStack>
               </Accordion.Content>

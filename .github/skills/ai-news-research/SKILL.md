@@ -1,6 +1,10 @@
 ---
 name: ai-news-research
 description: Skriv månedlige oppsummeringer av AI-nyheter for utviklere på norsk med fungerende kildelenker. Bruk for å skrive nyheter, oppsummere AI-trender, lage månedlig oppdatering, eller undersøke hva som er nytt i GitHub Copilot, coding agents, AGENTS.md, skills, memory, agentic workflows eller developer experience.
+license: MIT
+metadata:
+  domain: general
+  tags: ai news research monthly-summary
 ---
 
 # AI News Research

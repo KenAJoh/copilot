@@ -1,6 +1,11 @@
 ---
 name: workstation-security
 description: Sikkerhetssjekk for macOS-utviklermaskiner — brannmur, SSH, Git, hemmeligheter, nettverk og Nav-plattformverktøy
+license: MIT
+compatibility: macOS developer workstation
+metadata:
+  domain: auth
+  tags: security macos developer-tools audit hardening
 ---
 
 # Workstation Security Audit

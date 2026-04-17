@@ -1,6 +1,11 @@
 ---
 name: aksel-spacing
 description: Responsiv layout med Aksel spacing-tokens og Box, VStack, HStack og HGrid
+license: MIT
+compatibility: Next.js with @navikt/ds-react
+metadata:
+  domain: frontend
+  tags: aksel design-system spacing responsive
 ---
 
 # Aksel Spacing Skill
