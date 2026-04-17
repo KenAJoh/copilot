@@ -63,6 +63,29 @@ class ErrorHandler {
 }
 ```
 
+For Ktor, use the `StatusPages` plugin:
+
+```kotlin
+install(StatusPages) {
+    exception<ResourceNotFoundException> { call, cause ->
+        call.respond(HttpStatusCode.NotFound, ProblemResponse(
+            title = "Resource not found",
+            status = 404,
+            detail = cause.message ?: "Resource not found",
+            instance = call.request.uri,
+        ))
+    }
+    exception<ValidationException> { call, cause ->
+        call.respond(HttpStatusCode.BadRequest, ProblemResponse(
+            title = "Invalid request",
+            status = 400,
+            detail = "Validation failed",
+            errors = cause.errors,
+        ))
+    }
+}
+```
+
 Response format (RFC 7807):
 
 ```json
