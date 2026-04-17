@@ -101,12 +101,13 @@ func dirHash(dir string) (string, error) {
 
 // copyFile copies a single file atomically, creating parent directories.
 // Refuses to overwrite symlinks to prevent writing outside the repo.
-func copyFile(src, dst string) error {
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+// boundary is the trusted root directory; symlink checks stop there.
+func copyFile(src, dst, boundary string) error {
+	// B2: Check BEFORE MkdirAll to prevent creating directories through symlinks.
+	if err := checkSymlink(dst, boundary); err != nil {
 		return err
 	}
-	// B2: Refuse to write through symlinks (file or parent directory)
-	if err := checkSymlink(dst); err != nil {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
 		return err
 	}
 
@@ -137,30 +138,62 @@ func copyFile(src, dst string) error {
 	return os.Rename(tmpPath, dst)
 }
 
-// checkSymlink detects symlinks in the path chain.
-// Checks both the target file and its parent directory.
-func checkSymlink(path string) error {
+// checkSymlink detects symlinks in the path chain between path and boundary.
+// Walks up from the file's parent directory, checking each component with Lstat.
+// Stops at boundary (the trusted root) to avoid false positives from system
+// symlinks like /var → /private/var on macOS.
+//
+// Preconditions: boundary must be a non-empty absolute path. path must be
+// lexically under boundary (verified internally).
+func checkSymlink(path, boundary string) error {
+	if boundary == "" || !filepath.IsAbs(boundary) {
+		return fmt.Errorf("checkSymlink: boundary must be a non-empty absolute path, got %q", boundary)
+	}
+
+	cleanPath := filepath.Clean(path)
+	cleanBoundary := filepath.Clean(boundary)
+
+	// Verify path is lexically under (or equal to) boundary.
+	rel, err := filepath.Rel(cleanBoundary, cleanPath)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return fmt.Errorf("path %q is not under boundary %q", path, boundary)
+	}
+
 	// Check the file itself if it exists
 	if info, err := os.Lstat(path); err == nil && info.Mode()&os.ModeSymlink != 0 {
 		return fmt.Errorf("refusing to overwrite symlink: %s", path)
 	}
-	// Check the parent directory
-	parent := filepath.Dir(path)
-	resolved, err := filepath.EvalSymlinks(parent)
-	if err != nil {
-		return nil // parent doesn't exist yet, will be created by MkdirAll
+
+	// If path IS boundary, no intermediate directories to check.
+	if cleanPath == cleanBoundary {
+		return nil
 	}
-	if resolved != parent {
-		absParent, _ := filepath.Abs(parent)
-		if resolved != absParent {
-			return fmt.Errorf("refusing to write through symlinked directory: %s -> %s", parent, resolved)
+
+	// Walk from parent directory up to (but not including) boundary.
+	dir := filepath.Clean(filepath.Dir(path))
+	for dir != cleanBoundary {
+		info, err := os.Lstat(dir)
+		if err != nil {
+			// Directory doesn't exist yet; MkdirAll will create it.
+			dir = filepath.Dir(dir)
+			continue
 		}
+		if info.Mode()&os.ModeSymlink != 0 {
+			target, _ := os.Readlink(dir)
+			return fmt.Errorf("refusing to write through symlinked directory: %s -> %s", dir, target)
+		}
+		dir = filepath.Dir(dir)
 	}
 	return nil
 }
 
 // copyDir copies a directory recursively, creating it fresh (removes stale files).
-func copyDir(src, dst string) error {
+// boundary is the trusted root directory; symlink checks stop there.
+func copyDir(src, dst, boundary string) error {
+	// B2: Check BEFORE RemoveAll to prevent deleting through symlinks.
+	if err := checkSymlink(dst, boundary); err != nil {
+		return err
+	}
 	if err := os.RemoveAll(dst); err != nil {
 		return err
 	}
@@ -178,7 +211,7 @@ func copyDir(src, dst string) error {
 		if d.IsDir() {
 			return os.MkdirAll(target, 0o755)
 		}
-		return copyFile(path, target)
+		return copyFile(path, target, boundary)
 	})
 }
 

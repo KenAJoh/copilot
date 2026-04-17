@@ -79,7 +79,7 @@ func installSingleFile(sourceDir string, scope *InstallScope, dir, extension, la
 		return false, nil
 	}
 
-	if err := copyFile(srcFile, dstFile); err != nil {
+	if err := copyFile(srcFile, dstFile, scope.RootDir); err != nil {
 		return false, fmt.Errorf("copying %s %s: %w", strings.ToLower(label), name, err)
 	}
 	hash, err := fileHash(dstFile)
@@ -104,7 +104,7 @@ func installAgent(sourceDir string, scope *InstallScope, name string, dryRun, fo
 		srcMeta := filepath.Join(sourceDir, ".github", "agents", name+".metadata.json")
 		dstMeta := scope.DstPath("agents", name+".metadata.json")
 		if _, err := os.Stat(srcMeta); err == nil {
-			if err := copyFile(srcMeta, dstMeta); err != nil {
+			if err := copyFile(srcMeta, dstMeta, scope.RootDir); err != nil {
 				return fmt.Errorf("copying agent metadata %s: %w", name, err)
 			}
 			metaRel := scope.RelPath("agents", name+".metadata.json")
@@ -151,7 +151,7 @@ func installSkill(sourceDir string, scope *InstallScope, name string, dryRun, fo
 		return nil
 	}
 
-	if err := copyDir(srcDir, dstDir); err != nil {
+	if err := copyDir(srcDir, dstDir, scope.RootDir); err != nil {
 		return fmt.Errorf("copying skill %s: %w", name, err)
 	}
 
@@ -197,7 +197,7 @@ func installPrompt(sourceDir string, scope *InstallScope, name string, dryRun, f
 			return nil
 		}
 
-		if err := copyDir(srcDir, dstDir); err != nil {
+		if err := copyDir(srcDir, dstDir, scope.RootDir); err != nil {
 			return fmt.Errorf("copying prompt dir %s: %w", name, err)
 		}
 		hash, err := dirHash(dstDir)
@@ -234,7 +234,7 @@ func installPrompt(sourceDir string, scope *InstallScope, name string, dryRun, f
 		return nil
 	}
 
-	if err := copyFile(srcFile, dstFile); err != nil {
+	if err := copyFile(srcFile, dstFile, scope.RootDir); err != nil {
 		return fmt.Errorf("copying prompt %s: %w", name, err)
 	}
 	hash, err := fileHash(dstFile)

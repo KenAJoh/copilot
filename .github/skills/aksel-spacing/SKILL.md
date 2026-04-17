@@ -1,6 +1,11 @@
 ---
 name: aksel-spacing
 description: Lag responsive layouts med Aksel Design System (v8+) - spacing tokens, layout primitives (Box, HStack, VStack, HGrid, Page, Bleed) og ResponsiveProp
+license: MIT
+compatibility: Next.js with @navikt/ds-react
+metadata:
+  domain: frontend
+  tags: aksel design-system nav react spacing tokens layout responsive primitives
 ---
 
 # Aksel: Responsivt layout med spacing tokens
@@ -34,9 +39,9 @@ Alle layout-primitives aksepterer responsiv objektverdi (mobil-first). Full refe
 
 ```tsx
 // ResponsiveProp-syntaks – verdi per breakpoint (mobil-first)
-<HStack gap={{ xs: "space-8", md: "space-24" }}>
-<Box padding={{ xs: "space-16", md: "space-32", lg: "space-48" }}>
-<HGrid columns={{ xs: 1, sm: 2, lg: 3 }}>
+<HStack gap={{ xs: "space-8", md: "space-24" }} />
+<Box padding={{ xs: "space-16", md: "space-32", lg: "space-48" }} />
+<HGrid columns={{ xs: 1, sm: 2, lg: 3 }} />
 ```
 
 Utelatte breakpoints arver fra nærmeste definerte nedenfra.
@@ -61,6 +66,8 @@ import { Box } from "@navikt/ds-react";
   padding={{ xs: "space-16", md: "space-32" }}
   paddingInline={{ xs: "space-16", lg: "space-48" }}
 >
+  Innhold
+</Box>
 
 // asChild – send props til eksisterende element
 <Box asChild padding="space-24">
@@ -84,6 +91,9 @@ import { HStack } from "@navikt/ds-react";
 
 // Responsiv gap
 <HStack gap={{ xs: "space-8", md: "space-24" }} wrap={false}>
+  <Item />
+  <Item />
+</HStack>
 ```
 
 `align`: `"start"` | `"center"` | `"end"` | `"baseline"` | `"stretch"` (flex `align-items`)

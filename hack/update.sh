@@ -1,9 +1,26 @@
 #!/usr/bin/env bash
-set -e
+failed=()
+
 for app in $APPS; do
-  echo "📦 $app:" && (cd "apps/$app" && mise run update) && echo ""
+  echo "📦 $app:"
+  if (cd "apps/$app" && mise run update); then
+    echo ""
+  else
+    failed+=("$app")
+    echo ""
+  fi
 done
+
 echo "📦 scripts/generate-docs:"
-(cd scripts/generate-docs && go get -u ./... && go mod tidy)
-echo ""
+if (cd scripts/generate-docs && go get -u ./... && go mod tidy); then
+  echo ""
+else
+  failed+=("generate-docs")
+  echo ""
+fi
+
+if [[ ${#failed[@]} -gt 0 ]]; then
+  echo "❌ Update failed for: ${failed[*]}"
+  exit 1
+fi
 echo "✅ All dependencies updated"

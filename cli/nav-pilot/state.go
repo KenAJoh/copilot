@@ -74,20 +74,20 @@ func readStateRaw(path string) (*StateFile, error) {
 }
 
 func writeState(targetDir string, state *StateFile) error {
-	return writeStateAt(filepath.Join(targetDir, stateFilePath), state)
+	return writeStateAt(filepath.Join(targetDir, stateFilePath), targetDir, state)
 }
 
 // writeScopedState writes state to the scope's state file location.
 func writeScopedState(scope *InstallScope, state *StateFile) error {
-	return writeStateAt(scope.StatePath(), state)
+	return writeStateAt(scope.StatePath(), scope.RootDir, state)
 }
 
-func writeStateAt(path string, state *StateFile) error {
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+func writeStateAt(path, boundary string, state *StateFile) error {
+	// B2: Check BEFORE MkdirAll to prevent creating directories through symlinks.
+	if err := checkSymlink(path, boundary); err != nil {
 		return err
 	}
-	// B2: Refuse to write through symlinks (file or parent directory)
-	if err := checkSymlink(path); err != nil {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
 	data, err := json.MarshalIndent(state, "", "  ")

@@ -1,10 +1,12 @@
 ---
 title: "Nyheter og trender — April 2026"
-date: 2026-04-13
+date: 2026-04-17
 draft: true
 category: copilot
-excerpt: "Autopilot-modus i VS Code, Copilot SDK i public preview, PR-merge-metrikker for code review, organisasjonsstyrt runner, personvernpolicy trer i kraft 24. april, BYOK og lokale modeller i Copilot CLI, Dependabot + AI-agenter, Project Glasswing, fjernstyr CLI fra nett og mobil."
+excerpt: "gh skill CLI for installasjon og publisering av agent skills, Claude Opus 4.7 GA, Autopilot-modus i VS Code, Copilot SDK i public preview, selektiv utrulling av cloud agent, personvernpolicy trer i kraft 24. april, BYOK og lokale modeller i Copilot CLI, Dependabot + AI-agenter, Project Glasswing, fjernstyr CLI fra nett og mobil."
 tags:
+  - skills
+  - github-cli
   - copilot-sdk
   - coding-agents
   - enterprise-controls
@@ -21,7 +23,7 @@ tags:
 
 <!-- AI-REDAKSJONELT: Denne artikkelen er en oppsummering av de viktigste endringene og trendene — ikke en komplett liste. Prioriter det som er mest relevant for Nav-utviklere. Mindre oppdateringer samles i «Flere oppdateringer»-seksjonen. Individuelle nyheter dekkes av egne excerpt-filer i samme mappe. -->
 
-April 2026 starter med infrastruktur. GitHub åpner Copilot-motoren som SDK og gir organisasjoner bedre kontroll over hvordan coding agent kjører. VS Code får Autopilot-modus for helt autonome agentsesjoner. Senere i måneden trer den kontroversielle personvernpolicyen for treningsdata i kraft.
+April 2026 starter med infrastruktur og ender med økosystem. GitHub åpner Copilot-motoren som SDK, gir organisasjoner finkornet kontroll over coding agent, og lanserer `gh skill` for å installere og publisere agent skills rett fra terminalen. VS Code får Autopilot-modus, Claude Opus 4.7 blir tilgjengelig i Copilot, og den kontroversielle personvernpolicyen for treningsdata trer i kraft 24. april.
 
 ---
 
@@ -100,7 +102,7 @@ Organisasjonsadministratorer og sikkerhetsansvarlige kan nå starte en Copilot-s
 
 ---
 
-## 7. Flere oppdateringer
+## 7. Flere oppdateringer (tidlig april)
 
 - **Visual Studio mars-oppdatering**: Custom agents (`.agent.md`), agent skills, `find_symbol`-verktøy, Enterprise MCP governance med allowlist-policyer. [Kilde](https://github.blog/changelog/2026-04-02-github-copilot-in-visual-studio-march-update/)
 - **GPT-5.1 Codex avviklet**: Alle GPT-5.1-varianter (Codex, Codex-Max, Codex-Mini) er fjernet fra Copilot. Anbefalt erstatning er GPT-5.3-Codex. [Kilde](https://github.blog/changelog/2026-04-03-gpt-5-1-codex-gpt-5-1-codex-max-and-gpt-5-1-codex-mini-deprecated/)
@@ -156,18 +158,89 @@ For Copilot Business- og Enterprise-brukere må en administrator aktivere remote
 
 ---
 
+## 12. Modellvalg for tredjeparts coding agents
+
+Claude og Codex coding agents på github.com støtter nå modellvalg. Når du starter en oppgave, velger du modell på samme måte som for Copilot cloud agent. Claude-brukere kan velge mellom Sonnet 4.5/4.6 og Opus 4.5/4.6, mens Codex-brukere kan velge mellom GPT-5.2-Codex, GPT-5.3-Codex og GPT-5.4.
+
+Tilgang til tredjeparts-agenter følger med eksisterende Copilot-abonnement. For Business og Enterprise må admin aktivere policyen for Anthropic Claude eller OpenAI Codex.
+
+**Kilde:** [Model selection for Claude and Codex agents on github.com](https://github.blog/changelog/2026-04-14-model-selection-for-claude-and-codex-agents-on-github-com) (GitHub Changelog, 14. april 2026)
+
+---
+
+## 13. Selektiv utrulling av cloud agent med custom properties
+
+Enterprise-administratorer kan nå aktivere Copilot cloud agent per organisasjon, enten enkeltvis eller via custom properties. Tidligere var valget alt eller ingenting — nå kan du pilotere med utvalgte team og gradvis utvide tilgangen.
+
+Tre nye API-endepunkter (PUT, POST, DELETE) styrer policyen programmatisk. Det samme valget er tilgjengelig i AI Controls-sida i innstillingene.
+
+Merk: Custom properties evalueres kun på tidspunktet du konfigurerer. Endringer i properties senere aktiverer eller deaktiverer ikke cloud agent automatisk.
+
+**Kilde:** [Enable Copilot cloud agent via custom properties](https://github.blog/changelog/2026-04-15-enable-copilot-cloud-agent-via-custom-properties) (GitHub Changelog, 15. april 2026)
+
+---
+
+## 14. `gh skill` — agent skills fra terminalen
+
+GitHub CLI v2.90.0 introduserer `gh skill`, en ny kommando for å installere, oppdatere, publisere og søke etter agent skills. Skills følger den åpne [agentskills.io-spesifikasjonen](https://agentskills.io/specification) og fungerer på tvers av hosters: Copilot, Claude Code, Cursor, Codex og Gemini CLI.
+
+Installasjon er én kommando:
+
+```bash
+gh skill install github/awesome-copilot documentation-writer
+```
+
+Skills installeres automatisk i riktig mappe for din agent host. Du kan også pinne til en spesifikk versjon eller commit:
+
+```bash
+gh skill install github/awesome-copilot documentation-writer --pin v1.2.0
+```
+
+`gh skill update` sjekker alle installerte skills mot upstream og tilbyr oppdatering. Provenance-metadata (repo, ref, tree SHA) skrives rett i SKILL.md-frontmatter, slik at sporbarhet følger med fila uansett hvor den havner.
+
+For de som vedlikeholder skills-repoer: `gh skill publish` validerer mot agentskills.io-spesifikasjonen og sjekker om tag protection, secret scanning og code scanning er aktivert. Kommandoen kan også aktivere immutable releases, slik at publiserte versjoner ikke kan endres i ettertid.
+
+**Kilde:** [Manage agent skills with GitHub CLI](https://github.blog/changelog/2026-04-16-manage-agent-skills-with-github-cli) (GitHub Changelog, 16. april 2026)
+
+---
+
+## 15. Claude Opus 4.7 tilgjengelig i Copilot
+
+Anthropics nyeste Opus-modell ruller nå ut i Copilot. I GitHubs tidlige testing gir Opus 4.7 bedre ytelse på flertrinnsoppgaver og mer pålitelig agentisk utførelse enn forgjengeren. Modellen viser også framgang på langvarig resonnering og komplekse verktøyavhengige arbeidsflyter.
+
+Opus 4.7 erstatter Opus 4.5 og 4.6 i modellvelgeren for Pro+-brukere i løpet av de kommende ukene. Business- og Enterprise-administratorer må aktivere modellpolicyen.
+
+Modellen lanseres med en 7,5× premium request-multiplikator som kampanjepris fram til 30. april.
+
+Tilgjengelig i VS Code, Visual Studio, Copilot CLI, cloud agent, github.com, GitHub Mobile, JetBrains, Xcode og Eclipse.
+
+**Kilde:** [Claude Opus 4.7 is generally available](https://github.blog/changelog/2026-04-16-claude-opus-4-7-is-generally-available) (GitHub Changelog, 16. april 2026)
+
+---
+
+## 16. Flere oppdateringer (mid-april)
+
+- **Modellvalg for tredjeparts-agenter**: Se seksjon 12. [Kilde](https://github.blog/changelog/2026-04-14-model-selection-for-claude-and-codex-agents-on-github-com)
+- **OIDC for Dependabot og code scanning**: Dependabot og code scanning støtter nå OIDC-tokens for autentisering mot private registre — erstatter langlevde secrets. [Kilde](https://github.blog/changelog/2026-04-14-oidc-support-for-dependabot-and-code-scanning)
+- **Rule insights dashboard**: Nytt visuelt dashboard for repository rulesets — se trender i blokkerte pushes, bypass-aktivitet og regelbrudd over tid. [Kilde](https://github.blog/changelog/2026-04-16-rule-insights-dashboard-and-unified-filter-bar)
+- **CodeQL 2.25.2**: Kotlin 2.3.20-støtte og andre oppdateringer. [Kilde](https://github.blog/changelog/2026-04-15-codeql-2-25-2-adds-kotlin-2-3-20-support-and-other-updates)
+
+---
+
 ## Relevans for Nav
 
 | Trend | Hva det betyr for Nav |
 | --- | --- |
-| VS Code Autopilot | Agenter som kjører uten manuell godkjenning passer godt for rutineoppgaver. Nav-team bør teste Autopilot-modus på avgrensede oppgaver og sette tydelige grenser via hooks og instruksjoner. |
-| Copilot SDK | Nav kan bygge egne verktøy med Copilots agentmotor — Go SDK er direkte relevant for mcp-onboarding og mcp-registry. Vurder for interne tjenester. |
-| PR-merge-metrikker | Navs copilot-metrics-app kan hente nye felter for å måle om Copilot-review faktisk gir raskere merge. Gir konkrete tall til DORA-arbeid. |
-| Org-runner for cloud agent | Sentralstyrt runner-konfigurasjon. Nav kan sette standard for alle repoer og låse til self-hosted runners ved behov — viktig for compliance og ytelse. |
-| Personvernpolicy | Nav bruker Enterprise — ikke berørt. Informer utviklere som bruker personlige Copilot-kontoer om opt-out før 24. april. |
-| Copilot i sikkerhetsvurderinger | Nyttig for Navs sikkerhetsansvarlige — kontekstuell AI-støtte rett i risikovurderingene kan akselerere utbedringsarbeid. |
-| GPT-5.1 deprecering | Sjekk om noen team har satt GPT-5.1 som foretrukket modell. |
-| BYOK og lokale modeller i CLI | Relevant for team med spesielle krav til datatilgang eller som ønsker å bruke egne Azure OpenAI-endepunkter. Offline-modus kan være interessant for sikkerhetssensitive miljøer. |
-| Dependabot + AI-agenter | Kan akselerere sikkerhetsoppdateringer i Navs ~500 repoer. Vurder å aktivere for team med mange Dependabot-varsler — spesielt nyttig for breaking changes i major-oppgraderinger. |
-| Project Glasswing | Signaliserer at AI-drevet sårbarhetsjakt er her. Nav bør følge med på når slike verktøy blir tilgjengelige for enterprise-kunder, og vurdere implikasjonene for egen sikkerhetspraksis. |
-| Fjernstyr CLI fra nett/mobil | Utviklere kan starte lange CLI-sesjoner og følge med fra mobilen eller en annen maskin. Nyttig for oppgaver som tar tid — for eksempel store refaktoreringer eller migreringer. Krever at admin aktiverer CLI- og remote-policyer for Business/Enterprise. |
+| `gh skill` CLI | Alle Nav-utviklere har `gh` installert. Vi har lagt til `gh skill install` på verktøysida og gjort alle 22 skills agentskills.io-kompatible. Vurder `gh skill publish` med immutable releases når vi flytter til `skills/`. |
+| Claude Opus 4.7 | Ny toppmodell for agentiske oppgaver. Enterprise-admin må aktivere policyen. Kampanjepris (7,5×) til 30. april — test på komplekse oppgaver mens prisen er lav. |
+| VS Code Autopilot | Agenter uten manuell godkjenning passer for rutineoppgaver. Test på avgrensede oppgaver med tydelige grenser via hooks og instruksjoner. |
+| Copilot SDK | Nav kan bygge egne verktøy med Copilots agentmotor. Go SDK er direkte relevant for mcp-onboarding og mcp-registry. |
+| Selektiv cloud agent-utrulling | Nav kan pilotere coding agent med utvalgte team via custom properties og gradvis utvide tilgangen. |
+| PR-merge-metrikker | copilot-metrics kan hente nye felter for å måle om Copilot-review gir raskere merge. Konkrete tall til DORA-arbeid. |
+| Org-runner for cloud agent | Sentralstyrt runner-konfigurasjon. Nav kan sette standard for alle repoer og låse til self-hosted runners. |
+| Personvernpolicy | Nav bruker Enterprise — ikke berørt. Informer utviklere med personlige Copilot-kontoer om opt-out før 24. april. |
+| BYOK og lokale modeller i CLI | Relevant for team med spesielle datatilgangskrav eller som vil bruke egne Azure OpenAI-endepunkter. |
+| Dependabot + AI-agenter | Kan akselerere sikkerhetsoppdateringer i Navs ~500 repoer. Nyttig for breaking changes i major-oppgraderinger. |
+| Project Glasswing | AI-drevet sårbarhetsjakt er her. Følg med på tilgjengeliggjøring for enterprise. |
+| Fjernstyr CLI fra nett/mobil | Start lange CLI-sesjoner og følg med fra mobilen. Krever at admin aktiverer CLI- og remote-policyer. |
+| OIDC for Dependabot | Erstatter langlevde secrets med korte OIDC-tokens for avhengighetsoppdateringer. |

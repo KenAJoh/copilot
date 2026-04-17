@@ -35,6 +35,22 @@ body_of() {
   awk 'BEGIN{fm=0} /^---$/{fm++; next} fm>=2{print}' "$1"
 }
 
+# Extract a flat frontmatter field value (handles both bare and quoted values)
+fm_field() {
+  local file="$1" key="$2"
+  awk -v key="$key" '
+    BEGIN { fm=0 }
+    /^---$/ { fm++; next }
+    fm==1 && $0 ~ "^"key":" {
+      sub("^"key":[ ]*", "")
+      gsub(/^["'\''"]|["'\''"]$/, "")
+      print
+      exit
+    }
+    fm>=2 { exit }
+  ' "$file"
+}
+
 lint_skill() {
   local dir="$1"
   local name
@@ -61,6 +77,45 @@ lint_skill() {
     else
       ok "metadata.json has description"
     fi
+  fi
+
+  # ── SKILL.md frontmatter checks (agentskills.io spec) ─────────────────
+  local fm_name fm_desc fm_license
+  fm_name=$(fm_field "$skill_md" "name")
+  fm_desc=$(fm_field "$skill_md" "description")
+  fm_license=$(fm_field "$skill_md" "license")
+
+  # name: required, must match directory name
+  if [[ -z "$fm_name" ]]; then
+    fail "[$name] SKILL.md frontmatter missing \"name\" field"
+  elif [[ "$fm_name" != "$name" ]]; then
+    fail "[$name] frontmatter name \"$fm_name\" does not match directory name"
+  elif (( ${#fm_name} > 64 )); then
+    fail "[$name] frontmatter name is ${#fm_name} chars — spec maximum is 64"
+  elif [[ "$fm_name" =~ [^a-z0-9-] ]]; then
+    fail "[$name] frontmatter name contains invalid characters — only lowercase letters, numbers, and hyphens allowed"
+  elif [[ "$fm_name" =~ ^- ]] || [[ "$fm_name" =~ -$ ]]; then
+    fail "[$name] frontmatter name must not start or end with a hyphen"
+  elif [[ "$fm_name" =~ -- ]]; then
+    fail "[$name] frontmatter name must not contain consecutive hyphens"
+  else
+    ok "frontmatter name matches spec"
+  fi
+
+  # description: required, ≤1024 chars
+  if [[ -z "$fm_desc" ]]; then
+    fail "[$name] SKILL.md frontmatter missing \"description\" field"
+  elif (( ${#fm_desc} > 1024 )); then
+    fail "[$name] frontmatter description is ${#fm_desc} chars — spec maximum is 1024"
+  else
+    ok "frontmatter description (${#fm_desc} chars)"
+  fi
+
+  # license: recommended
+  if [[ -z "$fm_license" ]]; then
+    warn "[$name] SKILL.md frontmatter missing \"license\" field (recommended for gh skill)"
+  else
+    ok "frontmatter license: $fm_license"
   fi
 
   # ── body metrics ───────────────────────────────────────────────────────

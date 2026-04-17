@@ -230,11 +230,11 @@ fun authenticate(token: String)
                 <span style={{ color: "#f87171" }}>❌ Feil auth</span>
                 {`
 
-val pool = HikariConfig().apply {
-  maximumPoolSize = 10    `}
-                <span style={{ color: "#f87171" }}>❌ For stor pool</span>
+logger.info(
+  "Vedtak for $fnr"       `}
+                <span style={{ color: "#f87171" }}>❌ PII i logg</span>
                 {`
-}
+)
 // ❌ Ingen migreringsplan
 // ❌ Kjenner ikke TokenX`}
               </pre>
@@ -265,11 +265,10 @@ val pool = HikariConfig().apply {
 val token = tokenXClient
   .exchange(subjectToken)
 
-val pool = HikariConfig().apply {
-  maximumPoolSize = 3     `}
-                <span style={{ color: "#4ade80" }}>✅ Nav-standard</span>
+logger.info("Vedtak",    `}
+                <span style={{ color: "#4ade80" }}>✅ Ingen PII</span>
                 {`
-}
+  kv("vedtakId", id))
 // ✅ Flyway-migrering V3__
 // ✅ Strangler fig-plan`}
               </pre>

@@ -3,6 +3,7 @@ import {
   transportLabel,
   getToolCount,
   getManualInstallCommand,
+  getGhSkillInstallCommand,
   getMcpServerConfig,
   getVsCodeAddMcpCommand,
   getMcpAddFields,
@@ -154,8 +155,8 @@ describe("CLIENT_SUPPORT", () => {
     }
   });
 
-  it("skill supports vscode, intellij, cli, and github", () => {
-    expect(CLIENT_SUPPORT.skill).toEqual(["vscode", "intellij", "cli", "github"]);
+  it("skill supports vscode, intellij, cli, gh, and github", () => {
+    expect(CLIENT_SUPPORT.skill).toEqual(["vscode", "intellij", "cli", "gh", "github"]);
   });
 });
 
@@ -164,6 +165,7 @@ describe("CLIENT_LABELS", () => {
     expect(CLIENT_LABELS.vscode).toBe("VS Code");
     expect(CLIENT_LABELS.intellij).toBe("IntelliJ");
     expect(CLIENT_LABELS.cli).toBe("Copilot CLI");
+    expect(CLIENT_LABELS.gh).toBe("GitHub CLI");
     expect(CLIENT_LABELS.github).toBe("GitHub.com");
   });
 });
@@ -249,6 +251,24 @@ describe("getManualInstallCommand", () => {
     const cmd = getManualInstallCommand(agent, allItems);
     expect(cmd).toContain("nais.agent.md");
     expect(cmd).not.toContain("auth.agent.md");
+  });
+});
+
+describe("getGhSkillInstallCommand", () => {
+  it("generates gh skill install command for skill", () => {
+    const cmd = getGhSkillInstallCommand(skill);
+    expect(cmd).toBe("gh skill install navikt/copilot .github/skills/aksel-spacing/SKILL.md");
+  });
+
+  it("generates gh skill install command for skill with references", () => {
+    const cmd = getGhSkillInstallCommand(skillWithRefs);
+    expect(cmd).toBe("gh skill install navikt/copilot .github/skills/observability-setup/SKILL.md");
+  });
+
+  it("returns empty string for non-skill types", () => {
+    expect(getGhSkillInstallCommand(agent)).toBe("");
+    expect(getGhSkillInstallCommand(instruction)).toBe("");
+    expect(getGhSkillInstallCommand(prompt)).toBe("");
   });
 });
 

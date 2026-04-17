@@ -11,7 +11,7 @@ export const CLIENT_SUPPORT: Record<CustomizationType, string[]> = {
   instruction: ["vscode", "intellij", "cli", "github"],
   agent: ["vscode", "intellij", "cli", "github"],
   prompt: ["vscode", "intellij"],
-  skill: ["vscode", "intellij", "cli", "github"],
+  skill: ["vscode", "intellij", "cli", "gh", "github"],
   mcp: ["vscode", "intellij", "cli", "github"],
 };
 
@@ -19,6 +19,7 @@ export const CLIENT_LABELS: Record<string, string> = {
   vscode: "VS Code",
   intellij: "IntelliJ",
   cli: "Copilot CLI",
+  gh: "GitHub CLI",
   github: "GitHub.com",
 };
 
@@ -74,6 +75,17 @@ export function getManualInstallCommand(item: AnyCustomization, allItems?: AnyCu
   }
 
   return cmds.join(" && \\\n  ");
+}
+
+/**
+ * Generate `gh skill install` command for a skill.
+ * Uses path-based form since skills live under .github/skills/ which
+ * is not auto-discovered by gh skill's conventional patterns.
+ * Requires gh CLI ≥2.90.0.
+ */
+export function getGhSkillInstallCommand(item: AnyCustomization): string {
+  if (item.type !== "skill") return "";
+  return `gh skill install navikt/copilot .github/skills/${item.name}/SKILL.md`;
 }
 
 /**

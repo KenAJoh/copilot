@@ -129,9 +129,91 @@ private fun Row.toEntity() = Entity(
 )
 ```
 
-## When Using Koin (Dependency Injection)
+## Transaction Patterns
 
-Koin is Nav's standard DI framework for Ktor. Use when the project has multiple services/repositories.
+JDBC connections are thread-bound. `ThreadLocal` values do not propagate to new coroutines.
+Never use `launch`, `async`, or other coroutine builders inside a transaction block.
+
+### Simple single-block transaction
+
+Works when all operations happen in the same place:
+
+```kotlin
+fun transferFunds(fromId: Long, toId: Long, amount: BigDecimal) =
+    using(sessionOf(dataSource)) { session ->
+        session.transaction { tx ->
+            tx.run(queryOf("UPDATE accounts SET balance = balance - ? WHERE id = ?", amount, fromId).asUpdate)
+            tx.run(queryOf("UPDATE accounts SET balance = balance + ? WHERE id = ?", amount, toId).asUpdate)
+        }
+    }
+```
+
+### Explicit transaction parameter
+
+Recommended when the transaction spans multiple layers. Type-safe and easy to follow:
+
+```kotlin
+class DbTransaction(val session: TransactionalSession)
+
+fun <T> transaction(dataSource: DataSource, block: DbTransaction.() -> T): T =
+    sessionOf(dataSource).use { session ->
+        session.transaction { tx -> DbTransaction(tx).block() }
+    }
+
+// Repository methods take DbTransaction as receiver
+fun DbTransaction.saveOrder(order: Order): Long =
+    session.run(
+        queryOf("INSERT INTO orders (product, amount) VALUES (?, ?)", order.product, order.amount)
+            .asUpdateAndReturnGeneratedKey
+    ) ?: error("Failed to insert order")
+
+fun DbTransaction.updateInventory(productId: Long, delta: Int) =
+    session.run(
+        queryOf("UPDATE inventory SET stock = stock + ? WHERE product_id = ?", delta, productId)
+            .asUpdate
+    )
+
+// Usage — everything runs in the same transaction without ThreadLocal
+transaction(dataSource) {
+    val orderId = saveOrder(order)
+    updateInventory(order.productId, -order.quantity)
+}
+```
+
+### ThreadLocal-based transaction
+
+Pragmatic for existing layered architectures where many service methods already call repositories.
+Repositories automatically reuse the active transaction:
+
+```kotlin
+object Database {
+    private lateinit var dataSource: DataSource
+    private val transactionalSession = ThreadLocal<TransactionalSession?>()
+
+    fun <T> query(block: (Session) -> T): T {
+        val tx = transactionalSession.get()
+        return if (tx != null) block(tx) else using(sessionOf(dataSource)) { block(it) }
+    }
+
+    fun <T> transaction(block: () -> T): T {
+        check(transactionalSession.get() == null) { "Nested transactions are not supported" }
+        return sessionOf(dataSource).use { session ->
+            session.transaction { tx ->
+                transactionalSession.set(tx)
+                try { block() } finally { transactionalSession.remove() }
+            }
+        }
+    }
+}
+```
+
+> **⚠️** ThreadLocal does not propagate to new coroutines. This approach only works
+> when all code in the transaction block runs on the same thread without suspend calls.
+
+## Dependency Injection
+
+For small apps, constructor injection without a framework is simplest — pass dependencies directly.
+For larger apps with many services and repositories, Koin keeps the wiring manageable:
 
 ```kotlin
 // Module definition
@@ -270,6 +352,36 @@ class ServiceTest {
 
         val published = testRapid.inspektør.message(0)
         published["field"] shouldBe expectedValue
+    }
+}
+```
+
+### Testing the Ktor application
+
+Use `testApplication` to test the same modules as production — this tests `src/main` code directly:
+
+```kotlin
+class RoutesTest {
+    @Test
+    fun `should return resources`() = testApplication {
+        application {
+            configureSerialization()
+            configureRouting(testRepository)
+        }
+        client.get("/api/resources").apply {
+            status shouldBe HttpStatusCode.OK
+        }
+    }
+
+    @Test
+    fun `should return 401 without token`() = testApplication {
+        application {
+            configureAuth(mockOAuth2Server)
+            configureRouting(testRepository)
+        }
+        client.get("/api/resources").apply {
+            status shouldBe HttpStatusCode.Unauthorized
+        }
     }
 }
 ```

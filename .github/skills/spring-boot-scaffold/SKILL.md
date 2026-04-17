@@ -1,6 +1,11 @@
 ---
 name: spring-boot-scaffold
 description: Scaffold et nytt Spring Boot Kotlin-prosjekt med Nais-konfigurasjon, Flyway og standard Nav-mønstre
+license: MIT
+compatibility: Kotlin with Spring Boot on Nais
+metadata:
+  domain: backend
+  tags: spring-boot kotlin scaffold nais project-setup
 ---
 
 # Spring Boot Kotlin Project Scaffold
