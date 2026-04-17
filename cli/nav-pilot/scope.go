@@ -57,7 +57,8 @@ func (s *InstallScope) SupportsType(itemType string) bool {
 // For repo: <rootDir>/.github/agents/name.agent.md
 // For user: <rootDir>/agents/name.agent.md
 // For user instructions: <rootDir>/.github/instructions/name.instructions.md
-//   (cplt requires .github/instructions/ inside COPILOT_CUSTOM_INSTRUCTIONS_DIRS)
+//
+//	(cplt requires .github/instructions/ inside COPILOT_CUSTOM_INSTRUCTIONS_DIRS)
 func (s *InstallScope) DstPath(parts ...string) string {
 	if s.PathPrefix != "" {
 		return filepath.Join(append([]string{s.RootDir, s.PathPrefix}, parts...)...)

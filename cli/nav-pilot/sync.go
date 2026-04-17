@@ -396,9 +396,9 @@ func applySyncUpdate(scope *InstallScope, sourceDir string, u syncUpdate) error 
 	targetFull := filepath.Join(scope.RootDir, u.Path)
 
 	if strings.HasSuffix(u.Path, "/") {
-		return copyDir(sourceFull, targetFull)
+		return copyDir(sourceFull, targetFull, scope.RootDir)
 	}
-	return copyFile(sourceFull, targetFull)
+	return copyFile(sourceFull, targetFull, scope.RootDir)
 }
 
 // updateScopedStateHashes updates the state file with new hashes after applying updates.

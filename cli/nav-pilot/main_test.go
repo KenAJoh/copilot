@@ -273,7 +273,7 @@ func TestCopyFile(t *testing.T) {
 
 	os.WriteFile(src, []byte("hello world"), 0o644)
 
-	if err := copyFile(src, dst); err != nil {
+	if err := copyFile(src, dst, dir); err != nil {
 		t.Fatal(err)
 	}
 
@@ -297,7 +297,7 @@ func TestCopyDir(t *testing.T) {
 	os.WriteFile(filepath.Join(src, "metadata.json"), []byte("{}"), 0o644)
 	os.WriteFile(filepath.Join(src, "refs", "data.md"), []byte("# Data"), 0o644)
 
-	if err := copyDir(src, dst); err != nil {
+	if err := copyDir(src, dst, dir); err != nil {
 		t.Fatal(err)
 	}
 
@@ -320,11 +320,11 @@ func TestCopyDir_RemovesStaleFiles(t *testing.T) {
 	os.WriteFile(filepath.Join(src, "keep.md"), []byte("keep"), 0o644)
 	os.WriteFile(filepath.Join(src, "old.md"), []byte("old"), 0o644)
 
-	copyDir(src, dst)
+	copyDir(src, dst, dir)
 
 	// Second version: remove old.md from source
 	os.Remove(filepath.Join(src, "old.md"))
-	copyDir(src, dst)
+	copyDir(src, dst, dir)
 
 	// old.md should not exist in destination
 	if _, err := os.Stat(filepath.Join(dst, "old.md")); !os.IsNotExist(err) {
@@ -904,7 +904,7 @@ func TestCopyFile_RefusesSymlink(t *testing.T) {
 	symlink := filepath.Join(dstDir, "target.txt")
 	os.Symlink(outsideFile, symlink)
 
-	err := copyFile(srcFile, symlink)
+	err := copyFile(srcFile, symlink, dstDir)
 	if err == nil {
 		t.Fatal("expected error when destination is a symlink")
 	}
@@ -928,7 +928,7 @@ func TestCopyFile_AtomicWrite(t *testing.T) {
 	dstFile := filepath.Join(dstDir, "target.txt")
 	os.WriteFile(dstFile, []byte("old content"), 0o644)
 
-	err := copyFile(srcFile, dstFile)
+	err := copyFile(srcFile, dstFile, dstDir)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -953,7 +953,7 @@ func TestCopyFile_RefusesSymlinkedParentDir(t *testing.T) {
 	os.Symlink(outsideDir, symlinkedParent)
 
 	dstFile := filepath.Join(symlinkedParent, "target.txt")
-	err := copyFile(srcFile, dstFile)
+	err := copyFile(srcFile, dstFile, repoDir)
 	if err == nil {
 		t.Fatal("expected error when parent directory is a symlink")
 	}
@@ -992,6 +992,64 @@ func TestWriteState_RefusesSymlink(t *testing.T) {
 	got, _ := os.ReadFile(outsideFile)
 	if string(got) != "original" {
 		t.Error("symlink target was modified despite protection")
+	}
+}
+
+func TestCheckSymlink_RejectsEmptyBoundary(t *testing.T) {
+	err := checkSymlink("/some/path", "")
+	if err == nil {
+		t.Fatal("expected error for empty boundary")
+	}
+	if !strings.Contains(err.Error(), "non-empty absolute path") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestCheckSymlink_RejectsRelativeBoundary(t *testing.T) {
+	err := checkSymlink("/some/path", "relative/path")
+	if err == nil {
+		t.Fatal("expected error for relative boundary")
+	}
+	if !strings.Contains(err.Error(), "non-empty absolute path") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestCheckSymlink_RejectsPathOutsideBoundary(t *testing.T) {
+	err := checkSymlink("/other/dir/file.txt", "/boundary/dir")
+	if err == nil {
+		t.Fatal("expected error for path outside boundary")
+	}
+	if !strings.Contains(err.Error(), "not under boundary") {
+		t.Errorf("unexpected error: %v", err)
+	}
+}
+
+func TestCopyDir_RefusesSymlinkedParent(t *testing.T) {
+	srcDir := t.TempDir()
+	os.MkdirAll(filepath.Join(srcDir, "skill"), 0o755)
+	os.WriteFile(filepath.Join(srcDir, "skill", "SKILL.md"), []byte("# Skill"), 0o644)
+
+	outsideDir := t.TempDir()
+	os.WriteFile(filepath.Join(outsideDir, "victim.txt"), []byte("original"), 0o644)
+
+	repoDir := t.TempDir()
+	// Create a symlinked skills directory
+	os.Symlink(outsideDir, filepath.Join(repoDir, "skills"))
+
+	dstDir := filepath.Join(repoDir, "skills", "my-skill")
+	err := copyDir(filepath.Join(srcDir, "skill"), dstDir, repoDir)
+	if err == nil {
+		t.Fatal("expected error when parent directory is a symlink")
+	}
+	if !strings.Contains(err.Error(), "symlink") {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	// Verify outside dir was not modified
+	got, _ := os.ReadFile(filepath.Join(outsideDir, "victim.txt"))
+	if string(got) != "original" {
+		t.Error("file behind symlinked parent was modified despite protection")
 	}
 }
 

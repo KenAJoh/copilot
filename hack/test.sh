@@ -1,11 +1,26 @@
 #!/usr/bin/env bash
-set -e
+failed=()
+
 for app in $APPS; do
   echo "📦 $app:"
-  (cd "apps/$app" && mise run test)
-  echo ""
+  if (cd "apps/$app" && mise run test); then
+    echo ""
+  else
+    failed+=("$app")
+    echo ""
+  fi
 done
+
 echo "🧭 nav-pilot:"
-mise run nav-pilot:test
-echo ""
+if mise run nav-pilot:test; then
+  echo ""
+else
+  failed+=("nav-pilot")
+  echo ""
+fi
+
+if [[ ${#failed[@]} -gt 0 ]]; then
+  echo "❌ Tests failed for: ${failed[*]}"
+  exit 1
+fi
 echo "✅ All tests passed"

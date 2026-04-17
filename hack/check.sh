@@ -1,20 +1,52 @@
 #!/usr/bin/env bash
-set -e
+# Run checks for all apps. Tracks failures per section so one broken app
+# doesn't block the rest.
+failed=()
+
 for app in $APPS; do
   echo "📦 $app:"
-  (cd "apps/$app" && mise run check)
-  echo ""
+  if (cd "apps/$app" && mise run check); then
+    echo ""
+  else
+    failed+=("$app")
+    echo ""
+  fi
 done
+
 echo "📄 docs:"
-mise run docs:check
-echo ""
+if mise run docs:check; then
+  echo ""
+else
+  failed+=("docs")
+  echo ""
+fi
+
 echo "🔧 skills:"
-mise run skills:lint -- -q
-echo ""
+if mise run skills:lint -- -q; then
+  echo ""
+else
+  failed+=("skills")
+  echo ""
+fi
+
 echo "📦 collections:"
-mise run collections:lint -- -q
-echo ""
+if mise run collections:lint -- -q; then
+  echo ""
+else
+  failed+=("collections")
+  echo ""
+fi
+
 echo "🧭 nav-pilot:"
-mise run nav-pilot:check
-echo ""
+if mise run nav-pilot:check; then
+  echo ""
+else
+  failed+=("nav-pilot")
+  echo ""
+fi
+
+if [[ ${#failed[@]} -gt 0 ]]; then
+  echo "❌ Checks failed for: ${failed[*]}"
+  exit 1
+fi
 echo "✅ All checks passed"
